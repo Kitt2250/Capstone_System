@@ -1,0 +1,112 @@
+/* ===== Base Button ===== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    font-size: 0.85rem;
+    font-family: inherit;
+    border-radius: 8px;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn+.btn {
+    margin-left: 6px;
+}
+
+.btn-with-label {
+    width: auto;
+    height: auto;
+    padding: 8px 18px;
+    gap: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+/* ===== View ===== */
+.btn-view {
+    color: #004d8c;
+    background-color: #e8f1fa;
+    border-color: #b8d4ed;
+}
+
+.btn-view:hover {
+    background-color: #d0e4f5;
+    border-color: #004d8c;
+}
+
+/* ===== Edit ===== */
+.btn-edit {
+    color: #b8860b;
+    background-color: #fdf6e3;
+    border-color: #f0d78c;
+}
+
+.btn-edit:hover {
+    background-color: #faeec7;
+    border-color: #b8860b;
+}
+
+/* ===== Deactivate ===== */
+.btn-deactivate {
+    color: #b91c1c;
+    background-color: #fef2f2;
+    border-color: #f5b7b7;
+}
+
+.btn-deactivate:hover {
+    background-color: #fee2e2;
+    border-color: #b91c1c;
+}
+
+/* ===== Delete ===== */
+.btn-delete {
+    color: #c53030;
+    background-color: #fff0f0;
+    border-color: #f5b7b7;
+}
+
+.btn-delete:hover {
+    background-color: #fee2e2;
+    border-color: #c53030;
+}
+
+/* ===== View Map ===== */
+.btn-viewmap {
+    color: #0e7c6b;
+    background-color: #e6f7f4;
+    border-color: #a3ddd2;
+}
+
+.btn-viewmap:hover {
+    background-color: #ccf0e8;
+    border-color: #0e7c6b;
+}
+
+/* ===== Create ===== */
+.btn-create {
+    color: #ffffff;
+    background-color: #004d8c;
+    border-color: #004d8c;
+}
+
+.btn-create:hover {
+    background-color: #003d70;
+    border-color: #003d70;
+}
+
+/* ===== Default ===== */
+.btn-default {
+    color: #475569;
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.btn-default:hover {
+    background-color: #e2e8f0;
+    border-color: #475569;
+}

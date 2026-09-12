@@ -1,7 +1,10 @@
+import "./Table.css";
+
 function Table({ data, columns }) {
 
     return (
-        <table>
+        <div className="table-wrapper">
+            <table>
             <thead>
                 <tr>
                     {columns.map((column) => (
@@ -17,13 +20,17 @@ function Table({ data, columns }) {
                     <tr key={row.id}>
                         {columns.map((column) => (
                             <td key={column.key}>
-                                {row[column.key]}
+                                {column.render
+                                    ? column.render(row)
+                                    : row[column.key]
+                                }
                             </td>
                         ))}
                     </tr>
                 ))}
             </tbody>
         </table>
+        </div>
     );
 }
 

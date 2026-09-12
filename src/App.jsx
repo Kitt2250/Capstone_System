@@ -58,7 +58,7 @@ function App(){
         </>
          )}
 
-        {user && userDataRole === "admin" && (
+        {user && userDataRole === "Admin" && (
             <>
                 <Route path="/admin" element={<Admin />}>
 
@@ -79,7 +79,7 @@ function App(){
 
         {user && userDataRole === "staff" && (
             <>
-                <Route path="/staff/*" element={<Staff />} />
+                <Route path="/Staff/*" element={<Staff />} />
                 <Route
                     path="*"
                     element={<Navigate to="/staff" replace />}
@@ -87,7 +87,7 @@ function App(){
             </>
         )}
 
-        {user && userDataRole === "family" && (
+        {user && userDataRole === "Family" && (
             <>
                 <Route path="/family/*" element={<Family />} />
                 <Route
