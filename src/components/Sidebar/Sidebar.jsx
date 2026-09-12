@@ -6,7 +6,7 @@ import { auth } from "../../firebase/config";
 import { getUserData } from "../../services/userServices";
 import "./Sidebar.css";
 import cherubimLogo from "../../assets/cherubim_logo.jpg";
-import { LayoutGrid, Users, FileText, MapPin, Landmark, BarChart2, Settings, Database, LogOut, ChevronLeft, ChevronRight, CreditCard, Building2, Heart} from "lucide-react";
+import { LayoutGrid, Users, FileText, MapPin, Landmark, BarChart2, Settings, Database, LogOut, ChevronLeft, ChevronRight, CreditCard, Building2, Heart } from "lucide-react";
 
 function Sidebar({ role = "admin" }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -24,12 +24,11 @@ function Sidebar({ role = "admin" }) {
             try {
                 const userData = await getUserData(user.uid);
 
-                const name = userData.name || user.displayName || "User";
-                const email = userData.email || user.email || "";
+                const name = userData.name;
+                const email = userData.email;
 
                 const initials = name
                     .split(" ")
-                    .filter(Boolean)
                     .map((n) => n[0])
                     .join("")
                     .toUpperCase()
@@ -43,24 +42,6 @@ function Sidebar({ role = "admin" }) {
 
             } catch (error) {
                 console.error("Failed to load user profile:", error);
-
-                // Use Firebase Auth data if Firestore profile cannot be loaded
-                const name = user.displayName || user.email?.split("@")[0] || "User";
-                const email = user.email || "";
-
-                const initials = name
-                    .split(" ")
-                    .filter(Boolean)
-                    .map((n) => n[0])
-                    .join("")
-                    .toUpperCase()
-                    .slice(0, 2);
-
-                setUserProfile({
-                    name,
-                    email,
-                    initials
-                });
             }
         });
 
@@ -138,8 +119,6 @@ function Sidebar({ role = "admin" }) {
 
     return (
         <aside className={`sidebar-container ${isCollapsed ? "collapsed" : ""}`}>
-
-            {/* Header / Brand */}
             <div className="sidebar-header">
                 <div className="sidebar-brand-wrapper">
 
@@ -179,8 +158,6 @@ function Sidebar({ role = "admin" }) {
                     }
                 </button>
             </div>
-
-            {/* Navigation Body */}
             <div className="sidebar-nav-body">
 
                 {activeSections.map((section, sIdx) => (
@@ -226,8 +203,6 @@ function Sidebar({ role = "admin" }) {
                 ))}
 
             </div>
-
-            {/* Footer Profile Area */}
             <div className="sidebar-footer">
 
                 {userProfile && (
