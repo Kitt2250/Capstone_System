@@ -9,7 +9,8 @@
     font-size: 0.85rem;
     font-family: inherit;
     border-radius: 8px;
-    border: 1.5px solid transparent;
+    border: 1px solid #e2e8f0;
+    background-color: transparent;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -30,61 +31,61 @@
 /* ===== View ===== */
 .btn-view {
     color: #004d8c;
-    background-color: #e8f1fa;
-    border-color: #b8d4ed;
+    background-color: transparent;
+    border-color: #e2e8f0;
 }
 
 .btn-view:hover {
-    background-color: #d0e4f5;
-    border-color: #004d8c;
+    background-color: #f0f7ff;
+    border-color: #cbd5e1;
 }
 
 /* ===== Edit ===== */
 .btn-edit {
     color: #b8860b;
-    background-color: #fdf6e3;
-    border-color: #f0d78c;
+    background-color: transparent;
+    border-color: #e2e8f0;
 }
 
 .btn-edit:hover {
-    background-color: #faeec7;
-    border-color: #b8860b;
+    background-color: #fefce8;
+    border-color: #cbd5e1;
 }
 
 /* ===== Deactivate ===== */
 .btn-deactivate {
     color: #b91c1c;
-    background-color: #fef2f2;
-    border-color: #f5b7b7;
+    background-color: transparent;
+    border-color: #e2e8f0;
 }
 
 .btn-deactivate:hover {
-    background-color: #fee2e2;
-    border-color: #b91c1c;
+    background-color: #fef2f2;
+    border-color: #cbd5e1;
 }
 
 /* ===== Delete ===== */
 .btn-delete {
     color: #c53030;
-    background-color: #fff0f0;
-    border-color: #f5b7b7;
+    background-color: transparent;
+    border-color: #e2e8f0;
 }
 
 .btn-delete:hover {
     background-color: #fee2e2;
-    border-color: #c53030;
+    border-color: #cbd5e1;
 }
 
 /* ===== View Map ===== */
 .btn-viewmap {
     color: #0e7c6b;
-    background-color: #e6f7f4;
-    border-color: #a3ddd2;
+    background-color: transparent;
+    border-color: #e2e8f0;
 }
 
 .btn-viewmap:hover {
-    background-color: #ccf0e8;
-    border-color: #0e7c6b;
+    background-color: #f0fdfa;
+    border-color: #cbd5e1;
 }
 
 /* ===== Create ===== */
@@ -102,11 +103,55 @@
 /* ===== Default ===== */
 .btn-default {
     color: #475569;
+    background-color: transparent;
+    border-color: #e2e8f0;
+}
+
+.btn-default:hover {
     background-color: #f1f5f9;
     border-color: #cbd5e1;
 }
 
-.btn-default:hover {
-    background-color: #e2e8f0;
-    border-color: #475569;
+/* ===== Export ===== */
+.btn-export {
+    color: #334155;
+    background-color: #ffffff;
+    border-color: #e2e8f0;
+}
+
+.btn-export:hover {
+    color: #0f172a;
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.btn-export svg {
+    color: #64748b;
+    transition: color 0.2s ease;
+}
+
+.btn-export:hover svg {
+    color: #004d8c;
+}
+
+/* ===== Reset / Remove Filter ===== */
+.btn-reset {
+    color: #64748b;
+    background-color: #ffffff;
+    border-color: #e2e8f0;
+}
+
+.btn-reset:hover {
+    color: #dc2626;
+    background-color: #fef2f2;
+    border-color: #fecaca;
+}
+
+.btn-reset svg {
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.btn-reset:hover svg {
+    transform: rotate(-45deg);
+    color: #dc2626;
 }

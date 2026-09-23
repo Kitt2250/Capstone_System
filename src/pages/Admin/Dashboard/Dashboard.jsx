@@ -1,9 +1,9 @@
 import Header from "../../../components/Header/Header"
 
-export default function Dashboard(){
-    return(
+export default function Dashboard() {
+    return (
         <>
-            <Header page="dashboard"/>
+            <Header page="dashboard" />
         </>
     )
 }

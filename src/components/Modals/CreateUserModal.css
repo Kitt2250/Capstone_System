@@ -1,0 +1,200 @@
+/* ===== Modal Overlay ===== */
+.create-modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    animation: overlayFadeIn 0.2s ease;
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ===== Modal Card ===== */
+.create-modal {
+    background: #ffffff;
+    padding: 28px 32px;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e8ecf1;
+    animation: modalSlideIn 0.25s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ===== Modal Header ===== */
+.create-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e8ecf1;
+}
+
+.create-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #004d8c;
+}
+
+.create-modal-title h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.create-modal-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: #f1f5f9;
+    border-radius: 8px;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.create-modal-close-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+/* ===== Error Message ===== */
+.create-modal-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #dc2626;
+    font-size: 0.85rem;
+    font-weight: 500;
+    animation: errorShake 0.3s ease;
+}
+
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+/* ===== Form Groups ===== */
+.create-modal-form-group {
+    margin-bottom: 16px;
+}
+
+.create-modal-form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.create-modal-form-group input,
+.create-modal-form-group select {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: #1e293b;
+    background-color: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.create-modal-form-group input::placeholder {
+    color: #94a3b8;
+}
+
+.create-modal-form-group input:focus,
+.create-modal-form-group select:focus {
+    background-color: #ffffff;
+    border-color: #004d8c;
+    box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.08);
+}
+
+/* ===== Modal Actions ===== */
+.create-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #e8ecf1;
+}
+
+.create-modal-btn-cancel {
+    padding: 9px 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #475569;
+    background: #f1f5f9;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.create-modal-btn-cancel:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.create-modal-btn-cancel:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.create-modal-btn-submit {
+    padding: 9px 22px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #ffffff;
+    background: #004d8c;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.create-modal-btn-submit:hover {
+    background: #003d6f;
+    box-shadow: 0 2px 8px rgba(0, 77, 140, 0.25);
+}
+
+.create-modal-btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

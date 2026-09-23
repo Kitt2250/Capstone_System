@@ -4,42 +4,96 @@
     overflow-x: auto;
     background-color: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    border: 1px solid #edf2f7;
 }
 
 /* ===== Table Container ===== */
 table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
     font-size: 0.875rem;
+    table-layout: fixed;
 }
 
 /* ===== Table Header ===== */
 thead tr {
-    border-bottom: 1px solid #e8ecf1;
+    border-bottom: 1px solid #edf2f7;
+    background-color: #ffffff;
 }
 
 th {
-    padding: 14px 20px;
-    text-align: center;
-    font-weight: 600;
-    font-size: 0.75rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: #ffffff;
-    background-color: #004d8c;
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.8125rem;
+    color: #64748b;
+    background-color: #ffffff;
     white-space: nowrap;
+    vertical-align: middle;
+}
+
+.th-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 20px;
+    user-select: none;
+}
+
+.th-sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.th-sortable:hover {
+    background-color: #f8fafc;
+    color: #1e293b;
+}
+
+.th-sortable:hover .sort-icon {
+    color: #475569;
+}
+
+.sort-icon {
+    color: #94a3b8;
+    opacity: 0.85;
+}
+
+/* ===== Column Widths (Actions on the Right) ===== */
+.th-name, .td-name {
+    width: 34%;
+    padding-left: 20px;
+}
+
+.th-role, .td-role {
+    width: 18%;
+}
+
+.th-status, .td-status {
+    width: 17%;
+}
+
+.th-joined, .td-joined {
+    width: 18%;
+}
+
+.th-actions, .td-actions {
+    width: 13%;
+    text-align: right;
+    padding-right: 20px;
+}
+
+.th-actions .th-content {
+    justify-content: flex-end;
+    width: 100%;
 }
 
 /* ===== Table Body ===== */
 tbody tr {
-    border-bottom: 1px solid #f0f2f5;
+    border-bottom: 1px solid #f1f5f9;
+    background-color: #ffffff;
     transition: background-color 0.15s ease;
-}
-
-tbody tr:nth-child(even) {
-    background-color: #f4f6f9;
 }
 
 tbody tr:last-child {
@@ -47,14 +101,14 @@ tbody tr:last-child {
 }
 
 tbody tr:hover {
-    background-color: #e8edf4;
+    background-color: #fafbfc;
 }
 
 td {
-    padding: 14px 20px;
-    text-align: center;
-    color: #1e293b;
-    font-size: 0.85rem;
+    padding: 14px 16px;
+    text-align: left;
+    color: #334155;
+    font-size: 0.875rem;
     vertical-align: middle;
     white-space: nowrap;
 }

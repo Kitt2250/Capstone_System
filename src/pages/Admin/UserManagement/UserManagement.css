@@ -37,36 +37,80 @@
     border-radius: 12px;
 }
 
+.page-actions-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-actions-group .btn + .btn {
+    margin-left: 0;
+}
+
+.btn-action-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    height: 38px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #334155;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-action-outline:hover {
+    background-color: #f8fafc;
+    color: #0f172a;
+    border-color: #cbd5e1;
+}
+
+.btn-action-outline svg {
+    color: #64748b;
+}
+
+.btn-action-outline:hover svg {
+    color: #004d8c;
+}
+
 /* ===== Filters Bar ===== */
 .filters-bar {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .search-wrapper {
     position: relative;
-    flex: 1;
+    width: 280px;
+    max-width: 100%;
     display: flex;
     align-items: center;
 }
 
 .search-wrapper .search-icon {
     position: absolute;
-    left: 14px;
+    left: 12px;
     color: #94a3b8;
     pointer-events: none;
 }
 
 .search-wrapper .search-input {
     width: 100%;
-    padding: 10px 16px 10px 42px;
+    height: 38px;
+    padding: 8px 14px 8px 36px;
     font-size: 0.85rem;
     font-family: inherit;
     color: #1e293b;
-    background-color: #f8fafc;
-    border: 1.5px solid #e2e8f0;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
     outline: none;
     transition: all 0.2s ease;
@@ -77,18 +121,18 @@
 }
 
 .search-wrapper .search-input:focus {
-    background-color: #ffffff;
     border-color: #004d8c;
     box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.08);
 }
 
 .filters-bar .filter-select {
-    padding: 10px 14px;
+    height: 38px;
+    padding: 8px 12px;
     font-size: 0.85rem;
     font-family: inherit;
-    color: #1e293b;
-    background-color: #f8fafc;
-    border: 1.5px solid #e2e8f0;
+    color: #334155;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
     outline: none;
     cursor: pointer;
@@ -97,7 +141,6 @@
 }
 
 .filters-bar .filter-select:focus {
-    background-color: #ffffff;
     border-color: #004d8c;
     box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.08);
 }
@@ -109,10 +152,220 @@
     border-radius: 10px;
 }
 
-/* ===== Action Buttons in Table ===== */
-.actions-cell {
+/* ===== KPI Summary Cards (Matching Screenshot) ===== */
+.um-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 1024px) {
+    .um-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .um-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.um-kpi-card {
+    background-color: #ffffff;
+    border: 1px solid #edf2f7;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.um-kpi-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.um-kpi-card-header {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+}
+
+.um-kpi-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.um-kpi-pill {
+    font-size: 0.725rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.um-kpi-pill.green {
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+
+.um-kpi-pill.blue {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.um-kpi-pill.purple {
+    background-color: #faf5ff;
+    color: #7e22ce;
+    border: 1px solid #e9d5ff;
+}
+
+.um-kpi-card-body {
+    display: flex;
+    align-items: baseline;
     gap: 6px;
 }
+
+.um-kpi-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1;
+}
+
+.um-kpi-unit {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #64748b;
+}
+
+/* ===== Action Buttons in Table (Right Side) ===== */
+.actions-cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    width: 100%;
+}
+
+.actions-cell .btn + .btn {
+    margin-left: 0;
+}
+
+/* ===== Name Cell with Letter Avatar & Email ===== */
+.user-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.user-avatar-badge {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: 1.5px solid transparent;
+    text-transform: uppercase;
+}
+
+.user-info-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.user-name-text {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 0.875rem;
+    line-height: 1.25;
+}
+
+.user-email-text {
+    font-size: 0.775rem;
+    color: #64748b;
+    line-height: 1.25;
+}
+
+/* ===== Role Cell ===== */
+.role-cell-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #334155;
+    text-transform: capitalize;
+}
+
+/* ===== Status Pill with Dot (Matching Screenshot) ===== */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 12px;
+    border-radius: 9999px;
+    font-size: 0.775rem;
+    font-weight: 500;
+    line-height: 1.4;
+    width: fit-content;
+}
+
+.status-pill.status-active {
+    background-color: rgba(16, 185, 129, 0.06);
+    border: 1.5px solid #10b981;
+    color: #059669;
+}
+
+.status-pill.status-inactive {
+    background-color: rgba(239, 68, 68, 0.06);
+    border: 1.5px solid #ef4444;
+    color: #dc2626;
+}
+
+.status-pill.status-archived {
+    background-color: rgba(100, 116, 139, 0.08);
+    border: 1.5px solid #94a3b8;
+    color: #475569;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-pill.status-active .status-dot {
+    background-color: #10b981;
+}
+
+.status-pill.status-inactive .status-dot {
+    background-color: #ef4444;
+}
+
+.status-pill.status-archived .status-dot {
+    background-color: #64748b;
+}
+
+/* ===== Joined Date Cell ===== */
+.joined-cell-text {
+    font-size: 0.875rem;
+    color: #475569;
+    font-weight: 400;
+}
+
+

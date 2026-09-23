@@ -1,0 +1,199 @@
+/* ===== Modal Overlay ===== */
+.view-modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    padding: 20px;
+    animation: viewOverlayFadeIn 0.2s ease;
+}
+
+@keyframes viewOverlayFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ===== Modal Box ===== */
+.view-modal {
+    background: #ffffff;
+    padding: 28px 32px;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e8ecf1;
+    animation: viewModalSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes viewModalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ===== Modal Header ===== */
+.view-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e8ecf1;
+}
+
+.view-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.view-modal-icon-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background-color: #f0f7ff;
+    color: #004d8c;
+    border: 1px solid #d0e4ff;
+}
+
+.view-modal-title h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.view-modal-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: #f1f5f9;
+    border-radius: 8px;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.view-modal-close-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+/* ===== Details Body ===== */
+.view-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.view-field-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: background-color 0.15s ease;
+}
+
+.view-field-row:hover {
+    background-color: #f1f5f9;
+}
+
+.view-field-label {
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.view-field-content {
+    display: flex;
+    align-items: center;
+}
+
+.view-value-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e293b;
+    word-break: break-all;
+}
+
+.view-value-empty {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+/* ===== Badges ===== */
+.view-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.775rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    letter-spacing: 0.02em;
+}
+
+.view-badge.status-active {
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+
+.view-badge.status-inactive {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.view-badge.role-badge {
+    background-color: #eff6ff;
+    color: #004d8c;
+    border: 1px solid #bfdbfe;
+}
+
+/* ===== Modal Actions ===== */
+.view-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 16px;
+    border-top: 1px solid #e8ecf1;
+}
+
+.view-modal-btn-close {
+    padding: 9px 24px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #ffffff;
+    background: #004d8c;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.view-modal-btn-close:hover {
+    background: #003d6f;
+    box-shadow: 0 2px 8px rgba(0, 77, 140, 0.25);
+}

@@ -1,0 +1,147 @@
+/* ===== Archive Modal Overlay ===== */
+.modal-overlay,
+.archive-modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    padding: 20px;
+    animation: archiveOverlayFadeIn 0.2s ease;
+}
+
+@keyframes archiveOverlayFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ===== Archive Modal Card ===== */
+.archive-modal {
+    background: #ffffff;
+    padding: 32px 28px 28px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e8ecf1;
+    animation: archiveModalSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+}
+
+@keyframes archiveModalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ===== Icon Badge ===== */
+.archive-modal-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px auto;
+    border-radius: 50%;
+    background-color: #fff1f2;
+    color: #e11d48;
+    border: 1px solid #fecdd3;
+    font-size: 1.5rem;
+}
+
+/* ===== Content ===== */
+.archive-modal-content h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 10px 0;
+}
+
+.archive-modal-content p {
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.5;
+    margin: 0 0 12px 0;
+}
+
+.archive-modal-content p strong {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.archive-warning {
+    margin: 14px 0 24px 0;
+    padding: 10px 14px;
+    background-color: #fffbeb;
+    border: 1px solid #fef3c7;
+    border-radius: 8px;
+    font-size: 0.8125rem !important;
+    color: #b45309 !important;
+    line-height: 1.45;
+    text-align: center;
+}
+
+/* ===== Actions ===== */
+.archive-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.archive-modal-actions button {
+    flex: 1;
+    padding: 10px 18px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: inherit;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Cancel Button */
+.cancel-button {
+    color: #475569;
+    background: #f1f5f9;
+    border: 1.5px solid #e2e8f0;
+}
+
+.cancel-button:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.cancel-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Archive Button */
+.archive-button {
+    color: #ffffff;
+    background: #e11d48;
+    border: 1.5px solid transparent;
+}
+
+.archive-button:hover {
+    background: #be123c;
+    box-shadow: 0 2px 10px rgba(225, 29, 72, 0.3);
+}
+
+.archive-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

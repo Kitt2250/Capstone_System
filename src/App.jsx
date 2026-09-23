@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import Login from "./pages/Login/Login"
-import {BrowserRouter, Routes, Route, Navigate} from "react-router"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router"
 import { onAuthStateChanged, signOut } from "firebase/auth"
 import { auth } from "./firebase/config"
 import Admin from "./pages/Admin/Admin"
@@ -13,94 +13,95 @@ import GraveManagement from "./pages/Admin/GraveManagement/GraveManagement"
 import AuditLogs from "./pages/Admin/Audit Logs/AuditLogs"
 import MapManagement from "./pages/Admin/MapManagement/MapManagement"
 
-function App(){
+function App() {
 
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState()
   const [userDataRole, setUserDataRole] = useState()
 
-    useEffect(() => {
-      const unsubscribe = onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          setUser(user);
-          try {
-            const userData = await getUserData(user.uid);
-            setUserDataRole(userData.role);
-          } catch (err) {
-            console.error("Failed to fetch user role:", err);
-            setUserDataRole(null);
-          }
-        } else {
-          setUser(null);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUser(user);
+        try {
+          const userData = await getUserData(user.uid);
+          setUserDataRole(userData.role);
+        } catch (err) {
+          console.error("Failed to fetch user role:", err);
           setUserDataRole(null);
         }
-        setLoading(false); // only now — after user AND role are both resolved
-      });
+      } else {
+        setUser(null);
+        setUserDataRole(null);
+      }
+      setLoading(false); // only now — after user AND role are both resolved
+    });
 
-      return () => unsubscribe();
-    }, []);
+    return () => unsubscribe();
+  }, []);
 
   if (loading) return <></>
 
-  return(
+  const role = (userDataRole || "").toLowerCase();
+
+  return (
     <>
+      <BrowserRouter>
+        <Routes>
 
-    <BrowserRouter>
-      <Routes>
-
-        {!user && (
-        <>
-            <Route path="/login" element={<Login />} />
-            <Route
+          {!user && (
+            <>
+              <Route path="/login" element={<Login />} />
+              <Route
                 path="*"
                 element={<Navigate to="/login" replace />}
-            />
-        </>
-         )}
-
-        {user && userDataRole === "Admin" && (
-            <>
-                <Route path="/admin" element={<Admin />}>
-
-                    <Route index element={<Dashboard />}/>
-                    <Route path="users-management" element={<UserManagement />}/>
-                    <Route path="audit-log" element={<AuditLogs/>} />
-                    <Route path="map" element={<MapManagement/>} />
-                    <Route path="grave-management" element={<GraveManagement />}/>
-                    <Route path="reports" element={<></>} />
-                    <Route path="settings" element={<></>} />
-                    <Route path="backup" element={<></>} />
-
-                </Route>
-
-                <Route path="*" element={<Navigate to="/admin" replace />} />
+              />
             </>
-        )}
+          )}
 
-        {user && userDataRole === "staff" && (
+          {user && role === "admin" && (
             <>
-                <Route path="/Staff/*" element={<Staff />} />
-                <Route
-                    path="*"
-                    element={<Navigate to="/staff" replace />}
-                />
-            </>
-        )}
+              <Route path="/admin" element={<Admin />}>
+                <Route index element={<Dashboard />} />
+                <Route path="users-management" element={<UserManagement />} />
+                <Route path="audit-log" element={<AuditLogs />} />
+                <Route path="map" element={<MapManagement />} />
+                <Route path="grave-management" element={<GraveManagement />} />
+                <Route path="reports" element={<></>} />
+                <Route path="settings" element={<></>} />
+                <Route path="backup" element={<></>} />
+              </Route>
 
-        {user && userDataRole === "Family" && (
+              <Route path="*" element={<Navigate to="/admin" replace />} />
+            </>
+          )}
+
+          {user && role === "staff" && (
             <>
-                <Route path="/family/*" element={<Family />} />
-                <Route
-                    path="*"
-                    element={<Navigate to="/family" replace />}
-                />
+              <Route path="/staff/*" element={<Staff />} />
+              <Route
+                path="*"
+                element={<Navigate to="/staff" replace />}
+              />
             </>
-        )}
+          )}
 
-      </Routes>
-    </BrowserRouter>
+          {user && role === "family" && (
+            <>
+              <Route path="/family/*" element={<Family />} />
+              <Route
+                path="*"
+                element={<Navigate to="/family" replace />}
+              />
+            </>
+          )}
 
-      
+          {user && !["admin", "staff", "family"].includes(role) && (
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          )}
+
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
