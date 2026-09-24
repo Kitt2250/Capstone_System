@@ -1,0 +1,254 @@
+/* ===== Grave Management Container Card ===== */
+.grave-management-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.grave-management-container {
+    background-color: #ffffff;
+    border-radius: 14px;
+    padding: 24px;
+    border: 1px solid #e8ecf1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+/* ===== Tab Bar ===== */
+.gm-tab-bar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 24px;
+    padding: 4px;
+    background-color: #f1f5f9;
+    border-radius: 10px;
+    width: fit-content;
+}
+
+.gm-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #64748b;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.gm-tab-btn:hover {
+    color: #334155;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.gm-tab-btn.gm-tab-active {
+    color: #0f172a;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* ===== Page Title Bar ===== */
+.gm-config-section .page-title-bar,
+.gm-lot-section .page-title-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.gm-config-section .page-title-bar h2,
+.gm-lot-section .page-title-bar h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.grave-management-container .page-actions-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ===== Filters Bar ===== */
+.grave-management-container .filters-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.grave-management-container .search-wrapper {
+    position: relative;
+    width: 280px;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.grave-management-container .search-wrapper .search-icon {
+    position: absolute;
+    left: 12px;
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+.grave-management-container .search-wrapper .search-input {
+    width: 100%;
+    height: 38px;
+    padding: 8px 14px 8px 36px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: #1e293b;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.grave-management-container .search-wrapper .search-input:focus {
+    border-color: #004d8c;
+    box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.08);
+}
+
+/* ===== Config Table Cells ===== */
+.config-index {
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: #94a3b8;
+    min-width: 24px;
+    display: inline-block;
+    text-align: center;
+}
+
+.config-type-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.config-description {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+/* ===== Lot Price ===== */
+.lot-price {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #059669;
+}
+
+/* ===== Interment Count ===== */
+.interment-count {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1d4ed8;
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    padding: 2px 10px;
+    border-radius: 9999px;
+    display: inline-block;
+    min-width: 28px;
+    text-align: center;
+}
+
+/* ===== Installment Pill ===== */
+.installment-pill {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 3px 12px;
+    border-radius: 9999px;
+    display: inline-block;
+}
+
+.installment-yes {
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+
+.installment-no {
+    background-color: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+}
+
+/* ===== Contract / Ownership ===== */
+.config-contract {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #334155;
+}
+
+.contract-perpetual {
+    font-weight: 600;
+    color: #7e22ce;
+}
+
+/* ===== Config Divider ===== */
+.config-divider {
+    height: 1px;
+    background-color: #e2e8f0;
+    margin: 28px 0;
+}
+
+/* ===== Config Action Buttons ===== */
+.config-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.config-edit-btn {
+    color: #3b82f6;
+}
+
+.config-edit-btn:hover {
+    background-color: #eff6ff;
+    border-color: #93c5fd;
+    color: #1d4ed8;
+}
+
+.config-delete-btn {
+    color: #ef4444;
+}
+
+.config-delete-btn:hover {
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+    color: #b91c1c;
+}
+
+/* ===== Grave Lot Empty State ===== */
+.gm-lot-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #94a3b8;
+    gap: 12px;
+}
+
+.gm-lot-empty p {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #94a3b8;
+    margin: 0;
+}

@@ -1,0 +1,803 @@
+/* ===== GraveLotsModal Styles ===== */
+
+.glm-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+    animation: glm-fade-in 0.18s ease;
+}
+
+@keyframes glm-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.glm-modal-card {
+    background: #f8fafc;
+    border-radius: 14px;
+    width: 95vw;
+    max-width: 1100px;
+    height: 90vh;
+    max-height: 900px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22), 0 4px 16px rgba(0, 0, 0, 0.08);
+    animation: glm-slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e2e8f0;
+}
+
+@keyframes glm-slide-up {
+    from {
+        transform: translateY(16px) scale(0.98);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Header */
+.glm-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 22px;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    flex-shrink: 0;
+}
+
+.glm-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.glm-icon-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background-color: #f0f7ff;
+    color: #004d8c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.glm-title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.glm-subtitle {
+    margin: 2px 0 0;
+    font-size: 0.775rem;
+    color: #64748b;
+}
+
+.glm-close-btn {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #64748b;
+    transition: all 0.15s ease;
+}
+
+.glm-close-btn:hover {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    border-color: #cbd5e1;
+}
+
+/* Modal Body (Scrollable container holding all sections) */
+.glm-body {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+    background-color: #f8fafc;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Custom Scrollbar for GraveLotsModal Body */
+.glm-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.glm-body::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 6px 0;
+}
+
+.glm-body::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 9999px;
+    transition: background-color 0.2s ease;
+}
+
+.glm-body::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+}
+
+.glm-content-container {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* Panel Card */
+.glm-panel-card {
+    background-color: #ffffff;
+    border: 1px solid #edf2f7;
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.glm-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.glm-panel-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.glm-panel-title {
+    margin: 0;
+    font-size: 0.925rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.glm-blue-icon {
+    color: #2563eb;
+}
+
+.glm-amber-icon {
+    color: #ea580c;
+}
+
+.glm-header-note {
+    font-size: 0.785rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Search Controls Row */
+.glm-search-controls-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.glm-search-input-wrap {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.glm-search-input-icon {
+    position: absolute;
+    left: 12px;
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+.glm-search-input {
+    width: 100%;
+    height: 38px;
+    padding: 0 12px 0 34px;
+    font-size: 0.825rem;
+    font-family: inherit;
+    color: #334155;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.15s ease;
+}
+
+.glm-search-input::placeholder {
+    color: #94a3b8;
+}
+
+.glm-search-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.glm-search-clear-btn {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+    border-radius: 50%;
+    transition: all 0.15s ease;
+}
+
+.glm-search-clear-btn:hover {
+    color: #475569;
+    background-color: #f1f5f9;
+}
+
+.glm-select-wrap {
+    position: relative;
+    min-width: 125px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.glm-select-wrap-type {
+    min-width: 155px;
+}
+
+.glm-select-control {
+    width: 100%;
+    height: 38px;
+    padding: 0 30px 0 12px;
+    font-size: 0.825rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #334155;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.glm-select-control:focus {
+    border-color: #2563eb;
+}
+
+.glm-select-arrow {
+    position: absolute;
+    right: 10px;
+    color: #64748b;
+    pointer-events: none;
+}
+
+/* Slots Grid */
+.glm-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+@media (max-width: 900px) {
+    .glm-slots-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 650px) {
+    .glm-slots-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Slot Card (Matching Screenshot) */
+.glm-slot-card {
+    border-radius: 12px;
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 3px;
+    transition: all 0.15s ease;
+    cursor: pointer;
+}
+
+.glm-slot-card.available {
+    background-color: #f0fdf4;
+    border: 1.5px solid #22c55e;
+}
+
+.glm-slot-card.available:hover {
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+    transform: translateY(-2px);
+}
+
+.glm-slot-card.occupied {
+    background-color: #fef2f2;
+    border: 1.5px solid #ef4444;
+}
+
+.glm-slot-card.occupied:hover {
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.18);
+    transform: translateY(-2px);
+}
+
+.glm-slot-card.reserved {
+    background-color: #fffbeb;
+    border: 1.5px solid #f59e0b;
+}
+
+.glm-slot-card.reserved:hover {
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+    transform: translateY(-2px);
+}
+
+.glm-slot-card.selected {
+    box-shadow: 0 0 0 3px #059669, 0 4px 12px rgba(5, 150, 105, 0.28) !important;
+    border-color: #059669 !important;
+}
+
+/* Status Icon inside Card */
+.glm-card-status-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+.glm-card-status-icon.available {
+    background-color: #22c55e;
+}
+
+.glm-card-status-icon.occupied {
+    background-color: #ef4444;
+}
+
+.glm-card-status-icon.reserved {
+    background-color: #f59e0b;
+}
+
+.glm-slot-code {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #0f172a;
+}
+
+.glm-slot-status {
+    font-size: 0.775rem;
+    font-weight: 600;
+}
+
+.glm-slot-card.available .glm-slot-status {
+    color: #16a34a;
+}
+
+.glm-slot-card.occupied .glm-slot-status {
+    color: #dc2626;
+}
+
+.glm-slot-card.reserved .glm-slot-status {
+    color: #d97706;
+}
+
+.glm-slot-type {
+    font-size: 0.725rem;
+    color: #64748b;
+}
+
+.glm-slots-empty {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+    gap: 8px;
+    color: #94a3b8;
+}
+
+.glm-slots-empty p {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+/* Pagination Bar */
+.glm-pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-top: 1px solid #f1f5f9;
+}
+
+.glm-showing-text {
+    font-size: 0.775rem;
+    color: #64748b;
+}
+
+.glm-pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.glm-page-btn {
+    min-width: 28px;
+    height: 28px;
+    padding: 0 6px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    color: #475569;
+    font-size: 0.775rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.glm-page-btn:hover:not(:disabled) {
+    background-color: #f1f5f9;
+    color: #0f172a;
+}
+
+.glm-page-btn.active {
+    background-color: #c2410c;
+    border-color: #c2410c;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.glm-page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Legend & Summary Row */
+.glm-legend-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    margin-top: 8px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.glm-legend-items {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.glm-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.775rem;
+    color: #475569;
+    font-weight: 500;
+}
+
+.glm-legend-badge {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.glm-legend-badge.available {
+    background-color: #22c55e;
+}
+
+.glm-legend-badge.occupied {
+    background-color: #ef4444;
+}
+
+.glm-legend-badge.reserved {
+    background-color: #f59e0b;
+}
+
+.glm-total-available {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.785rem;
+    color: #1e293b;
+}
+
+.glm-total-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #22c55e;
+}
+
+/* 3. Cemetery Satellite Map Container (Placed directly below Grave Lot grid) */
+.glm-map-panel-card {
+    padding: 16px 18px;
+}
+
+.glm-map-container {
+    width: 100%;
+    height: 480px;
+    min-height: 450px;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    background-color: #0f172a;
+}
+
+.glm-map-container .satellite-map-wrapper {
+    width: 100%;
+    height: 100%;
+    min-height: 450px;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.glm-map-container .full-satellite-map {
+    height: 100%;
+    min-height: 450px;
+}
+
+/* ========================================================
+   4. Plot Details Popup Modal (Exact match to screenshot)
+   ======================================================== */
+.glm-popup-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(4px);
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    animation: glm-fade-in 0.18s ease;
+}
+
+.glm-popup-card {
+    background: #ffffff;
+    border-radius: 18px;
+    max-width: 410px;
+    width: 100%;
+    padding: 22px 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22), 0 4px 16px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 1px solid #edf2f7;
+    animation: glm-slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+}
+
+.glm-popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Status Pill Badge (● AVAILABLE) */
+.glm-popup-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.725rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.glm-popup-badge.available {
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+
+.glm-popup-badge.occupied {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.glm-popup-badge.reserved {
+    background-color: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fde68a;
+}
+
+/* Circle Close Button */
+.glm-popup-close-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #e2e8f0;
+    background-color: #f8fafc;
+    color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.glm-popup-close-btn:hover {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    border-color: #cbd5e1;
+}
+
+/* Title & Subtitle */
+.glm-popup-title-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.glm-popup-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.3;
+}
+
+.glm-popup-code {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #64748b;
+}
+
+/* Details Box (Section, Grave Type, Status) */
+.glm-popup-details-box {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.glm-popup-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.glm-popup-label {
+    color: #64748b;
+    font-weight: 600;
+}
+
+.glm-popup-value {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+/* Action Buttons Row 1 (Navigate on Map & Google Maps) */
+.glm-popup-actions-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.glm-popup-btn-navigate {
+    height: 42px;
+    background-color: #c2410c;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 2px 6px rgba(194, 65, 12, 0.28);
+    font-family: inherit;
+}
+
+.glm-popup-btn-navigate:hover {
+    background-color: #9a3412;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(194, 65, 12, 0.35);
+}
+
+.glm-popup-btn-gmaps {
+    height: 42px;
+    background-color: #ffffff;
+    color: #1e293b;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.glm-popup-btn-gmaps:hover {
+    background-color: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+/* Action Button Row 2 (Select Grave Lot) */
+.glm-popup-btn-select {
+    width: 100%;
+    height: 44px;
+    background-color: #047857;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 2px 8px rgba(4, 120, 87, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.glm-popup-btn-select:hover:not(:disabled) {
+    background-color: #065f46;
+    box-shadow: 0 4px 12px rgba(4, 120, 87, 0.35);
+    transform: translateY(-1px);
+}
+
+.glm-popup-btn-select:disabled {
+    background-color: #e2e8f0;
+    color: #94a3b8;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.glm-slot-card.selected {
+    box-shadow: 0 0 0 2.5px #047857, 0 4px 14px rgba(4, 120, 87, 0.25);
+    background-color: #ecfdf5;
+}

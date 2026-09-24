@@ -1,0 +1,421 @@
+/* ===== WakeSpaceModal Styles ===== */
+
+.ws-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+    animation: ws-fade-in 0.18s ease;
+}
+
+@keyframes ws-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.ws-modal-card {
+    background: #ffffff;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.08);
+    animation: ws-slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.ws-modal-card.ws-modal-wide {
+    max-width: 680px;
+}
+
+@keyframes ws-slide-up {
+    from {
+        transform: translateY(16px) scale(0.98);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Header */
+.ws-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    background-color: #ffffff;
+}
+
+.ws-modal-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ws-modal-icon-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ws-modal-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.ws-modal-subtitle {
+    font-size: 0.775rem;
+    color: #64748b;
+    margin: 2px 0 0 0;
+}
+
+.ws-modal-close-btn {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #64748b;
+    transition: all 0.15s ease;
+}
+
+.ws-modal-close-btn:hover {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    border-color: #cbd5e1;
+}
+
+/* Body */
+.ws-modal-scroll-body {
+    padding: 18px 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Compact Calendar Wrapper inside Modal */
+.ws-modal-calendar-container {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.ws-modal-calendar-container .ws-calendar-wrapper {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.ws-modal-calendar-container .ws-cell {
+    min-height: 52px;
+    padding: 4px 6px;
+}
+
+.ws-modal-calendar-container .ws-cell-day {
+    font-size: 0.75rem;
+}
+
+.ws-modal-calendar-container .ws-calendar-nav {
+    padding: 10px 14px;
+}
+
+.ws-modal-calendar-container .ws-calendar-month-text {
+    font-size: 0.875rem;
+}
+
+.ws-modal-calendar-container .ws-booking-badge {
+    display: none;
+}
+
+.ws-modal-calendar-container .ws-calendar-legend {
+    padding: 8px 12px;
+}
+
+/* Cell selection highlight in modal */
+.ws-modal-calendar-container .ws-cell.ws-cell-selected {
+    background-color: #004d8c !important;
+    color: #ffffff !important;
+    border-radius: 4px;
+}
+
+.ws-modal-calendar-container .ws-cell.ws-cell-selected .ws-cell-day {
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+/* Selected Date Banner */
+.ws-modal-selected-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.825rem;
+    color: #0369a1;
+}
+
+.ws-modal-selected-label {
+    font-weight: 600;
+}
+
+/* Form Fields Grid */
+.ws-modal-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.ws-modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.ws-modal-field.full-width {
+    grid-column: span 2;
+}
+
+.ws-modal-label {
+    font-size: 0.775rem;
+    font-weight: 600;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ws-modal-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.ws-modal-input {
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: #1e293b;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.15s ease;
+}
+
+.ws-modal-input:focus {
+    border-color: #004d8c;
+    box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.1);
+}
+
+.ws-modal-input-readonly {
+    background-color: #f8fafc;
+    color: #334155;
+    font-weight: 500;
+    border: 1px dashed #cbd5e1;
+    display: flex;
+    align-items: center;
+    cursor: default;
+}
+
+/* Stepper for Days */
+.ws-modal-stepper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #ffffff;
+    height: 38px;
+    box-sizing: border-box;
+}
+
+.ws-modal-stepper-btn {
+    width: 36px;
+    min-width: 36px;
+    height: 100%;
+    flex-shrink: 0;
+    background-color: #f8fafc;
+    border: none;
+    color: #475569;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all 0.15s ease;
+}
+
+.ws-modal-stepper-btn:first-child {
+    border-right: 1px solid #e2e8f0;
+}
+
+.ws-modal-stepper-btn:last-child {
+    border-left: 1px solid #e2e8f0;
+}
+
+.ws-modal-stepper-btn:hover:not(:disabled) {
+    background-color: #e2e8f0;
+    color: #004d8c;
+}
+
+.ws-modal-stepper-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    background-color: #f1f5f9;
+}
+
+.ws-modal-stepper-input {
+    flex: 1;
+    min-width: 0;
+    width: 0;
+    height: 100%;
+    border: none;
+    background: transparent;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.925rem;
+    color: #0f172a;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+/* Hide native browser up/down number spin arrows */
+.ws-modal-stepper-input::-webkit-outer-spin-button,
+.ws-modal-stepper-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Pricing and Summary Card */
+.ws-modal-summary-card {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ws-modal-summary-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ws-modal-summary-title {
+    font-size: 0.775rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.ws-modal-summary-calc {
+    font-size: 0.825rem;
+    color: #334155;
+}
+
+.ws-modal-summary-total {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #059669;
+}
+
+/* Error Message */
+.ws-modal-error-box {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 0.8rem;
+    color: #dc2626;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Footer */
+.ws-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 24px 18px;
+    border-top: 1px solid #f1f5f9;
+    background-color: #ffffff;
+}
+
+.ws-modal-btn-cancel {
+    height: 38px;
+    padding: 0 16px;
+    font-size: 0.825rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #475569;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.ws-modal-btn-cancel:hover {
+    background-color: #f8fafc;
+    color: #0f172a;
+}
+
+.ws-modal-btn-save {
+    height: 38px;
+    padding: 0 20px;
+    font-size: 0.825rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #ffffff;
+    background-color: #004d8c;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ws-modal-btn-save:hover:not(:disabled) {
+    background-color: #00366a;
+    box-shadow: 0 4px 12px rgba(0, 77, 140, 0.25);
+}
+
+.ws-modal-btn-save:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

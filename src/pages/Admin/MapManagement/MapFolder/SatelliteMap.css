@@ -1,0 +1,166 @@
+/* ===== Full Container Satellite Map ===== */
+.satellite-map-wrapper {
+  width: 100%;
+  height: 600px;
+  min-height: 550px;
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.full-satellite-map {
+  width: 100%;
+  height: 100%;
+  min-height: 550px;
+  z-index: 1;
+}
+
+/* Ensure Leaflet controls and tiles render smoothly */
+.full-satellite-map .leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+}
+
+/* ===== Styled Leaflet Zoom Controls (Zoom In & Zoom Out) ===== */
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  margin-top: 14px !important;
+  margin-right: 14px !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+.leaflet-control-zoom a {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #1e293b !important;
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  transition: all 0.15s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: none !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  text-decoration: none !important;
+}
+
+.leaflet-control-zoom a:last-child {
+  border-bottom: none !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #f8fafc !important;
+  color: #d97706 !important;
+}
+
+.leaflet-control-zoom a:active {
+  background: #f1f5f9 !important;
+  color: #b45309 !important;
+}
+
+/* Exact Original map-floating-select-wrap */
+.map-floating-select-wrap {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0 10px 0 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+  transition: all 0.2s ease;
+}
+
+.map-floating-select-wrap:hover {
+  background: #ffffff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  border-color: rgba(108, 99, 255, 0.4);
+}
+
+.map-floating-select-wrap svg {
+  color: #6c63ff;
+  flex-shrink: 0;
+}
+
+.map-floating-select-wrap select {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  height: 38px;
+  cursor: pointer;
+  padding: 0 26px 0 2px;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 2px center;
+  background-size: 14px;
+}
+
+.map-floating-select-wrap select option {
+  background: #ffffff;
+  color: #111827;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Plot Map Tooltips */
+.plot-map-tooltip {
+  background: rgba(15, 23, 42, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  border-radius: 6px !important;
+  padding: 3px 7px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.plot-map-tooltip::before {
+  border-top-color: rgba(15, 23, 42, 0.9) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+  padding: 4px;
+}
+
+/* Lot Labels */
+.lot-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(15, 23, 42, 0.85);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+}
+
+.saved-plot-label {
+  background-color: rgba(30, 41, 59, 0.9);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}

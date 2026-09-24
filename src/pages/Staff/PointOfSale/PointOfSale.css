@@ -1,0 +1,773 @@
+/* ==========================================================================
+   Point of Sale (POS) Styles — Exact Match with UserManagement Aesthetic
+   ========================================================================== */
+
+/* Page container wrapper */
+.pos-page-container {
+    padding: 24px;
+}
+
+/* Page Title Bar */
+.pos-title-bar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #edf2f7;
+    gap: 16px;
+}
+
+.pos-title-left h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 4px 0;
+}
+
+.pos-subtitle {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+}
+
+/* Two-column layout */
+.pos-main-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 22px;
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .pos-main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.pos-column {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Unified Card Block matching UserManagement KPI & Container cards */
+.pos-card {
+    background-color: #ffffff;
+    border: 1px solid #edf2f7;
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    transition: box-shadow 0.15s ease;
+}
+
+.pos-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.pos-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.pos-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+.pos-card-icon {
+    color: #004d8c;
+}
+
+/* Badges & Pills matching UserManagement */
+.badge-count {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #475569;
+    background-color: #f1f5f9;
+    padding: 3px 10px;
+    border-radius: 12px;
+}
+
+.um-kpi-pill {
+    font-size: 0.725rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.um-kpi-pill.blue {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.um-kpi-pill.green {
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+
+/* Status Pill with dot matching UserManagement */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 0.775rem;
+    font-weight: 600;
+    line-height: 1.4;
+    width: fit-content;
+    white-space: nowrap;
+}
+
+.status-pill.status-active {
+    background-color: rgba(16, 185, 129, 0.06);
+    border: 1.5px solid #10b981;
+    color: #059669;
+}
+
+.status-pill.status-inactive {
+    background-color: rgba(239, 68, 68, 0.06);
+    border: 1.5px solid #ef4444;
+    color: #dc2626;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-pill.status-active .status-dot {
+    background-color: #10b981;
+}
+
+.status-pill.status-inactive .status-dot {
+    background-color: #ef4444;
+}
+
+/* Table wrapper matching UserManagement table-wrapper */
+.pos-table-wrapper {
+    margin-top: 4px;
+    border: 1px solid #edf2f7;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.pos-table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.pos-table-wrapper th {
+    padding: 11px 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background-color: #f8fafc;
+    border-bottom: 1px solid #edf2f7;
+    white-space: nowrap;
+}
+
+.pos-table-wrapper td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.pos-table-wrapper tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.pos-table-wrapper tbody tr:hover {
+    background-color: #fafbfc;
+}
+
+/* Product cell */
+.pos-product-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pos-product-icon-wrap {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background-color: #f0f7ff;
+    color: #004d8c;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.pos-product-name {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 0.875rem;
+}
+
+.pos-price-text {
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 0.875rem;
+}
+
+/* Add button (+ Add) */
+.pos-btn-add {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: inherit;
+    border-radius: 8px;
+    border: 1px solid #004d8c;
+    background-color: #ffffff;
+    color: #004d8c;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.pos-btn-add:hover:not(:disabled) {
+    background-color: #004d8c;
+    color: #ffffff;
+}
+
+.pos-btn-add:disabled {
+    border-color: #e2e8f0;
+    color: #94a3b8;
+    background-color: #f8fafc;
+    cursor: not-allowed;
+}
+
+/* Wake Space Rental Row */
+.wake-space-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background-color: #f8fafc;
+    border: 1px solid #edf2f7;
+    gap: 12px;
+}
+
+.wake-space-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.wake-space-icon-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background-color: #f0f7ff;
+    color: #004d8c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.wake-space-title {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 0.88rem;
+}
+
+.wake-space-price {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 1px;
+}
+
+.wake-space-action {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pos-btn-book {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: inherit;
+    border-radius: 8px;
+    border: 1px solid #004d8c;
+    background-color: #004d8c;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.pos-btn-book:hover {
+    background-color: #003d70;
+    border-color: #003d70;
+}
+
+.pos-btn-edit {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+    font-size: 0.775rem;
+    font-weight: 600;
+    font-family: inherit;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    background-color: #ffffff;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.pos-btn-edit:hover {
+    background-color: #f1f5f9;
+    color: #0f172a;
+}
+
+.pos-btn-remove {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+    font-size: 0.775rem;
+    font-weight: 600;
+    font-family: inherit;
+    border-radius: 6px;
+    border: 1px solid #fecaca;
+    background-color: #fef2f2;
+    color: #dc2626;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.pos-btn-remove:hover {
+    background-color: #fee2e2;
+}
+
+.wake-space-selected-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #059669;
+    background-color: #ecfdf5;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    border: 1px solid #a7f3d0;
+}
+
+.wake-space-dates-sub {
+    font-size: 0.775rem;
+    color: #2563eb;
+    margin-top: 3px;
+    font-weight: 600;
+}
+
+.pos-cart-remove-btn {
+    border: none;
+    background: transparent;
+    color: #ef4444;
+    font-size: 0.775rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.15s ease;
+}
+
+.pos-cart-remove-btn:hover {
+    background-color: #fee2e2;
+}
+
+.pos-info-footnote {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pos-info-footnote svg {
+    color: #004d8c;
+}
+
+/* Empty cart state */
+.pos-cart-empty {
+    padding: 36px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #94a3b8;
+}
+
+.pos-empty-icon {
+    opacity: 0.4;
+}
+
+.pos-cart-empty p {
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* Form Controls matching UserManagement filter-select & search-input */
+.pos-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.pos-form-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.pos-form-icon {
+    color: #004d8c;
+}
+
+.pos-input-control {
+    width: 100%;
+    height: 38px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: #1e293b;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.pos-input-control:focus {
+    border-color: #004d8c;
+    box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.08);
+}
+
+.pos-input-control::placeholder {
+    color: #94a3b8;
+}
+
+select.pos-input-control {
+    cursor: pointer;
+}
+
+.pos-form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.pos-form-group-full {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 640px) {
+    .pos-form-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Radio Group */
+.pos-need-type-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pos-radio-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.pos-radio-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+}
+
+.pos-radio-label input[type="radio"] {
+    accent-color: #004d8c;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+
+.pos-badge-subtext {
+    font-size: 0.76rem;
+    color: #64748b;
+    font-weight: 400;
+}
+
+.pos-pre-need-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.76rem;
+    color: #64748b;
+}
+
+.pos-pre-need-note svg {
+    color: #004d8c;
+}
+
+/* Info Notice Box */
+.pos-info-alert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    color: #1e40af;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 14px;
+}
+
+/* Document Checklist */
+.pos-doc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+    margin-top: 4px;
+}
+
+@media (max-width: 640px) {
+    .pos-doc-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.pos-checkbox-label {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #334155;
+    cursor: pointer;
+    user-select: none;
+}
+
+.pos-checkbox-label input[type="checkbox"] {
+    accent-color: #004d8c;
+    margin-top: 2px;
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+}
+
+.pos-required-star {
+    color: #ef4444;
+}
+
+.pos-doc-counter {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 12px;
+    font-weight: 600;
+}
+
+/* Payment Summary Card */
+.pos-summary-card {
+    background-color: #ffffff;
+    border: 1px solid #edf2f7;
+    border-radius: 12px;
+}
+
+.pos-summary-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-bottom: 14px;
+}
+
+.pos-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.86rem;
+    color: #64748b;
+}
+
+.pos-summary-row .summary-val {
+    font-weight: 600;
+}
+
+.summary-val.purple { color: #7c3aed; }
+.summary-val.blue   { color: #1d4ed8; }
+.summary-val.green  { color: #059669; }
+.summary-val.orange { color: #d97706; }
+
+.pos-summary-divider {
+    height: 1px;
+    background-color: #edf2f7;
+    margin: 14px 0;
+}
+
+.pos-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.pos-total-label {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.pos-total-amount {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #004d8c;
+}
+
+.pos-tendered-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.pos-change-display {
+    width: 100%;
+    height: 40px;
+    padding: 8px 12px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #059669;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+/* Process Payment Primary Button */
+.pos-btn-process {
+    width: 100%;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color: #10b981;
+    color: #ffffff;
+    border: 1px solid #10b981;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(16, 185, 129, 0.2);
+    margin-top: 4px;
+}
+
+.pos-btn-process:hover {
+    background-color: #059669;
+    border-color: #059669;
+}
+
+.pos-btn-process:active {
+    transform: translateY(1px);
+}
+
+.pos-footer-note {
+    font-size: 0.76rem;
+    color: #64748b;
+    text-align: center;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.pos-footer-note svg {
+    color: #004d8c;
+}
+
+/* ===== Interment Section Styles ===== */
+.pos-interment-card {
+    transition: all 0.2s ease;
+}
+
+.pos-card-dimmed {
+    background-color: #fafbfc;
+    border: 1px dashed #cbd5e1;
+}
+
+.pos-interment-empty-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    color: #64748b;
+    font-size: 0.825rem;
+}
+
+.pos-empty-icon-subtle {
+    color: #94a3b8;
+    flex-shrink: 0;
+}
+
+.pos-row-selected {
+    background-color: #f0fdf4 !important;
+}
+
+.pos-interment-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #7c3aed;
+    background-color: #f5f3ff;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    border: 1px solid #ddd6fe;
+}

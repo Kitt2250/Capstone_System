@@ -26,12 +26,12 @@ function Table({ data, columns }) {
                 </thead>
 
                 <tbody>
-                    {data.map((row) => (
+                    {data.map((row, rowIndex) => (
                         <tr key={row.id}>
                             {columns.map((column) => (
                                 <td key={column.key} className={`td-${column.key}`}>
                                     {column.render
-                                        ? column.render(row)
+                                        ? column.render(row, rowIndex)
                                         : (row[column.key] ?? "—")
                                     }
                                 </td>

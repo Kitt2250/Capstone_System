@@ -22,10 +22,35 @@
     padding: 28px 32px;
     border-radius: 14px;
     width: 100%;
-    max-width: 480px;
+    max-width: 520px;
+    max-height: 88vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
     border: 1px solid #e8ecf1;
     animation: modalSlideIn 0.25s ease;
+}
+
+/* ===== Styled Scrollbar ===== */
+.update-modal::-webkit-scrollbar {
+    width: 6px;
+}
+
+.update-modal::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 8px 0;
+}
+
+.update-modal::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 9999px;
+    transition: background-color 0.2s ease;
+}
+
+.update-modal::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
 }
 
 @keyframes modalSlideIn {
@@ -118,7 +143,8 @@
 }
 
 .update-modal-form-group input,
-.update-modal-form-group select {
+.update-modal-form-group select,
+.update-modal-form-group textarea {
     width: 100%;
     padding: 10px 14px;
     font-size: 0.85rem;
@@ -130,14 +156,17 @@
     outline: none;
     transition: all 0.2s ease;
     box-sizing: border-box;
+    resize: vertical;
 }
 
-.update-modal-form-group input::placeholder {
+.update-modal-form-group input::placeholder,
+.update-modal-form-group textarea::placeholder {
     color: #94a3b8;
 }
 
 .update-modal-form-group input:focus,
-.update-modal-form-group select:focus {
+.update-modal-form-group select:focus,
+.update-modal-form-group textarea:focus {
     background-color: #ffffff;
     border-color: #004d8c;
     box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.08);
@@ -198,3 +227,349 @@
     opacity: 0.6;
     cursor: not-allowed;
 }
+
+/* ===== Checkbox Toggle Section ===== */
+.grave-toggle-group {
+    margin-bottom: 14px;
+}
+
+.grave-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e293b;
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 8px;
+}
+
+.grave-custom-checkbox {
+    width: 19px;
+    height: 19px;
+    accent-color: #d97706; /* Amber/gold matching the user's screenshot */
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.grave-checkbox-text {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* ===== Nested Configuration Box ===== */
+.grave-nested-box {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+    margin-top: 4px;
+    animation: graveFadeIn 0.2s ease-in-out;
+}
+
+@keyframes graveFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.grave-box-field {
+    margin-bottom: 12px;
+}
+
+.grave-box-field:last-child {
+    margin-bottom: 0;
+}
+
+.grave-box-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+.grave-box-label .req-star {
+    color: #64748b;
+    margin-left: 2px;
+}
+
+.grave-box-input {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: #1e293b;
+    background-color: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.grave-box-input:focus {
+    border-color: #004d8c;
+    box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.08);
+}
+
+/* ===== Calculation Summary Subcard ===== */
+.grave-calc-summary-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.grave-calc-col {
+    flex: 1;
+}
+
+.grave-calc-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.grave-calc-value-down {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.3;
+}
+
+.grave-calc-value-monthly {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #2563eb;
+    line-height: 1.3;
+}
+
+/* ===== Two Column Form Grid ===== */
+.grave-two-col-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 480px) {
+    .grave-two-col-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== Connected Interment Section ===== */
+.grave-interment-section {
+    margin-bottom: 20px;
+}
+
+.grave-interment-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.grave-interment-title {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.grave-interment-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #1d4ed8;
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    padding: 1px 8px;
+    border-radius: 9999px;
+}
+
+.grave-interment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.grave-interment-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 14px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+}
+
+.grave-interment-item:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+.grave-interment-type-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.grave-interment-fee-amount {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #059669;
+}
+
+.grave-interment-empty {
+    font-size: 0.82rem;
+    color: #94a3b8;
+    font-style: italic;
+    padding: 6px 0;
+    text-align: center;
+}
+
+.grave-interment-id-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: monospace;
+    color: #0369a1;
+    background-color: #f0f9ff;
+    border: 1px solid #bae6fd;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 8px;
+    display: inline-block;
+}
+
+.grave-add-interment-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: inherit;
+    color: #004d8c;
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.grave-add-interment-btn:hover {
+    background-color: #dbeafe;
+    color: #003866;
+}
+
+.grave-interment-item-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.grave-edit-interment-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #475569;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.grave-edit-interment-btn:hover {
+    background-color: #e2e8f0;
+    color: #0f172a;
+    border-color: #94a3b8;
+}
+
+/* Inline Add/Edit Interment Form */
+.grave-interment-form-card {
+    background-color: #ffffff;
+    border: 1.5px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0, 77, 140, 0.06);
+    animation: graveFadeIn 0.2s ease-in-out;
+}
+
+.grave-interment-form-title {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #004d8c;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+}
+
+.grave-interment-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.grave-interment-btn-cancel {
+    padding: 5px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #64748b;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.grave-interment-btn-cancel:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.grave-interment-btn-save {
+    padding: 5px 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: inherit;
+    color: #ffffff;
+    background: #004d8c;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.grave-interment-btn-save:hover {
+    background: #003d6f;
+}
+
+.grave-interment-btn-save:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+

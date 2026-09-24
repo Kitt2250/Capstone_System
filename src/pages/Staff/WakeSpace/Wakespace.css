@@ -1,0 +1,607 @@
+/* ===== WakeSpace – only styles not already in UserManagement.css ===== */
+
+/* KPI grid override – icon instead of pill */
+.ws-kpi-grid .um-kpi-card-header {
+    align-items: flex-start;
+}
+
+.ws-kpi-icon-wrap {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ws-kpi-icon-wrap.blue-icon   { background-color: #eff6ff; color: #1d4ed8; }
+.ws-kpi-icon-wrap.green-icon  { background-color: #ecfdf5; color: #059669; }
+.ws-kpi-icon-wrap.orange-icon { background-color: #fff7ed; color: #c2410c; }
+.ws-kpi-icon-wrap.purple-icon { background-color: #faf5ff; color: #7e22ce; }
+
+.ws-kpi-sub {
+    font-size: 0.775rem;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+/* ===== Section Header Row ===== */
+.ws-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.ws-section-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ws-section-icon {
+    color: #004d8c;
+    display: inline-flex;
+    align-items: center;
+}
+
+.ws-section-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.ws-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ===== Test Add Button ===== */
+.ws-add-test-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #ffffff;
+    background-color: #004d8c;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+}
+
+.ws-add-test-btn:hover {
+    background-color: #00366a;
+}
+
+/* ===== View Toggle Buttons ===== */
+.ws-view-toggle {
+    display: flex;
+    align-items: center;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 3px;
+    gap: 2px;
+}
+
+.ws-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-family: inherit;
+    color: #64748b;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+}
+
+.ws-toggle-btn:hover {
+    color: #0f172a;
+    background-color: #ffffff;
+}
+
+.ws-toggle-btn.ws-toggle-active {
+    color: #004d8c;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    font-weight: 600;
+}
+
+/* ===== Calendar Wrapper ===== */
+.ws-calendar-wrapper {
+    border: 1px solid #e8ecf1;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.ws-calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    background-color: #ffffff;
+}
+
+.ws-calendar-month-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ws-calendar-month-icon { font-size: 1rem; }
+
+.ws-calendar-month-text {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.ws-booking-badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #2563eb;
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    padding: 2px 10px;
+    border-radius: 9999px;
+}
+
+.ws-calendar-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ws-nav-btn {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #475569;
+    transition: all 0.15s ease;
+}
+
+.ws-nav-btn:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+    color: #004d8c;
+}
+
+.ws-today-btn {
+    height: 30px;
+    padding: 0 14px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #334155;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.ws-today-btn:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+/* Calendar Grid */
+.ws-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.ws-day-labels {
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e8ecf1;
+}
+
+.ws-day-label {
+    padding: 8px 0;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #94a3b8;
+    letter-spacing: 0.04em;
+}
+
+.ws-cells-grid { background-color: #ffffff; }
+
+.ws-cell {
+    min-height: 90px;
+    border-right: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 8px 10px;
+    background-color: #ffffff;
+    transition: background-color 0.12s ease, box-shadow 0.12s ease;
+    position: relative;
+    cursor: pointer;
+}
+
+.ws-cell:nth-child(7n) { border-right: none; }
+
+/* Out-of-month cells */
+.ws-cell.ws-cell-out {
+    background-color: #f8fafc;
+    cursor: default;
+}
+
+.ws-cell.ws-cell-out .ws-cell-day { color: #cbd5e1; }
+
+/* Today */
+.ws-cell.ws-cell-today {
+    border: 1.5px solid #3b82f6;
+}
+
+.ws-cell.ws-cell-today .ws-cell-day {
+    color: #1d4ed8;
+    font-weight: 700;
+}
+
+/* ── Occupied: red tint ── */
+.ws-cell.ws-cell-occupied {
+    background-color: rgba(239, 68, 68, 0.08);
+}
+
+.ws-cell.ws-cell-occupied:hover {
+    background-color: rgba(239, 68, 68, 0.14);
+}
+
+.ws-cell.ws-cell-occupied .ws-cell-day { color: #dc2626; font-weight: 600; }
+
+.ws-cell.ws-cell-occupied .ws-cell-status-dot { color: #ef4444; font-size: 0.6rem; }
+
+/* ── Available: always green tint ── */
+.ws-cell.ws-cell-available {
+    background-color: rgba(16, 185, 129, 0.07);
+}
+
+.ws-cell.ws-cell-available:hover {
+    background-color: rgba(16, 185, 129, 0.14);
+    box-shadow: inset 0 0 0 1.5px rgba(16, 185, 129, 0.35);
+}
+
+/* ── Past dates: greyed out, not clickable ── */
+.ws-cell.ws-cell-past {
+    background-color: #f1f5f9;
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.ws-cell.ws-cell-past .ws-cell-day {
+    color: #94a3b8;
+}
+
+.ws-cell.ws-cell-past:hover {
+    background-color: #f1f5f9;
+    box-shadow: none;
+}
+
+.ws-cell-day {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #334155;
+    display: block;
+}
+
+.ws-cell-status-dot {
+    font-size: 0.55rem;
+    display: block;
+    margin-top: 4px;
+    line-height: 1;
+}
+
+/* Legend */
+.ws-calendar-legend {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 16px;
+    background-color: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+}
+
+.ws-legend-item {
+    font-size: 0.775rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ws-legend-occupied { color: #ef4444; }
+.ws-legend-available { color: #10b981; }
+
+/* ===== List / Table View ===== */
+.ws-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ws-filters-bar .search-wrapper { width: 380px; }
+
+.ws-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.ws-table thead tr {
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e8ecf1;
+}
+
+.ws-table th {
+    padding: 11px 14px;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.ws-th-price { color: #059669 !important; }
+
+.ws-table td {
+    padding: 12px 14px;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.ws-table tbody tr:last-child td { border-bottom: none; }
+.ws-table tbody tr:hover td { background-color: #fafbfc; }
+
+.ws-booking-id {
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.ws-empty-row {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    padding: 40px 0 !important;
+}
+
+/* ===== POS modal override – wider to fit the calendar ===== */
+.pos-wake-modal {
+    max-width: 700px;
+}
+
+.pos-wake-modal .ws-modal-body {
+    padding: 16px 22px;
+}
+
+/* Status pills */
+.ws-status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.ws-status-pending {
+    background-color: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #fed7aa;
+}
+
+.ws-status-active {
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+
+.ws-status-completed {
+    background-color: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+/* ===== Modal ===== */
+.ws-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: ws-fade-in 0.18s ease;
+}
+
+@keyframes ws-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.ws-modal {
+    background: #ffffff;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18), 0 4px 16px rgba(0, 0, 0, 0.08);
+    animation: ws-slide-up 0.2s ease;
+    overflow: hidden;
+}
+
+@keyframes ws-slide-up {
+    from { transform: translateY(16px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.ws-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.ws-modal-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.ws-modal-close {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #64748b;
+    transition: all 0.15s ease;
+}
+
+.ws-modal-close:hover {
+    background-color: #f8fafc;
+    color: #0f172a;
+}
+
+.ws-modal-body {
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ws-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ws-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.ws-input {
+    height: 38px;
+    padding: 0 12px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: #1e293b;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    display: flex;
+    align-items: center;
+}
+
+input.ws-input {
+    display: block;
+}
+
+.ws-input:focus {
+    border-color: #004d8c;
+    box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.08);
+}
+
+.ws-input-readonly {
+    background-color: #f8fafc;
+    color: #475569;
+    cursor: default;
+    border-style: dashed;
+}
+
+.ws-field-hint {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin: 0;
+}
+
+.ws-save-error {
+    font-size: 0.8rem;
+    color: #dc2626;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: 0;
+}
+
+.ws-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 22px 18px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.ws-modal-cancel {
+    height: 36px;
+    padding: 0 16px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #475569;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.ws-modal-cancel:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.ws-modal-save {
+    height: 36px;
+    padding: 0 20px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #ffffff;
+    background-color: #004d8c;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.ws-modal-save:hover:not(:disabled) { background-color: #00366a; }
+.ws-modal-save:disabled { opacity: 0.6; cursor: not-allowed; }

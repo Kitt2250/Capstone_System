@@ -25,7 +25,7 @@ function Header({ page }) {
 
     if (page === "grave") {
         title = "Grave Management";
-        description = "no descript.";
+        description = "Manage cemetery graves, plot allocations, and interment records.";
     }
 
     if (page === "reports") {
@@ -36,6 +36,16 @@ function Header({ page }) {
     if (page === "settings") {
         title = "Settings";
         description = "Manage system settings and configurations.";
+    }
+
+    if (page === "pos" || page === "point-of-sale") {
+        title = "Point of Sale";
+        description = "Process purchases, payments, and cemetery service bookings.";
+    }
+
+    if (page === "wake-spaces") {
+        title = "Wake Space Bookings";
+        description = "Manage wake space reservations and active vigil schedules.";
     }
 
     return (

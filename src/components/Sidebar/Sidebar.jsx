@@ -6,7 +6,7 @@ import { auth } from "../../firebase/config";
 import { getUserData } from "../../services/userServices";
 import "./Sidebar.css";
 import cherubimLogo from "../../assets/cherubim_logo.jpg";
-import { LayoutGrid, Users, FileText, MapPin, Landmark, BarChart2, Settings, Database, LogOut, ChevronLeft, ChevronRight, CreditCard, Building2, Heart } from "lucide-react";
+import { LayoutGrid, Users, FileText, MapPin, Landmark, BarChart2, Settings, Database, LogOut, ChevronLeft, ChevronRight, CreditCard, Building2, Heart, Wallet, RefreshCw, Bell, User } from "lucide-react";
 
 function Sidebar({ role = "admin" }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -90,8 +90,18 @@ function Sidebar({ role = "admin" }) {
                 links: [
                     { name: "Dashboard", path: "/staff", icon: LayoutGrid, exact: true },
                     { name: "Burials", path: "/staff/burials", icon: Landmark },
+                    { name: "POS", path: "/staff/point-of-sale", icon: Wallet },
                     { name: "Payments", path: "/staff/payments", icon: CreditCard },
                     { name: "Wake Spaces", path: "/staff/wake-spaces", icon: Building2 }
+                ]
+            },
+            {
+                title: "MANAGEMENT",
+                links: [
+                    { name: "Renewals", path: "/staff/renewals", icon: RefreshCw },
+                    { name: "Notifications", path: "/staff/notifications", icon: Bell },
+                    { name: "Reports", path: "/staff/reports", icon: BarChart2 },
+                    { name: "My Accounts", path: "/staff/my-accounts", icon: User }
                 ]
             }
         ],

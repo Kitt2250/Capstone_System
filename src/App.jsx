@@ -12,7 +12,8 @@ import Dashboard from "./pages/Admin/Dashboard/Dashboard"
 import GraveManagement from "./pages/Admin/GraveManagement/GraveManagement"
 import AuditLogs from "./pages/Admin/Audit Logs/AuditLogs"
 import MapManagement from "./pages/Admin/MapManagement/MapManagement"
-
+import WakeSpace from "./pages/Staff/WakeSpace/Wakespace"
+import PointOfSale from "./pages/Staff/PointOfSale/PointOfSale"
 function App() {
 
   const [loading, setLoading] = useState(true)
@@ -78,7 +79,17 @@ function App() {
 
           {user && role === "staff" && (
             <>
-              <Route path="/staff/*" element={<Staff />} />
+              <Route path="/staff" element={<Staff />}>
+                <Route index element={<Navigate to="/staff/point-of-sale" replace />} />
+                <Route path="point-of-sale" element={<PointOfSale />} />
+                <Route path="burials" element={<></>} />
+                <Route path="payments" element={<></>} />
+                <Route path="wake-spaces" element={<WakeSpace />} />
+                <Route path="renewals" element={<></>} />
+                <Route path="notifications" element={<></>} />
+                <Route path="reports" element={<></>} />
+                <Route path="my-accounts" element={<></>} />
+              </Route>
               <Route
                 path="*"
                 element={<Navigate to="/staff" replace />}

@@ -1,0 +1,961 @@
+.map-mgmt-container {
+  width: 100%;
+}
+
+/* ===== Main Map View Card ===== */
+.map-view-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  padding: 24px 28px;
+  margin-top: 4px;
+}
+
+/* ===== Card Header ===== */
+.map-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.map-card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.map-icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d97706;
+}
+
+.map-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.map-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.map-section-select-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.map-section-select {
+  appearance: none;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 36px 8px 16px;
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.map-section-select:hover {
+  border-color: #cbd5e1;
+}
+
+.map-section-select:focus {
+  border-color: #d97706;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+}
+
+.map-section-select option {
+  background-color: #ffffff;
+  color: #0f172a;
+  padding: 12px 16px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.map-section-select option:checked {
+  background-color: #fef3c7;
+  color: #92400e;
+  font-weight: 700;
+}
+
+.map-select-arrow {
+  position: absolute;
+  right: 12px;
+  pointer-events: none;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+}
+
+.map-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+  color: #1e293b;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(202, 138, 4, 0.2);
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.map-filter-btn:hover {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+  transform: translateY(-1px);
+}
+
+/* ===== Slots Grid Container ===== */
+.slots-grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+/* Individual Slot Card */
+.slot-card {
+  border-radius: 14px;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.slot-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* Slot Card - Available (Green) */
+.slot-card.available {
+  background-color: #f0fdf4;
+  border: 2px solid #22c55e;
+}
+
+.slot-card.available:hover {
+  border-color: #16a34a;
+  background-color: #e8fbf0;
+}
+
+/* Slot Card - Occupied (Red) */
+.slot-card.occupied {
+  background-color: #fef2f2;
+  border: 2px solid #fca5a5;
+}
+
+.slot-card.occupied:hover {
+  border-color: #f87171;
+  background-color: #fee2e2;
+}
+
+/* Slot Card - Reserved (Amber/Orange) */
+.slot-card.reserved {
+  background-color: #fffbeb;
+  border: 2px solid #f59e0b;
+}
+
+.slot-card.reserved:hover {
+  border-color: #d97706;
+  background-color: #fef3c7;
+}
+
+/* Inside Slot Card Content */
+.slot-status-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.slot-card.available .slot-status-icon {
+  background-color: #22c55e;
+  color: #ffffff;
+}
+
+.slot-card.occupied .slot-status-icon {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.slot-card.reserved .slot-status-icon {
+  background-color: #f59e0b;
+  color: #ffffff;
+}
+
+.slot-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.slot-status-text {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.slot-card.available .slot-status-text {
+  color: #16a34a;
+}
+
+.slot-card.occupied .slot-status-text {
+  color: #dc2626;
+}
+
+.slot-card.reserved .slot-status-text {
+  color: #d97706;
+}
+
+.slot-type {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.slot-capacity {
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 2px 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 6px;
+}
+
+/* Loading and Empty State in Grid */
+.slots-empty-state,
+.slots-loading-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #64748b;
+  background-color: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 14px;
+  gap: 12px;
+}
+
+.slots-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #d97706;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== Pagination Bar ===== */
+.map-pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.map-showing-text {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.map-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.map-page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.map-page-btn:hover:not(:disabled) {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.map-page-btn.active {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  border-color: #d97706;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.25);
+}
+
+.map-page-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.map-page-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ===== Footer & Legend ===== */
+.map-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 18px;
+  border-top: 1px solid #f1f5f9;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.map-legend-items {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.legend-subtext {
+  color: #94a3b8;
+  font-weight: 400;
+  margin-left: 2px;
+}
+
+.legend-badge {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.legend-badge.available {
+  background-color: #22c55e;
+}
+
+.legend-badge.occupied {
+  background-color: #dc2626;
+}
+
+.legend-badge.reserved {
+  background-color: #f59e0b;
+}
+
+.map-total-available {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.total-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #22c55e;
+}
+
+.total-count {
+  color: #0f172a;
+}
+
+/* ===== Action Buttons below Slot View Card ===== */
+.map-view-actions,
+.map-bottom-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 18px;
+  margin-top: 32px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+  scroll-margin-top: 24px;
+}
+
+.map-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  background-color: #ffffff;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.map-action-btn:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.map-action-btn.active {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  border-color: #d97706;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.32);
+}
+
+.map-action-btn.active:hover {
+  background: linear-gradient(135deg, #b45309 0%, #a16207 100%);
+  border-color: #b45309;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.4);
+}
+
+/* ===== Full Satellite Map Card (Below Buttons) ===== */
+.satellite-map-outer-card {
+  margin-top: 20px;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  background: #ffffff;
+  scroll-margin-top: 24px;
+}
+
+/* ===== Responsive Breakpoints ===== */
+@media (max-width: 1200px) {
+  .slots-grid-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .slots-grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .slots-grid-container {
+    grid-template-columns: 1fr;
+  }
+
+  .map-card-header,
+  .map-card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .map-card-actions,
+  .map-bottom-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .map-action-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* ===== Slot Navigation & Details Modal ===== */
+.slot-nav-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.2s ease;
+}
+
+.slot-nav-modal-box {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 440px;
+  width: 100%;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slot-nav-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.slot-nav-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.slot-nav-status-badge.available {
+  background-color: #ecfdf5;
+  color: #059669;
+}
+
+.slot-nav-status-badge.occupied {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.slot-nav-status-badge.reserved {
+  background-color: #fffbeb;
+  color: #d97706;
+}
+
+.slot-nav-close-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.15s ease;
+}
+
+.slot-nav-close-btn:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.slot-nav-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.slot-nav-code {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.slot-nav-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #f8fafc;
+  border-radius: 10px;
+  padding: 14px 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.slot-nav-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13.5px;
+}
+
+.nav-detail-label {
+  color: #64748b;
+  font-weight: 600;
+}
+
+.nav-detail-value {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.nav-detail-value.capitalize {
+  text-transform: capitalize;
+}
+
+.slot-nav-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.slot-nav-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+  font-family: inherit;
+}
+
+.slot-nav-btn.primary {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+.slot-nav-btn.primary:hover {
+  background: linear-gradient(135deg, #b45309 0%, #a16207 100%);
+  transform: translateY(-1px);
+}
+
+.slot-nav-btn.secondary {
+  background: #ffffff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.slot-nav-btn.secondary:hover {
+  background-color: #f8fafc;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+.slot-nav-btn.danger {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  width: 100%;
+}
+
+.slot-nav-btn.danger:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+  transform: translateY(-1px);
+}
+
+.slot-nav-modal-delete-row {
+  margin-top: 4px;
+  width: 100%;
+}
+
+.slot-delete-confirm-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fff5f5;
+  border: 1px solid #fed7d7;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #991b1b;
+  text-align: left;
+}
+
+.slot-delete-confirm-text {
+  font-size: 13px;
+  color: #7f1d1d;
+}
+
+.slot-delete-code-highlight {
+  display: inline-block;
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.slot-delete-input {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  border: 1.5px solid #fca5a5;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0f172a;
+  outline: none;
+  background: #ffffff;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.slot-delete-input:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.slot-delete-confirm-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.slot-delete-confirm-btn {
+  flex: 1;
+  height: 36px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.slot-delete-confirm-btn.cancel {
+  background: #ffffff;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.slot-delete-confirm-btn.cancel:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.slot-delete-confirm-btn.confirm {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.slot-delete-confirm-btn.confirm:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.slot-delete-confirm-btn.confirm:disabled {
+  background: #fca5a5;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* ===== Interactive Step-by-Step Delete Flow Floating Card ===== */
+.slot-delete-flow-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.01);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  z-index: 10000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 30px 30px;
+  pointer-events: auto;
+}
+
+@media (max-width: 640px) {
+  .slot-delete-flow-overlay {
+    padding: 16px;
+    align-items: flex-start;
+    justify-content: stretch;
+  }
+}
+
+.slot-delete-flow-card {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 420px;
+  width: 100%;
+  padding: 22px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: slideUp 0.25s ease;
+  pointer-events: auto;
+}
+
+.slot-delete-flow-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.slot-delete-flow-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.slot-delete-flow-badge.warning {
+  background-color: #fffbeb;
+  color: #b45309;
+}
+
+.slot-delete-flow-badge.danger {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.slot-delete-flow-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.slot-delete-flow-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.slot-delete-flow-desc {
+  font-size: 13.5px;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.slot-delete-flow-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.slot-delete-flow-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.slot-delete-flow-btn.cancel {
+  background: #ffffff;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.slot-delete-flow-btn.cancel:hover:not(:disabled) {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+.slot-delete-flow-btn.next {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+.slot-delete-flow-btn.next:hover {
+  background: linear-gradient(135deg, #b45309 0%, #a16207 100%);
+  transform: translateY(-1px);
+}
+
+.slot-delete-flow-btn.confirm {
+  background: #dc2626;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.slot-delete-flow-btn.confirm:hover:not(:disabled) {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.slot-delete-flow-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
