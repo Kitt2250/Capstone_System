@@ -1,0 +1,617 @@
+/* ===== Grave Lot Detail Modal Styles ===== */
+.lot-modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(5px);
+    z-index: 1050;
+    padding: 20px;
+    animation: lotModalOverlayFade 0.2s ease;
+}
+
+@keyframes lotModalOverlayFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.lot-modal-card {
+    background: #ffffff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 620px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.16), 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+    animation: lotModalCardSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+}
+
+@keyframes lotModalCardSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-16px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Header */
+.lot-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #f1f5f9;
+    background: #ffffff;
+}
+
+.lot-modal-title-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.lot-modal-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #eff6ff;
+    color: #0284c7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.lot-modal-code-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lot-modal-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.lot-modal-subtitle {
+    font-size: 0.825rem;
+    color: #64748b;
+    margin-top: 2px;
+    display: block;
+}
+
+.lot-modal-close-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.lot-modal-close-btn:hover {
+    background: #f8fafc;
+    color: #0f172a;
+    border-color: #cbd5e1;
+}
+
+/* Feedback Box */
+.lot-feedback-box {
+    margin: 14px 24px 0 24px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.825rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lot-feedback-box.success {
+    background-color: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+}
+
+.lot-feedback-box.error {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+
+/* Body */
+.lot-modal-body {
+    padding: 20px 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.lot-modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.lot-modal-body::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 9999px;
+}
+
+/* Stats Grid */
+.lot-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.lot-stat-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.lot-stat-label {
+    font-size: 0.725rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.lot-stat-val {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.lot-stat-sub {
+    font-size: 0.775rem;
+    color: #059669;
+    font-weight: 600;
+}
+
+.lot-occupancy-bar {
+    width: 100%;
+    height: 6px;
+    background-color: #e2e8f0;
+    border-radius: 9999px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.lot-occupancy-fill {
+    height: 100%;
+    border-radius: 9999px;
+    transition: width 0.3s ease;
+}
+
+/* Section Card */
+.lot-section-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.lot-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.lot-section-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lot-section-title-wrap h4 {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.lot-icon-deceased {
+    color: #e11d48;
+}
+
+.lot-icon-client {
+    color: #004d8c;
+}
+
+.lot-section-count-badge {
+    font-size: 0.725rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* Empty Burials */
+.lot-empty-burials {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    color: #94a3b8;
+    text-align: center;
+    gap: 6px;
+}
+
+.lot-empty-burials p {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+    margin: 0;
+}
+
+.lot-empty-burials span {
+    font-size: 0.775rem;
+    color: #94a3b8;
+}
+
+/* Burials List */
+.lot-burials-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.lot-burial-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lot-burial-item-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.lot-burial-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.lot-burial-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.lot-deceased-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.lot-deceased-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.lot-interment-pill {
+    font-size: 0.725rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.lot-burial-date {
+    font-size: 0.775rem;
+    color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.lot-burial-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.lot-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.775rem;
+}
+
+.detail-k {
+    color: #64748b;
+    font-weight: 500;
+}
+
+.detail-v {
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.detail-v.monospace {
+    font-family: monospace;
+    background: #e2e8f0;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.725rem;
+}
+
+.lot-burial-docs {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-top: 8px;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.lot-docs-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #059669;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.lot-docs-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.lot-doc-tag {
+    font-size: 0.725rem;
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    padding: 2px 7px;
+    border-radius: 5px;
+}
+
+/* Client Info Grid */
+.lot-client-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.lot-client-field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.client-field-label {
+    font-size: 0.725rem;
+    color: #64748b;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.client-field-value {
+    font-size: 0.85rem;
+    color: #1e293b;
+}
+
+.client-field-value.bold {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.lot-client-empty {
+    padding: 12px;
+    color: #64748b;
+    font-size: 0.825rem;
+    font-style: italic;
+}
+
+.lot-owner-assigned-pill {
+    font-size: 0.725rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.lot-owner-unassigned-pill {
+    font-size: 0.725rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+/* Coordinates */
+.lot-coords-pill {
+    font-size: 0.725rem;
+    background: #f0f9ff;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.lot-coords-summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+}
+
+.coords-label {
+    color: #64748b;
+}
+
+.coords-val.monospace {
+    font-family: monospace;
+    color: #0f172a;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Badges */
+.lot-modal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 9999px;
+}
+
+.lot-badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.badge-available {
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+.badge-available .lot-badge-dot { background-color: #10b981; }
+
+.badge-partial {
+    background-color: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+.badge-partial .lot-badge-dot { background-color: #f59e0b; }
+
+.badge-occupied {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+.badge-occupied .lot-badge-dot { background-color: #ef4444; }
+
+.badge-reserved {
+    background-color: #f5f3ff;
+    color: #7c3aed;
+    border: 1px solid #ddd6fe;
+}
+.badge-reserved .lot-badge-dot { background-color: #8b5cf6; }
+
+/* Footer */
+.lot-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-top: 1px solid #f1f5f9;
+    background: #f8fafc;
+}
+
+.lot-sync-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 38px;
+    padding: 0 16px;
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: #004d8c;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.lot-sync-btn:hover:not(:disabled) {
+    background: #eff6ff;
+    border-color: #93c5fd;
+}
+
+.lot-sync-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.lot-close-action-btn {
+    height: 38px;
+    padding: 0 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.lot-close-action-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.spinning {
+    animation: lotSpin 0.9s linear infinite;
+}
+
+@keyframes lotSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

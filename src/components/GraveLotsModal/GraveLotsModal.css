@@ -260,7 +260,8 @@
 }
 
 .glm-select-wrap-type {
-    min-width: 155px;
+    min-width: 205px;
+    max-width: 260px;
 }
 
 .glm-select-control {
@@ -292,7 +293,7 @@
     pointer-events: none;
 }
 
-/* Slots Grid */
+/* Slots Grid (4 cols x 3 rows = 12 slots) */
 .glm-slots-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -300,7 +301,7 @@
     margin-bottom: 16px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 950px) {
     .glm-slots-grid {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -314,6 +315,7 @@
 
 /* Slot Card (Matching Screenshot) */
 .glm-slot-card {
+    position: relative;
     border-radius: 12px;
     padding: 16px 12px;
     display: flex;
@@ -322,8 +324,16 @@
     justify-content: center;
     text-align: center;
     gap: 3px;
-    transition: all 0.15s ease;
+    border: 1px solid #e2e8f0;
+    background-color: #ffffff;
     cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.glm-slot-card.navigated-focused {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+    background-color: #eff6ff;
 }
 
 .glm-slot-card.available {
@@ -333,6 +343,16 @@
 
 .glm-slot-card.available:hover {
     box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+    transform: translateY(-2px);
+}
+
+.glm-slot-card.partial {
+    background-color: #eff6ff;
+    border: 1.5px solid #3b82f6;
+}
+
+.glm-slot-card.partial:hover {
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
     transform: translateY(-2px);
 }
 
@@ -370,10 +390,15 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 4px;
+    background-color: #94a3b8;
 }
 
 .glm-card-status-icon.available {
     background-color: #22c55e;
+}
+
+.glm-card-status-icon.partial {
+    background-color: #3b82f6;
 }
 
 .glm-card-status-icon.occupied {
@@ -393,10 +418,15 @@
 .glm-slot-status {
     font-size: 0.775rem;
     font-weight: 600;
+    color: #64748b;
 }
 
 .glm-slot-card.available .glm-slot-status {
     color: #16a34a;
+}
+
+.glm-slot-card.partial .glm-slot-status {
+    color: #2563eb;
 }
 
 .glm-slot-card.occupied .glm-slot-status {
@@ -518,6 +548,10 @@
     background-color: #22c55e;
 }
 
+.glm-legend-badge.partial {
+    background-color: #3b82f6;
+}
+
 .glm-legend-badge.occupied {
     background-color: #ef4444;
 }
@@ -624,6 +658,12 @@
     background-color: #ecfdf5;
     color: #059669;
     border: 1px solid #a7f3d0;
+}
+
+.glm-popup-badge.partial {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
 }
 
 .glm-popup-badge.occupied {

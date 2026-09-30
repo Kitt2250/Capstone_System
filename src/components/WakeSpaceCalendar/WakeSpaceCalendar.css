@@ -111,14 +111,17 @@
 }
 
 .ws-cell {
-    min-height: 90px;
+    min-height: 96px;
     border-right: 1px solid #f1f5f9;
     border-bottom: 1px solid #f1f5f9;
-    padding: 8px 10px;
+    padding: 8px 9px;
     background-color: #ffffff;
     transition: background-color 0.12s ease, box-shadow 0.12s ease;
     position: relative;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .ws-cell:nth-child(7n) {
@@ -135,43 +138,182 @@
     color: #cbd5e1;
 }
 
-/* Today */
-.ws-cell.ws-cell-today {
-    border: 1.5px solid #3b82f6;
+/* Cell header & Day numbers */
+.ws-cell-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
+.ws-cell-day {
+    font-size: 0.825rem;
+    font-weight: 700;
+    color: #334155;
+    line-height: 1;
+}
+
+.ws-today-pill {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #1d4ed8;
+    background-color: #dbeafe;
+    padding: 1px 5px;
+    border-radius: 4px;
+}
+
+/* Today: subtle highlight on the day text */
 .ws-cell.ws-cell-today .ws-cell-day {
     color: #1d4ed8;
+    font-weight: 800;
+}
+
+/* Selected check-in date */
+.ws-cell.ws-cell-selected {
+    background-color: #004d8c !important;
+    border: 2px solid #004d8c !important;
+    color: #ffffff !important;
+    border-radius: 6px;
+    z-index: 2;
+    box-shadow: 0 0 0 1px #ffffff, 0 2px 8px rgba(0, 77, 140, 0.35);
+}
+
+.ws-cell.ws-cell-selected .ws-cell-day {
+    color: #ffffff !important;
     font-weight: 700;
 }
 
-/* Occupied: red tint */
-.ws-cell.ws-cell-occupied {
-    background-color: rgba(239, 68, 68, 0.08);
+/* Multi-night range in-between */
+.ws-cell.ws-cell-in-range:not(.ws-cell-selected) {
+    background-color: #e0f2fe !important;
+    border-color: #bae6fd !important;
 }
 
-.ws-cell.ws-cell-occupied:hover {
-    background-color: rgba(239, 68, 68, 0.14);
-}
-
-.ws-cell.ws-cell-occupied .ws-cell-day {
-    color: #dc2626;
+.ws-cell.ws-cell-in-range:not(.ws-cell-selected) .ws-cell-day {
+    color: #0369a1 !important;
     font-weight: 600;
 }
 
-.ws-cell.ws-cell-occupied .ws-cell-status-dot {
+/* Cell body containing occupancy tags */
+.ws-cell-body {
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 100%;
+}
+
+/* Occupancy Badges */
+.ws-occ-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1.25;
+    transition: all 0.15s ease;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.ws-occ-dot {
+    font-size: 0.5rem;
+    flex-shrink: 0;
+}
+
+.ws-occ-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Single space occupied (e.g. Wake Space 1) */
+.ws-occ-badge.ws-occ-single {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+.ws-occ-badge.ws-occ-single .ws-occ-dot {
     color: #ef4444;
-    font-size: 0.6rem;
 }
 
-/* Available: always green tint */
+/* 2 spaces occupied (e.g. Wake Space 1 & 2) */
+.ws-occ-badge.ws-occ-partial {
+    background-color: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #fed7aa;
+}
+.ws-occ-badge.ws-occ-partial .ws-occ-dot {
+    color: #f97316;
+}
+
+/* All spaces occupied (All) */
+.ws-occ-badge.ws-occ-all {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+    font-weight: 800;
+}
+.ws-occ-badge.ws-occ-all .ws-occ-dot {
+    color: #dc2626;
+}
+
+/* Available badge */
+.ws-avail-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-size: 0.675rem;
+    font-weight: 600;
+    color: #059669;
+    background-color: rgba(16, 185, 129, 0.08);
+    width: fit-content;
+}
+
+.ws-avail-dot {
+    font-size: 0.45rem;
+    color: #10b981;
+    flex-shrink: 0;
+}
+
+.ws-avail-text {
+    white-space: nowrap;
+}
+
+/* Cell Background Tints */
+.ws-cell.ws-cell-occupied-single {
+    background-color: rgba(239, 68, 68, 0.07);
+}
+.ws-cell.ws-cell-occupied-single:hover {
+    background-color: rgba(239, 68, 68, 0.12);
+}
+
+.ws-cell.ws-cell-occupied-partial {
+    background-color: rgba(249, 115, 22, 0.08);
+}
+.ws-cell.ws-cell-occupied-partial:hover {
+    background-color: rgba(249, 115, 22, 0.14);
+}
+
+.ws-cell.ws-cell-occupied-all {
+    background-color: rgba(239, 68, 68, 0.11);
+    cursor: not-allowed !important;
+}
+.ws-cell.ws-cell-occupied-all:hover {
+    background-color: rgba(239, 68, 68, 0.18);
+}
+
 .ws-cell.ws-cell-available {
-    background-color: rgba(16, 185, 129, 0.07);
+    background-color: rgba(16, 185, 129, 0.06);
 }
-
 .ws-cell.ws-cell-available:hover {
-    background-color: rgba(16, 185, 129, 0.14);
-    box-shadow: inset 0 0 0 1.5px rgba(16, 185, 129, 0.35);
+    background-color: rgba(16, 185, 129, 0.12);
 }
 
 /* Past dates: greyed out, not clickable */
@@ -190,40 +332,38 @@
     box-shadow: none;
 }
 
-.ws-cell-day {
-    font-size: 0.8125rem;
-    font-weight: 500;
-    color: #334155;
-    display: block;
-}
-
-.ws-cell-status-dot {
-    font-size: 0.55rem;
-    display: block;
-    margin-top: 4px;
-    line-height: 1;
-}
-
 /* Legend */
 .ws-calendar-legend {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 18px;
     padding: 10px 16px;
     background-color: #f8fafc;
     border-top: 1px solid #f1f5f9;
+    flex-wrap: wrap;
 }
 
 .ws-legend-item {
     font-size: 0.775rem;
-    font-weight: 500;
+    font-weight: 600;
     display: flex;
     align-items: center;
     gap: 5px;
 }
 
-.ws-legend-occupied {
-    color: #ef4444;
+.ws-legend-occupied-all {
+    color: #b91c1c;
+    font-weight: 700;
+}
+
+.ws-legend-occupied-partial {
+    color: #c2410c;
+    font-weight: 700;
+}
+
+.ws-legend-occupied-single {
+    color: #dc2626;
+    font-weight: 600;
 }
 
 .ws-legend-available {

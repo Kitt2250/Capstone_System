@@ -1,11 +1,14 @@
 import { collection, addDoc, doc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '../firebase/config';
+import { getSystemDate } from './systemDate';
 
 export async function logAuditEvent({
   module = 'System',
   actionType = 'ACTIVITY',
   description = '',
+  desc = '',
   targetItem = 'N/A',
+  target = '',
   details = {},
   performedBy = null
 }) {
@@ -47,11 +50,15 @@ export async function logAuditEvent({
       }
     }
 
+    const finalDescription = description || desc || '';
+    const finalTarget = (targetItem && targetItem !== 'N/A') ? targetItem : (target || targetItem || 'N/A');
+
     const logDoc = {
       module,
       actionType,
-      description,
-      targetItem: String(targetItem || 'N/A'),
+      description: finalDescription,
+      targetItem: String(finalTarget || 'N/A'),
+      target: String(finalTarget || 'N/A'),
       details: details || {},
       performedBy: {
         uid: resolvedUser.uid || 'N/A',
@@ -60,7 +67,7 @@ export async function logAuditEvent({
         role: resolvedUser.role || 'Staff'
       },
       createdAt: serverTimestamp(),
-      timestampISO: new Date().toISOString()
+      timestampISO: getSystemDate().toISOString()
     };
 
     await addDoc(collection(db, 'auditLogs'), logDoc);

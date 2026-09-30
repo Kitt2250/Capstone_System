@@ -207,30 +207,44 @@ function UserManagement() {
         {
             key: "actions",
             label: "",
-            render: (row) => (
-                <div className="actions-cell">
-                    <Button
-                        variant="view"
-                        onClick={() => handleView(row)}
-                        title="View"
-                    />
+            render: (row) => {
+                const role = (row.role || "").toLowerCase().trim();
+                const isArchived = (row.status || "").toLowerCase().trim() === "archived";
+                const isStaffOrAdmin = role === "admin" || role === "staff";
+                const isFamily = role === "family" || !isStaffOrAdmin;
 
-                    <Button
-                        variant="edit"
-                        onClick={() => handleEdit(row)}
-                        title="Edit"
-                    />
-
-                    {((row.role || "").toLowerCase() === "admin" || (row.role || "").toLowerCase() === "staff") && (row.status || "").toLowerCase() !== "archived" && (
+                return (
+                    <div className="actions-cell">
                         <Button
-                            variant="deactivate"
-                            onClick={() => handleArchiveClick(row)}
-                            title="Deactivate"
+                            variant="view"
+                            onClick={() => handleView(row)}
+                            title="View"
                         />
-                    )}
 
-                </div>
-            )
+                        <Button
+                            variant="edit"
+                            onClick={() => handleEdit(row)}
+                            title="Edit"
+                        />
+
+                        {isStaffOrAdmin && !isArchived && (
+                            <Button
+                                variant="deactivate"
+                                onClick={() => handleArchiveClick(row)}
+                                title="Deactivate"
+                            />
+                        )}
+
+                        {isFamily && !isArchived && (
+                            <Button
+                                variant="deactivate"
+                                disabled={true}
+                                title="Deactivate (Cannot deactivate family accounts)"
+                            />
+                        )}
+                    </div>
+                );
+            }
         }
     ];
 
@@ -438,11 +452,20 @@ function UserManagement() {
                     columns={columns}
                 />
 
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
-                />
+                <div className="um-pagination-bar">
+                    <span className="um-showing-text">
+                        Showing {sortedUsers.length === 0 ? 0 : startIndex + 1} to{' '}
+                        {Math.min(startIndex + usersPerPage, sortedUsers.length)} of{' '}
+                        {sortedUsers.length} users
+                    </span>
+                    {totalPages > 1 && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                        />
+                    )}
+                </div>
             </div>
 
             <CreateUserModal

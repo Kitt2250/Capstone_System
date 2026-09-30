@@ -2,6 +2,221 @@
   width: 100%;
 }
 
+/* ===== Grave Type & Status Inventory Dashboard ===== */
+.map-dashboard-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  padding: 22px 26px;
+  margin-top: 4px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 1px solid #e8ecf1;
+}
+
+.map-dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.map-dash-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+
+
+/* Per-GraveType Breakdown Section */
+.map-dash-types-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* MapView Collapsed States & Toggle Button */
+.map-view-card.is-collapsed {
+  padding-bottom: 24px;
+}
+
+.map-view-card.is-collapsed .map-card-header {
+  margin-bottom: 0;
+}
+
+.map-collapsed-pill {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.map-collapse-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #f8fafc;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  user-select: none;
+}
+
+.map-collapse-toggle-btn:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+.map-collapse-toggle-btn.collapsed {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.map-collapse-toggle-btn.collapsed:hover {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-color: #93c5fd;
+}
+
+.map-types-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.map-type-card {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.map-type-card:hover {
+  transform: translateY(-2px);
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.map-type-card.type-card-active {
+  background-color: #ffffff;
+  border-color: #004d8c;
+  box-shadow: 0 0 0 2px rgba(0, 77, 140, 0.25), 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.map-type-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.map-type-name {
+  font-size: 0.925rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.map-type-total-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #334155;
+  background-color: #e2e8f0;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+/* Multi-segment mini progress bar */
+.map-type-progress-bar {
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: #e2e8f0;
+  overflow: hidden;
+  display: flex;
+}
+
+.prog-seg {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.prog-avail { background-color: #10b981; }
+.prog-part  { background-color: #f59e0b; }
+.prog-occ   { background-color: #ef4444; }
+.prog-res   { background-color: #8b5cf6; }
+
+/* Status pill chips */
+.map-type-pills-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.type-stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.725rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.type-stat-pill.pill-avail { background-color: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.type-stat-pill.pill-part  { background-color: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.type-stat-pill.pill-occ   { background-color: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.type-stat-pill.pill-res   { background-color: #f5f3ff; color: #5b21b6; border: 1px solid #ddd6fe; }
+
+.stat-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-green { background-color: #10b981; }
+.dot-amber { background-color: #f59e0b; }
+.dot-red   { background-color: #ef4444; }
+.dot-purple { background-color: #8b5cf6; }
+
+.stat-label {
+  font-weight: 500;
+}
+
+.stat-val {
+  font-weight: 800;
+  margin-left: auto;
+}
+
+
 /* ===== Main Map View Card ===== */
 .map-view-card {
   background: #ffffff;
@@ -100,36 +315,25 @@
   align-items: center;
 }
 
-.map-filter-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
-  color: #1e293b;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(202, 138, 4, 0.2);
-  transition: all 0.2s ease;
-  font-family: inherit;
-}
 
-.map-filter-btn:hover {
-  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
-  transform: translateY(-1px);
-}
-
-/* ===== Slots Grid Container ===== */
+/* ===== Slots Grid Container (4 cols x 3 rows = 12 slots) ===== */
 .slots-grid-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
+  gap: 16px;
   margin-bottom: 24px;
+}
+
+@media (max-width: 1100px) {
+  .slots-grid-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 750px) {
+  .slots-grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* Individual Slot Card */
@@ -151,6 +355,12 @@
 .slot-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.slot-card.navigated-focused {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25) !important;
+  background-color: #eff6ff !important;
 }
 
 /* Slot Card - Available (Green) */
@@ -186,6 +396,17 @@
   background-color: #fef3c7;
 }
 
+/* Slot Card - Partial (Blue) */
+.slot-card.partial {
+  background-color: #eff6ff;
+  border: 2px solid #3b82f6;
+}
+
+.slot-card.partial:hover {
+  border-color: #2563eb;
+  background-color: #dbeafe;
+}
+
 /* Inside Slot Card Content */
 .slot-status-icon {
   width: 26px;
@@ -209,6 +430,11 @@
 
 .slot-card.reserved .slot-status-icon {
   background-color: #f59e0b;
+  color: #ffffff;
+}
+
+.slot-card.partial .slot-status-icon {
+  background-color: #3b82f6;
   color: #ffffff;
 }
 
@@ -238,6 +464,10 @@
 
 .slot-card.reserved .slot-status-text {
   color: #d97706;
+}
+
+.slot-card.partial .slot-status-text {
+  color: #2563eb;
 }
 
 .slot-type {
@@ -404,6 +634,10 @@
   background-color: #f59e0b;
 }
 
+.legend-badge.partial {
+  background-color: #3b82f6;
+}
+
 .map-total-available {
   display: flex;
   align-items: center;
@@ -474,6 +708,66 @@
   border-color: #b45309;
   color: #ffffff;
   box-shadow: 0 6px 18px rgba(217, 119, 6, 0.4);
+}
+
+/* Satellite Grave Limiting Control in Actions Bar */
+.satellite-limit-control-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 6px 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-left: auto;
+}
+
+.sat-limit-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.sat-limit-input {
+  width: 60px;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 5px 8px;
+  border-radius: 6px;
+  outline: none;
+  text-align: center;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.sat-limit-input:focus {
+  border-color: #d97706;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2);
+}
+
+.sat-limit-all-btn {
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.sat-limit-all-btn:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
 }
 
 /* ===== Full Satellite Map Card (Below Buttons) ===== */

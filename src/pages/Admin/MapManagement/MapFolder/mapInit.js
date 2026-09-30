@@ -85,6 +85,9 @@ export function renderPlotsOnMap(instances, plots, shouldFitBounds = true, onReg
     if (s === 'reserved' || s === 'pending') {
       return { stroke: '#f59e0b', fill: '#f59e0b', label: 'Reserved' };
     }
+    if (s === 'partial') {
+      return { stroke: '#3b82f6', fill: '#3b82f6', label: 'Partial' };
+    }
     return { stroke: '#22c55e', fill: '#22c55e', label: 'Available' };
   };
 
@@ -97,45 +100,52 @@ export function renderPlotsOnMap(instances, plots, shouldFitBounds = true, onReg
     const section = plot.section ? (plot.section.startsWith('Section') ? plot.section : `Section ${plot.section}`) : '';
     const statusInfo = getStatusColor(plot.status);
 
-    const occupied = plot.occupiedCount != null ? plot.occupiedCount : (plot.status === 'occupied' ? 1 : 0);
-    const maxCap = plot.maxCapacity != null ? plot.maxCapacity : (plot.capacity || 1);
+    const occupied = plot.occupiedCount != null ? Number(plot.occupiedCount) : 0;
+    const maxCap = plot.maxCapacity != null ? Number(plot.maxCapacity) : (plot.capacity != null ? Number(plot.capacity) : 1);
+    const fillPct = maxCap > 0 ? Math.min(100, Math.round((occupied / maxCap) * 100)) : 0;
     const isOccupiedStatus = plot.status && plot.status.toLowerCase() === 'occupied';
     const isFull = isOccupiedStatus && occupied >= maxCap;
 
-    const registerBtnHtml = onRegisterPlot
-      ? (isFull
-          ? `
-            <div style="margin-top: 6px; font-size: 11px; font-weight: 700; color: #dc2626; text-align: center; background: #fee2e2; padding: 4px 6px; border-radius: 4px; border: 1px solid #fecaca;">
-              Max Capacity
-            </div>
-          `
-          : `
-            <div style="margin-top: 8px;">
-              <button 
-                type="button" 
-                class="map-popup-register-btn" 
-                data-plot-id="${plot.id}" 
-                style="width: 100%; height: 30px; background: #059669; color: #ffffff; border: none; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(5,150,105,0.25);"
-              >
-                <span>Select Grave Lot</span>
-              </button>
-            </div>
-          `)
+    // Capacity bar colour
+    const barColor = fillPct >= 100 ? '#ef4444' : fillPct > 0 ? '#3b82f6' : '#22c55e';
+
+    const isAvailablePlot = statusInfo.label === 'Available';
+
+    const registerBtnHtml = (onRegisterPlot && isAvailablePlot)
+      ? `
+        <div style="margin-top: 8px;">
+          <button 
+            type="button" 
+            class="map-popup-register-btn" 
+            data-plot-id="${plot.id}" 
+            style="width: 100%; height: 30px; background: #059669; color: #ffffff; border: none; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(5,150,105,0.25);"
+          >
+            <span>Select Grave Lot</span>
+          </button>
+        </div>
+      `
       : '';
 
     const popupContent = `
-      <div style="font-family: inherit; min-width: 140px; padding: 4px;">
+      <div style="font-family: inherit; min-width: 160px; padding: 4px;">
         <div style="font-weight: 800; font-size: 14px; color: #0f172a; margin-bottom: 2px;">${code}</div>
         <div style="font-size: 12px; color: #64748b; margin-bottom: 6px;">${section ? section + ' • ' : ''}${type}</div>
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px;">
           <div style="display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 12px; background: ${statusInfo.fill}22; color: ${statusInfo.stroke};">
             ● ${statusInfo.label}
           </div>
-          ${isOccupiedStatus ? `
-            <div style="font-size: 11px; font-weight: 700; color: #475569; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0;">
-              ${occupied} / ${maxCap}
-            </div>
-          ` : ''}
+          <div style="font-size: 11px; font-weight: 700; color: #475569; background: #f1f5f9; padding: 2px 7px; border-radius: 4px; border: 1px solid #e2e8f0;">
+            ${occupied} / ${maxCap}
+          </div>
+        </div>
+        <div style="margin-bottom: 6px;">
+          <div style="display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; margin-bottom: 3px;">
+            <span>Occupancy</span>
+            <span>${fillPct}%</span>
+          </div>
+          <div style="background: #e2e8f0; border-radius: 4px; height: 6px; overflow: hidden;">
+            <div style="height: 100%; width: ${fillPct}%; background: ${barColor}; border-radius: 4px; transition: width 0.3s;"></div>
+          </div>
         </div>
         ${registerBtnHtml}
       </div>

@@ -5,6 +5,12 @@ import {
     createWakeSpaceBooking,
     subscribeWakeSpaceBookings,
 } from "../../services/wakeSpaceServices.jsx";
+import {
+    createWakeSpaceBookingController,
+    validateWakeSpaceBookingSelectionController,
+    assertWakeSpaceBookingAvailableController,
+    isBookingForSpace,
+} from "../../controller/wakeSpaceController.jsx";
 import "./WakeSpaceModal.css";
 
 /**
@@ -30,28 +36,34 @@ function WakeSpaceModal({
     onClose,
     onSave,
     onSuccess,
+    space = null,
+    wakeSpaces = null,
     initialStartDate = null,
     initialDays = 1,
     showCalendar = true,
     bookings: propBookings = null,
-    title = "Book Wake Space",
-    pricePerNight = 1500,
+    title = null,
+    pricePerNight = null,
     confirmText = "Confirm Booking",
 }) {
+    const [selectedSpace, setSelectedSpace] = useState(space);
     const [startDate, setStartDate] = useState(initialStartDate);
     const [days, setDays] = useState(initialDays);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
+    const [conflictWarning, setConflictWarning] = useState(null);
     const [liveBookings, setLiveBookings] = useState([]);
 
     // Sync state when modal opens or initial values change
     useEffect(() => {
         if (isOpen) {
+            setSelectedSpace(space || (wakeSpaces && wakeSpaces.length > 0 ? wakeSpaces[0] : null));
             setStartDate(initialStartDate || (showCalendar ? null : new Date()));
             setDays(initialDays || 1);
             setError("");
+            setConflictWarning(null);
         }
-    }, [isOpen, initialStartDate, initialDays, showCalendar]);
+    }, [isOpen, space, wakeSpaces, initialStartDate, initialDays, showCalendar]);
 
     // Close on Escape key
     useEffect(() => {
@@ -77,9 +89,16 @@ function WakeSpaceModal({
         return () => unsub();
     }, [isOpen, propBookings]);
 
-    if (!isOpen) return null;
+    const activeSpace = selectedSpace || space;
+    const activePrice = activeSpace?.price ? Number(activeSpace.price) : (pricePerNight != null ? pricePerNight : 8500);
 
     const activeBookings = propBookings || liveBookings;
+
+    // Filter bookings specific to this space for the calendar using robust identifier normalizer
+    const spaceFilteredBookings = (activeBookings || []).filter((b) => {
+        if (!activeSpace) return true;
+        return isBookingForSpace(b, activeSpace.id, activeSpace.wake);
+    });
 
     // Computed end date
     const computedEndDate = startDate
@@ -107,9 +126,64 @@ function WakeSpaceModal({
         ).padStart(2, "0")}`;
     };
 
-    const handleDateSelect = (date) => {
-        setStartDate(date);
+    // ── Real-Time Conflict Controller Check on date/days/space change ──
+    useEffect(() => {
+        if (!isOpen || !startDate || !activeSpace) {
+            setConflictWarning(null);
+            return;
+        }
+
+        const startStr = formatDateISO(startDate);
+        const endStr = formatDateISO(computedEndDate);
+
+        validateWakeSpaceBookingSelectionController({
+            spaceId: activeSpace.id,
+            wake: activeSpace.wake,
+            startDate: startStr,
+            endDate: endStr,
+            days,
+            existingBookings: activeBookings,
+        })
+            .then((res) => {
+                if (!res.isValid) {
+                    setConflictWarning(res.errorMessage);
+                } else {
+                    setConflictWarning(null);
+                    if (error && error.includes("occupied")) {
+                        setError("");
+                    }
+                }
+            })
+            .catch((err) => console.warn("Validation error:", err));
+    }, [isOpen, startDate, days, activeSpace, activeBookings, computedEndDate]);
+
+    if (!isOpen) return null;
+
+    const handleDateSelect = async (date) => {
         setError("");
+        const startStr = formatDateISO(date);
+        const val = await validateWakeSpaceBookingSelectionController({
+            spaceId: activeSpace?.id,
+            wake: activeSpace?.wake,
+            startDate: startStr,
+            days,
+            existingBookings: activeBookings,
+        });
+
+        if (!val.isValid) {
+            setError(val.errorMessage);
+            setStartDate(null);
+            return;
+        }
+
+        setStartDate(date);
+    };
+
+    const handleOccupiedDateClick = (cellDate, conf) => {
+        const dateStr = formatDateISO(cellDate);
+        const spaceLabel = activeSpace?.wake ? `Wake Space ${activeSpace.wake}` : "This space";
+        const details = conf?.deceased ? ` (${conf.deceased})` : (conf?.client ? ` (${conf.client})` : "");
+        setError(`Cannot select ${dateStr}: ${spaceLabel} is already occupied${details}. Please select an available date.`);
     };
 
     const handleDaysChange = (val) => {
@@ -120,11 +194,11 @@ function WakeSpaceModal({
     const handleIncrementDays = () => setDays((prev) => Math.max(1, Number(prev) + 1));
     const handleDecrementDays = () => setDays((prev) => Math.max(1, Number(prev) - 1));
 
-    const totalAmount = Math.max(1, Number(days)) * pricePerNight;
+    const totalAmount = Math.max(1, Number(days)) * activePrice;
 
     const handleConfirm = async () => {
         if (!startDate) {
-            setError("Please select a check-in date.");
+            setError("Please select an available check-in date from the calendar.");
             return;
         }
 
@@ -133,6 +207,10 @@ function WakeSpaceModal({
         setError("");
 
         const payload = {
+            spaceId: activeSpace?.id || "WAS-001",
+            spaceName: activeSpace ? `Wake Space ${activeSpace.wake}` : "Wake Space",
+            wake: activeSpace?.wake || "A",
+            pricePerNight: activePrice,
             startDate: formatDateISO(startDate),
             endDate: formatDateISO(computedEndDate),
             days: numDays,
@@ -141,19 +219,30 @@ function WakeSpaceModal({
         };
 
         try {
+            // ── CONTROLLER ASSERTION: Strictly blocks occupied date walk-through even when onSave is passed ──
+            await assertWakeSpaceBookingAvailableController({
+                spaceId: payload.spaceId,
+                wake: payload.wake,
+                startDate: payload.startDate,
+                endDate: payload.endDate,
+                days: payload.days,
+                existingBookings: activeBookings,
+            });
+
             if (onSave) {
                 await onSave(payload);
             } else {
-                const res = await createWakeSpaceBooking(payload);
+                const res = await createWakeSpaceBookingController(payload);
                 payload.id = res?.id;
                 payload.bookingId = res?.bookingId;
+                payload.status = res?.status;
             }
 
             onSuccess?.(payload);
             onClose?.();
         } catch (err) {
-            console.error("WakeSpaceModal: failed to save booking:", err);
-            setError("Failed to save booking. Please try again.");
+            console.error("WakeSpaceModal: booking validation or save failed:", err);
+            setError(err.message || "Failed to save booking. Please try again.");
         } finally {
             setSaving(false);
         }
@@ -172,11 +261,15 @@ function WakeSpaceModal({
                             <Bed size={18} />
                         </span>
                         <div>
-                            <h3 className="ws-modal-title">{title}</h3>
+                            <h3 className="ws-modal-title">
+                                {title || (activeSpace ? `Book Wake Space ${activeSpace.wake}` : "Book Wake Space")}
+                            </h3>
                             <p className="ws-modal-subtitle">
-                                {showCalendar
-                                    ? "Select available dates from the calendar below"
-                                    : "Configure duration and reservation details"}
+                                {activeSpace
+                                    ? `${activeSpace.id} • ₱${activePrice.toLocaleString()} / night`
+                                    : (showCalendar
+                                        ? "Select available dates from the calendar below"
+                                        : "Configure duration and reservation details")}
                             </p>
                         </div>
                     </div>
@@ -190,14 +283,41 @@ function WakeSpaceModal({
                     </button>
                 </div>
 
+                {/* Space Selector Tabs (when multiple wake spaces provided) */}
+                {wakeSpaces && wakeSpaces.length > 1 && (
+                    <div className="ws-modal-space-tabs">
+                        {wakeSpaces.map((ws) => {
+                            const isTabActive = (activeSpace?.id === ws.id) || (activeSpace?.wake === ws.wake);
+                            const isTabDisabled = ws.status === "inactive";
+                            return (
+                                <button
+                                    key={ws.id}
+                                    type="button"
+                                    className={`ws-modal-space-tab ${isTabActive ? "active" : ""}`}
+                                    onClick={() => setSelectedSpace(ws)}
+                                    disabled={isTabDisabled}
+                                >
+                                    <Bed size={13} />
+                                    <span>Wake Space {ws.wake}</span>
+                                    <span className="ws-tab-id">({ws.id})</span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                )}
+
                 {/* Body */}
                 <div className="ws-modal-scroll-body">
                     {/* Embedded Calendar */}
                     {showCalendar && (
                         <div className="ws-modal-calendar-container">
                             <WakeSpaceCalendar
-                                bookings={activeBookings}
+                                bookings={spaceFilteredBookings}
+                                wakeSpaces={wakeSpaces}
+                                selectedDate={startDate}
+                                endDate={computedEndDate}
                                 onDateSelect={handleDateSelect}
+                                onOccupiedDateClick={handleOccupiedDateClick}
                                 initialDate={startDate || new Date()}
                             />
                         </div>
@@ -269,7 +389,7 @@ function WakeSpaceModal({
                         <div className="ws-modal-summary-left">
                             <span className="ws-modal-summary-title">ESTIMATED TOTAL</span>
                             <span className="ws-modal-summary-calc">
-                                ₱{pricePerNight.toLocaleString()} × {days} night{days > 1 ? "s" : ""}
+                                ₱{activePrice.toLocaleString()} × {days} night{days > 1 ? "s" : ""}
                             </span>
                         </div>
                         <span className="ws-modal-summary-total">
@@ -277,11 +397,11 @@ function WakeSpaceModal({
                         </span>
                     </div>
 
-                    {/* Error Box */}
-                    {error && (
+                    {/* Error & Conflict Alert Box */}
+                    {(error || conflictWarning) && (
                         <div className="ws-modal-error-box">
                             <AlertCircle size={16} />
-                            <span>{error}</span>
+                            <span>{error || conflictWarning}</span>
                         </div>
                     )}
                 </div>
@@ -300,7 +420,7 @@ function WakeSpaceModal({
                         type="button"
                         className="ws-modal-btn-save"
                         onClick={handleConfirm}
-                        disabled={saving || !startDate}
+                        disabled={saving || !startDate || Boolean(conflictWarning) || Boolean(error)}
                     >
                         {saving ? (
                             "Saving…"

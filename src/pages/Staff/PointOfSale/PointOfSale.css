@@ -147,6 +147,13 @@
     color: #dc2626;
 }
 
+.status-pill.status-pending,
+.status-pill.status-occupied {
+    background-color: rgba(245, 158, 11, 0.08);
+    border: 1.5px solid #f59e0b;
+    color: #d97706;
+}
+
 .status-dot {
     width: 6px;
     height: 6px;
@@ -160,6 +167,11 @@
 
 .status-pill.status-inactive .status-dot {
     background-color: #ef4444;
+}
+
+.status-pill.status-pending .status-dot,
+.status-pill.status-occupied .status-dot {
+    background-color: #f59e0b;
 }
 
 /* Table wrapper matching UserManagement table-wrapper */
@@ -201,6 +213,14 @@
 
 .pos-table-wrapper tbody tr:hover {
     background-color: #fafbfc;
+}
+
+.pos-table-wrapper tbody tr.pos-row-selected {
+    background-color: #f0f7ff;
+}
+
+.pos-table-wrapper tbody tr.pos-row-selected:hover {
+    background-color: #e5f0fe;
 }
 
 /* Product cell */

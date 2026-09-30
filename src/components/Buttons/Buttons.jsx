@@ -12,16 +12,27 @@ const variantIcons = {
     reset: RotateCcw,
 };
 
-function Button({ variant = "default", onClick, title, children }) {
+function Button({
+    variant = "default",
+    onClick,
+    title,
+    disabled = false,
+    className = "",
+    children,
+    ...props
+}) {
     const Icon = variantIcons[variant];
     const hasLabel = !!children;
 
     return (
         <button
             type="button"
-            className={`btn btn-${variant}${hasLabel ? " btn-with-label" : ""}`}
-            onClick={onClick}
+            className={`btn btn-${variant}${hasLabel ? " btn-with-label" : ""}${disabled ? " btn-disabled" : ""}${className ? ` ${className}` : ""}`}
+            onClick={disabled ? undefined : onClick}
+            disabled={disabled}
+            aria-disabled={disabled}
             title={title || variant}
+            {...props}
         >
             {Icon && <Icon size={16} />}
             {children}

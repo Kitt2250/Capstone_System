@@ -6,12 +6,21 @@ import { auth } from "../../firebase/config";
 import { getUserData } from "../../services/userServices";
 import "./Sidebar.css";
 import cherubimLogo from "../../assets/cherubim_logo.jpg";
-import { LayoutGrid, Users, FileText, MapPin, Landmark, BarChart2, Settings, Database, LogOut, ChevronLeft, ChevronRight, CreditCard, Building2, Heart, Wallet, RefreshCw, Bell, User } from "lucide-react";
+import { LayoutGrid, Users, FileText, MapPin, Landmark, BarChart2, Settings, Database, LogOut, ChevronLeft, ChevronRight, CreditCard, Building2, Heart, Wallet, RefreshCw, Bell, User, ShieldAlert, Cross } from "lucide-react";
+import { subscribeNotifications } from "../../services/notificationServices";
 
 function Sidebar({ role = "admin" }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
-
     const [userProfile, setUserProfile] = useState(null);
+    const [unreadNotifCount, setUnreadNotifCount] = useState(0);
+
+    useEffect(() => {
+        const unsub = subscribeNotifications((data) => {
+            const unread = (data || []).filter((n) => !n.is_read).length;
+            setUnreadNotifCount(unread);
+        }, "staff");
+        return () => unsub();
+    }, []);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -24,15 +33,14 @@ function Sidebar({ role = "admin" }) {
             try {
                 const userData = await getUserData(user.uid);
 
-                const name = userData.name;
-                const email = userData.email;
+                const name = userData?.name || user.displayName || user.email?.split("@")[0] || "User";
+                const email = userData?.email || user.email || "";
 
-                const initials = name
-                    .split(" ")
+                const initials = (name.trim() ? name.trim().split(/\s+/) : ["U"])
                     .map((n) => n[0])
                     .join("")
                     .toUpperCase()
-                    .slice(0, 2);
+                    .slice(0, 2) || "U";
 
                 setUserProfile({
                     name,
@@ -42,6 +50,18 @@ function Sidebar({ role = "admin" }) {
 
             } catch (error) {
                 console.error("Failed to load user profile:", error);
+                const fallbackName = user.displayName || user.email?.split("@")[0] || "User";
+                const fallbackInitials = (fallbackName.trim() ? fallbackName.trim().split(/\s+/) : ["U"])
+                    .map((n) => n[0])
+                    .join("")
+                    .toUpperCase()
+                    .slice(0, 2) || "U";
+
+                setUserProfile({
+                    name: fallbackName,
+                    email: user.email || "",
+                    initials: fallbackInitials
+                });
             }
         });
 
@@ -81,6 +101,12 @@ function Sidebar({ role = "admin" }) {
                     { name: "Settings", path: "/admin/settings", icon: Settings },
                     { name: "Backup & Restore", path: "/admin/backup", icon: Database }
                 ]
+            },
+            {
+                title: "ADMIN CONFIGURATION",
+                links: [
+                    { name: "Admin Configuration", path: "/admin/admin-configuration", icon: ShieldAlert }
+                ]
             }
         ],
 
@@ -90,6 +116,7 @@ function Sidebar({ role = "admin" }) {
                 links: [
                     { name: "Dashboard", path: "/staff", icon: LayoutGrid, exact: true },
                     { name: "Burials", path: "/staff/burials", icon: Landmark },
+                    { name: "Interment", path: "/staff/interment", icon: Cross },
                     { name: "POS", path: "/staff/point-of-sale", icon: Wallet },
                     { name: "Payments", path: "/staff/payments", icon: CreditCard },
                     { name: "Wake Spaces", path: "/staff/wake-spaces", icon: Building2 }
@@ -100,7 +127,6 @@ function Sidebar({ role = "admin" }) {
                 links: [
                     { name: "Renewals", path: "/staff/renewals", icon: RefreshCw },
                     { name: "Notifications", path: "/staff/notifications", icon: Bell },
-                    { name: "Reports", path: "/staff/reports", icon: BarChart2 },
                     { name: "My Accounts", path: "/staff/my-accounts", icon: User }
                 ]
             }
@@ -206,6 +232,12 @@ function Sidebar({ role = "admin" }) {
                                     <span className="sidebar-link-label">
                                         {link.name}
                                     </span>
+
+                                    {link.name === "Notifications" && unreadNotifCount > 0 && (
+                                        <span className="sidebar-notif-pill">
+                                            {unreadNotifCount > 99 ? "99+" : unreadNotifCount}
+                                        </span>
+                                    )}
                                 </NavLink>
                             );
                         })}

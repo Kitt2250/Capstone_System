@@ -1,21 +1,19 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth"
-import { getFirestore } from "firebase/firestore"
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
-// Your web app's Firebase configuration
+// Your web app's Firebase configuration using environment variables
 export const firebaseConfig = {
-  apiKey: "AIzaSyCtT2TZ__Mmbvuzj9g0cuu4YPql7x4wrvQ",
-  authDomain: "practices-1b8cf.firebaseapp.com",
-  projectId: "practices-1b8cf",
-  storageBucket: "practices-1b8cf.firebasestorage.app",
-  messagingSenderId: "143619982574",
-  appId: "1:143619982574:web:733097e9e9e395c5ac1fff"
+  apiKey: import.meta.env.VITE_FB_apiKey || import.meta.env.VITE_FB_API_KEY,
+  authDomain: import.meta.env.VITE_FB_authDomain || import.meta.env.VITE_FB_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FB_projectId || import.meta.env.VITE_FB_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FB_storageBucket || import.meta.env.VITE_FB_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FB_messagingSenderId || import.meta.env.VITE_FB_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FB_appId || import.meta.env.VITE_FB_APP_ID,
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app)
-export const db = getFirestore(app)
+export const auth = getAuth(app);
+export const db = getFirestore(app);

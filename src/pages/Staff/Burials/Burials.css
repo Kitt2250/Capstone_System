@@ -1,0 +1,662 @@
+/* ===== Burials Page Styles ===== */
+
+.burials-page-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* KPI Summary Cards */
+.burials-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.burials-kpi-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.burials-kpi-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.burials-kpi-icon.blue {
+    background-color: #eff6ff;
+    color: #0284c7;
+}
+
+.burials-kpi-icon.green {
+    background-color: #ecfdf5;
+    color: #059669;
+}
+
+.burials-kpi-icon.purple {
+    background-color: #f5f3ff;
+    color: #7c3aed;
+}
+
+.burials-kpi-icon.amber {
+    background-color: #fffbeb;
+    color: #d97706;
+}
+
+.burials-kpi-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.burials-kpi-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.burials-kpi-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+}
+
+/* Controls / Filter Bar */
+.burials-controls-bar {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.burials-search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 260px;
+    max-width: 480px;
+    display: flex;
+    align-items: center;
+}
+
+.burials-search-icon {
+    position: absolute;
+    left: 12px;
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+.burials-search-input {
+    width: 100%;
+    padding: 9px 12px 9px 38px;
+    font-size: 0.875rem;
+    color: #1e293b;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.15s ease;
+}
+
+.burials-search-input:focus {
+    background: #ffffff;
+    border-color: #004d8c;
+    box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.1);
+}
+
+.burials-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.burials-filter-select {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #334155;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.burials-filter-select:focus {
+    border-color: #004d8c;
+}
+
+.burials-count-badge {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 6px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+/* Table Container & Layout */
+.burials-table-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.burials-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.burials-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: left;
+}
+
+.burials-table thead tr {
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.burials-table th {
+    padding: 12px 18px;
+    font-size: 0.725rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.burials-table tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.15s ease;
+}
+
+.burials-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.burials-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.burials-table td {
+    padding: 14px 18px;
+    color: #334155;
+    vertical-align: middle;
+}
+
+/* Cell Specific Styles */
+.deceased-name-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.deceased-name {
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 0.925rem;
+}
+
+.deceased-dates-sub {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.plot-cell-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.plot-code-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 700;
+    color: #004d8c;
+    background: #eff6ff;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    width: fit-content;
+    border: 1px solid #bfdbfe;
+}
+
+.plot-type-sub {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.buried-date-text {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.interment-type-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.interment-type-badge.standard {
+    background: #ecfdf5;
+    color: #065f46;
+    border-color: #a7f3d0;
+}
+
+.interment-type-badge.cremation {
+    background: #fff7ed;
+    color: #9a3412;
+    border-color: #fed7aa;
+}
+
+.interment-type-badge.bone {
+    background: #f5f3ff;
+    color: #5b21b6;
+    border-color: #ddd6fe;
+}
+
+.family-cell-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.family-name {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.family-sub {
+    font-size: 0.725rem;
+    color: #64748b;
+}
+
+.documents-badge-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.document-tag {
+    font-size: 0.7rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Empty State */
+.burials-empty-state {
+    padding: 60px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: #64748b;
+}
+
+.burials-empty-state h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.burials-empty-state p {
+    font-size: 0.85rem;
+    color: #64748b;
+    max-width: 400px;
+    margin: 0;
+}
+
+/* Clickable Plot Badge */
+.plot-code-badge.clickable {
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.plot-code-badge.clickable:hover {
+    background-color: #dbeafe;
+    border-color: #93c5fd;
+}
+
+/* Actions Group & Buttons */
+.burials-actions-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.burials-action-view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    font-size: 0.785rem;
+    font-weight: 600;
+    color: #0f172a;
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.burials-action-view-btn:hover {
+    background-color: #004d8c;
+    color: #ffffff;
+    border-color: #004d8c;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 77, 140, 0.15);
+}
+
+/* Action: Map Locator Button */
+.burials-action-locate-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    font-size: 0.785rem;
+    font-weight: 600;
+    color: #004d8c;
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.burials-action-locate-btn:hover {
+    background-color: #004d8c;
+    color: #ffffff;
+    border-color: #004d8c;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 77, 140, 0.15);
+}
+
+/* ===== Burials Table Pagination Bar ===== */
+.burials-pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-top: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.burials-showing-text {
+    font-size: 0.825rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* ===== Map Locator Modal ===== */
+.burials-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+    animation: burials-fade-in 0.18s ease;
+}
+
+@keyframes burials-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.burials-modal-card {
+    background: #ffffff;
+    border-radius: 14px;
+    width: 95vw;
+    max-width: 920px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    border: 1px solid #cbd5e1;
+    overflow: hidden;
+    animation: burials-scale-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes burials-scale-up {
+    from { transform: scale(0.96); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+/* Modal Header */
+.burials-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    flex-shrink: 0;
+}
+
+.burials-modal-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.burials-modal-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: #eff6ff;
+    color: #004d8c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.burials-modal-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.burials-modal-subtitle {
+    font-size: 0.775rem;
+    color: #64748b;
+    margin: 2px 0 0 0;
+}
+
+.burials-modal-close-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #64748b;
+    padding: 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.burials-modal-close-btn:hover {
+    background-color: #f1f5f9;
+    color: #0f172a;
+}
+
+/* Info Summary Strip */
+.burials-map-info-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    padding: 12px 20px;
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+}
+
+.burials-map-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.burials-map-info-item .info-label {
+    font-size: 0.685rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.burials-map-info-item .info-value {
+    font-size: 0.825rem;
+    font-weight: 700;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.burials-map-info-item .info-value.plot-badge {
+    color: #004d8c;
+}
+
+/* Satellite Map Container */
+.burials-map-wrapper {
+    position: relative;
+    width: 100%;
+    height: 480px;
+    min-height: 400px;
+    background-color: #0f172a;
+    overflow: hidden;
+    flex: 1;
+}
+
+.burials-map-wrapper .satellite-map-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 400px !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.burials-map-wrapper .full-satellite-map {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 400px !important;
+}
+
+.burials-map-wrapper .map-floating-select-wrap {
+    display: none !important;
+}
+
+/* Modal Footer */
+.burials-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-top: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.burials-modal-footer-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.775rem;
+    color: #64748b;
+}
+
+.burials-modal-footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.burials-btn-gmaps {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #334155;
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.burials-btn-gmaps:hover {
+    background-color: #e2e8f0;
+    color: #0f172a;
+}
+
+.burials-btn-modal-close {
+    padding: 7px 18px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #004d8c;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.burials-btn-modal-close:hover {
+    background-color: #003663;
+}
+

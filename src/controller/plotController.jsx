@@ -6,7 +6,11 @@ import {
     getPlots,
     getPlotById,
     getNextPlotNumber,
-    subscribePlots
+    subscribePlots,
+    updatePlotOccupancy,
+    upadatePlotOccupancy,
+    deleteBurialAndUpdatePlot,
+    syncAllPlotsOccupancy
 } from "../services/plotServices";
 import { logAuditEvent } from "../utils/auditLogger";
 
@@ -214,9 +218,43 @@ export const deletePlotController = async (plotId, plotData = {}) => {
     return { success: true, message: "Plot deleted successfully." };
 };
 
+// ── Update Plot Occupancy Controller ──
+export const updatePlotOccupancyController = async (plotId, options = {}) => {
+    if (!plotId) {
+        throw new Error("Plot ID is required.");
+    }
+    const result = await updatePlotOccupancy(plotId, options);
+    return { success: true, ...result };
+};
+
+// ── Delete Burial And Update Plot Controller ──
+export const deleteBurialAndUpdatePlotController = async (burialId, plotId = null) => {
+    if (!burialId) {
+        throw new Error("Burial ID is required.");
+    }
+    const result = await deleteBurialAndUpdatePlot(burialId, plotId);
+
+    if (result.plotId) {
+        await logAuditEvent({
+            module: 'Burial Management',
+            actionType: 'Delete Burial',
+            description: `Deleted burial ${burialId} and recalculated plot occupancy`,
+            targetItem: result.plotId,
+            details: { burialId, plotId: result.plotId }
+        });
+    }
+
+    return { success: true, ...result };
+};
+
 export {
     getPlots,
     getPlotById,
     getNextPlotNumber,
-    subscribePlots
+    subscribePlots,
+    updatePlotOccupancy,
+    upadatePlotOccupancy,
+    deleteBurialAndUpdatePlot,
+    syncAllPlotsOccupancy
 };
+

@@ -160,6 +160,23 @@ function GraveAddModal({ isOpen, onClose, onAdd }) {
         setLoading(true);
 
         try {
+            // Auto-commit staged interment if user filled it out but didn't click "Add Fee"
+            let finalStaged = [...stagedInterments];
+            if (isAddingInterment || editingIntermentIdx !== null) {
+                if (intermentForm.interment_type?.trim() && intermentForm.fee !== "" && !isNaN(Number(intermentForm.fee))) {
+                    const entry = {
+                        interment_fee_id: intermentForm.interment_fee_id || getNextStagedFeeId(),
+                        interment_type: intermentForm.interment_type.trim(),
+                        fee: Number(intermentForm.fee)
+                    };
+                    if (editingIntermentIdx !== null) {
+                        finalStaged = finalStaged.map((item, i) => i === editingIntermentIdx ? entry : item);
+                    } else {
+                        finalStaged.push(entry);
+                    }
+                }
+            }
+
             const payload = {
                 grave_type_id: nextId,
                 grave_type: formData.grave_type.trim(),
@@ -180,9 +197,9 @@ function GraveAddModal({ isOpen, onClose, onAdd }) {
             let createdId;
             if (onAdd) {
                 // GraveManagement passes onAdd — it calls the controller itself
-                createdId = await onAdd(payload, stagedInterments);
+                createdId = await onAdd(payload, finalStaged);
             } else {
-                createdId = await createGraveTypeController(payload, stagedInterments);
+                createdId = await createGraveTypeController(payload, finalStaged);
             }
 
             handleClose();
@@ -323,6 +340,12 @@ function GraveAddModal({ isOpen, onClose, onAdd }) {
                                             type="text"
                                             value={intermentForm.interment_type}
                                             onChange={(e) => setIntermentForm((prev) => ({ ...prev, interment_type: e.target.value }))}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault();
+                                                    handleSaveInterment();
+                                                }
+                                            }}
                                             className="grave-box-input"
                                             placeholder="e.g. Standard Burial"
                                         />
@@ -335,6 +358,12 @@ function GraveAddModal({ isOpen, onClose, onAdd }) {
                                             type="number"
                                             value={intermentForm.fee}
                                             onChange={(e) => setIntermentForm((prev) => ({ ...prev, fee: e.target.value }))}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault();
+                                                    handleSaveInterment();
+                                                }
+                                            }}
                                             className="grave-box-input"
                                             placeholder="e.g. 5000"
                                             min="0"

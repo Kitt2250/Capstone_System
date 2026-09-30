@@ -15,6 +15,7 @@ function GraveUpdateModal({ isOpen, grave, onClose, onUpdate, intermentFees: pro
     const [formData, setFormData] = useState({
         grave_type: "",
         lot_price: "",
+        capacity: "",
         hasInstallment: true,
         installmentDuration: 12,
         isRenewable: false,
@@ -57,6 +58,7 @@ function GraveUpdateModal({ isOpen, grave, onClose, onUpdate, intermentFees: pro
             setFormData({
                 grave_type: grave.grave_type || "",
                 lot_price: grave.lot_price !== undefined && grave.lot_price !== null ? grave.lot_price : "",
+                capacity: grave.capacity !== undefined && grave.capacity !== null ? grave.capacity : "",
                 hasInstallment: hasInstall,
                 installmentDuration: grave.installment_duration || grave.installmentDuration || 12,
                 isRenewable: isRenew,
@@ -194,6 +196,8 @@ function GraveUpdateModal({ isOpen, grave, onClose, onUpdate, intermentFees: pro
                 await createIntermentFeeController({
                     fee: intermentForm.fee,
                     graveLot_type: grave.id,
+                    grave_type_id: grave.grave_type_id || grave.id,
+                    grave_type: grave.grave_type || "",
                     interment_fee_id: generatedId,
                     interment_type: intermentForm.interment_type
                 });
@@ -219,6 +223,7 @@ function GraveUpdateModal({ isOpen, grave, onClose, onUpdate, intermentFees: pro
             const payload = {
                 grave_type: formData.grave_type.trim(),
                 lot_price: Number(formData.lot_price),
+                capacity: formData.capacity !== "" ? Number(formData.capacity) : null,
                 installment: formData.hasInstallment,
                 installment_duration: formData.hasInstallment ? Number(formData.installmentDuration) : null,
                 downpayment: formData.hasInstallment ? downpayment : null,
@@ -288,19 +293,32 @@ function GraveUpdateModal({ isOpen, grave, onClose, onUpdate, intermentFees: pro
                         />
                     </div>
 
-                    {/* Lot Price */}
-                    <div className="update-modal-form-group">
-                        <label>Lot Price (₱)</label>
-                        <input
-                            type="number"
-                            name="lot_price"
-                            value={formData.lot_price}
-                            onChange={handleChange}
-                            placeholder="e.g. 150000"
-                            min="0"
-                            step="any"
-                            required
-                        />
+                    {/* Lot Price + Capacity side-by-side */}
+                    <div className="grave-two-col-grid" style={{ marginBottom: "14px" }}>
+                        <div className="update-modal-form-group" style={{ margin: 0 }}>
+                            <label>Lot Price (₱)</label>
+                            <input
+                                type="number"
+                                name="lot_price"
+                                value={formData.lot_price}
+                                onChange={handleChange}
+                                placeholder="e.g. 150000"
+                                min="0"
+                                step="any"
+                                required
+                            />
+                        </div>
+                        <div className="update-modal-form-group" style={{ margin: 0 }}>
+                            <label>Capacity</label>
+                            <input
+                                type="number"
+                                name="capacity"
+                                value={formData.capacity}
+                                onChange={handleChange}
+                                placeholder="e.g. 2"
+                                min="1"
+                            />
+                        </div>
                     </div>
 
                     {/* ── Connected Interment Section ── */}

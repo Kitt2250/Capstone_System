@@ -133,11 +133,11 @@ export async function updateGraveType(id, updatedData) {
 
 export function generateNextIntermentFeeId(existingFees = []) {
     let maxNum = 0;
-    let detectedPrefix = "1F";
+    let detectedPrefix = "IF";
 
     existingFees.forEach((f) => {
         const idStr = String(f.interment_fee_id || f.id || "").trim();
-        const match = idStr.match(/^([A-Za-z0-9]+?)(\d+)$/);
+        const match = idStr.match(/^([A-Za-z0-9_-]+?)(\d+)$/);
         if (match) {
             detectedPrefix = match[1];
             const num = parseInt(match[2], 10);
@@ -164,7 +164,9 @@ export async function createIntermentFee(feeData) {
         const docRef = doc(db, "interment_fee", nextId);
         await setDoc(docRef, {
             fee: Number(feeData.fee),
-            graveLot_type: feeData.graveLot_type,
+            graveLot_type: feeData.graveLot_type || feeData.grave_type_id || "",
+            grave_type_id: feeData.grave_type_id || feeData.graveLot_type || "",
+            grave_type: feeData.grave_type || "",
             interment_fee_id: nextId,
             interment_type: feeData.interment_type
         });

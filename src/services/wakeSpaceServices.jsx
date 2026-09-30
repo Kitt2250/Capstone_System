@@ -2,6 +2,7 @@ import {
     collection,
     doc,
     addDoc,
+    setDoc,
     getDocs,
     getDoc,
     updateDoc,
@@ -14,7 +15,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase/config";
 
-const COLLECTION = "wake_space";
+const COLLECTION = "wakeSpaceRental";
+const WAKE_SPACE_COLLECTION = "wake_space";
 
 // ── ID generator ──────────────────────────────────────────────────────────────
 export function generateNextBookingId(existingBookings = []) {
@@ -96,12 +98,19 @@ export async function getWakeSpaceBookingById(docId) {
  * @param {Function} onData  – callback receives array of bookings
  * @returns unsubscribe function
  */
-export function subscribeWakeSpaceBookings(onData) {
+export function subscribeWakeSpaceBookings(onData, onError) {
     const q = query(collection(db, COLLECTION), orderBy("createdAt", "desc"));
-    return onSnapshot(q, (snap) => {
-        const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        onData(data);
-    });
+    return onSnapshot(
+        q,
+        (snap) => {
+            const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+            onData(data);
+        },
+        (err) => {
+            console.error("Error in subscribeWakeSpaceBookings:", err);
+            if (onError) onError(err);
+        }
+    );
 }
 
 // ── Update booking status ─────────────────────────────────────────────────────
@@ -159,6 +168,59 @@ export async function getBookingsInRange(startDate, endDate) {
         return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
     } catch (error) {
         console.error("Error fetching bookings in range:", error);
+        throw error;
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// WAKE SPACE FACILITIES (collection: "wake_space")
+// Manages the 3 physical wake spaces: A, B, C
+// Document IDs: WAS-001, WAS-002, WAS-003
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Fetch all wake space facilities (one-time)
+ */
+export async function getWakeSpaces() {
+    try {
+        const snap = await getDocs(collection(db, WAKE_SPACE_COLLECTION));
+        return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    } catch (error) {
+        console.error("Error fetching wake spaces:", error);
+        throw error;
+    }
+}
+
+/**
+ * Live listener for wake space facilities
+ * @param {Function} onData – callback receives array of wake spaces
+ * @returns unsubscribe function
+ */
+export function subscribeWakeSpaces(onData, onError) {
+    return onSnapshot(
+        collection(db, WAKE_SPACE_COLLECTION),
+        (snap) => {
+            const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+            onData(data);
+        },
+        (err) => {
+            console.error("Error in subscribeWakeSpaces:", err);
+            if (onError) onError(err);
+        }
+    );
+}
+
+/**
+ * Update a wake space facility (e.g. change status or price)
+ */
+export async function updateWakeSpace(wakeSpaceId, fields) {
+    try {
+        await updateDoc(doc(db, WAKE_SPACE_COLLECTION, wakeSpaceId), {
+            ...fields,
+            updatedAt: serverTimestamp(),
+        });
+    } catch (error) {
+        console.error("Error updating wake space:", error);
         throw error;
     }
 }

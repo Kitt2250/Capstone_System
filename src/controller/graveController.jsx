@@ -37,6 +37,8 @@ export const createGraveTypeController = async (payload, stagedInterments = []) 
         await createIntermentFee({
             fee: item.fee,
             graveLot_type: createdId,
+            grave_type_id: createdId,
+            grave_type: payload.grave_type?.trim() || "",
             interment_fee_id: item.interment_fee_id,
             interment_type: item.interment_type
         });
@@ -82,7 +84,7 @@ export const createIntermentFeeController = async (feeData) => {
         throw new Error("Please enter a valid fee amount.");
     }
 
-    if (!feeData.graveLot_type) {
+    if (!feeData.graveLot_type && !feeData.grave_type_id) {
         throw new Error("Grave type reference is required.");
     }
 
@@ -94,7 +96,9 @@ export const createIntermentFeeController = async (feeData) => {
 
     const savedId = await createIntermentFee({
         fee: Number(feeData.fee),
-        graveLot_type: feeData.graveLot_type,
+        graveLot_type: feeData.graveLot_type || feeData.grave_type_id,
+        grave_type_id: feeData.grave_type_id || feeData.graveLot_type,
+        grave_type: feeData.grave_type?.trim() || "",
         interment_fee_id: feeData.interment_fee_id,
         interment_type: feeData.interment_type.trim()
     });

@@ -60,7 +60,7 @@ function BuildPlotStudio({ onPlotSaved }) {
     setTimeout(() => setErrorMessage(''), 5000);
   };
 
-  // 1. Fetch Grave Types from Firestore 'grave_type' collection
+  // 1. Fetch Grave Types from Firestore 'grave_type' collection (only active ones)
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(db, 'grave_type'),
@@ -70,6 +70,20 @@ function BuildPlotStudio({ onPlotSaved }) {
 
         snap.docs.forEach((d) => {
           const data = d.data();
+
+          // Only include active grave types in the dropdown filter
+          const statusStr = (data.status != null && data.status !== '') 
+            ? String(data.status).toLowerCase().trim() 
+            : null;
+          let isActive = true;
+          if (statusStr) {
+            isActive = statusStr === 'active' || statusStr === 'enabled';
+          } else if (data.isActive !== undefined && data.isActive !== null) {
+            isActive = Boolean(data.isActive);
+          }
+
+          if (!isActive) return;
+
           const typeName = data.grave_type || data.name || data.graveType || d.id;
           if (typeName && !types.includes(typeName)) {
             types.push(typeName);
@@ -84,10 +98,16 @@ function BuildPlotStudio({ onPlotSaved }) {
         if (types.length > 0) {
           setGraveTypes(types);
           setGraveLotDataMap(dataMap);
-        } else {
+        } else if (snap.empty) {
           const defaultTypes = ['Ground Grave', 'Single Niche', 'Mausoleum', 'Bone Vault', 'Apartment', 'Columbarium'];
           setGraveTypes(defaultTypes);
+        } else {
+          setGraveTypes([]);
+          setGraveLotDataMap({});
         }
+
+        // Reset selected grave type if it's no longer in the active list
+        setSelectedGraveType((prev) => (types.includes(prev) ? prev : ''));
       },
       (e) => {
         console.error('Error fetching grave_type:', e);
@@ -966,11 +986,11 @@ function BuildPlotStudio({ onPlotSaved }) {
             </svg>
             <select id="map-location-preset-select" aria-label="Jump to Location" defaultValue="14.8378337,120.7600209,18" onChange={handlePresetChange}>
               <option value="14.8378337,120.7600209,18">Cherubim</option>
-              <option value="14.8375809,120.7588293,20">Single Niche A</option>
-              <option value="14.8378584,120.7595240,20">Single Niche B</option>
+              <option value="14.8375809,120.7588293,20">Single Niche - Section A</option>
+              <option value="14.8378584,120.7595240,20">Single Niche - Section B</option>
               <option value="14.8376473,120.7601220,19">Ground Burial</option>
-              <option value="14.8380567,120.7613991,19">Apartment A</option>
-              <option value="14.8377456,120.7588448,19">Apartment B</option>
+              <option value="14.8380567,120.7613991,19">Apartment - Section A</option>
+              <option value="14.8377456,120.7588448,19">Apartment - Section B</option>
             </select>
           </div>
 

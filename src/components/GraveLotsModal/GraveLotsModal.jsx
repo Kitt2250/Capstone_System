@@ -14,8 +14,9 @@ import {
     ExternalLink
 } from "lucide-react";
 import SatelliteMap from "../../pages/Admin/MapManagement/MapFolder/SatelliteMap.jsx";
-import { subscribePlots } from "../../services/plotServices.jsx";
+import { subscribePlots, getCentered12Plots } from "../../services/plotServices.jsx";
 import { subscribeGraveTypes } from "../../services/graveServices.jsx";
+import Pagination from "../Pagination/Pagination.jsx";
 import "./GraveLotsModal.css";
 
 /**
@@ -121,21 +122,6 @@ function GraveLotsModal({
         return "";
     };
 
-    // Sync active filters when modal opens or selectedGraveType changes
-    useEffect(() => {
-        if (isOpen) {
-            if (selectedGraveType) {
-                const resolvedName = resolveGraveTypeName(selectedGraveType);
-                setSelectedGraveTypeFilter(resolvedName || "ALL");
-            } else {
-                setSelectedGraveTypeFilter("ALL");
-            }
-            setActiveStatus("ALL");
-            setSearchQuery("");
-            setCurrentPage(1);
-            setSelectedPlot(null);
-        }
-    }, [isOpen, selectedGraveType, allGraveTypes]);
 
     // Invalidate map size so all tiles render properly inside the modal
     useEffect(() => {
@@ -146,14 +132,43 @@ function GraveLotsModal({
         return () => clearTimeout(timer);
     }, [isOpen]);
 
-    const allPlots = (propPlots && propPlots.length > 0) ? propPlots : livePlots;
-
     // Helper functions for plots
-    const getStatusKey = (status = "") => {
-        const s = String(status || "").toLowerCase().trim();
-        if (s === "available" || s === "vacant" || s === "open") return "available";
-        if (s === "occupied" || s === "taken" || s === "used") return "occupied";
+    const getStatusKey = (plotOrStatus = "") => {
+        let status = "";
+        let occupied = null;
+        let maxCap = null;
+
+        if (plotOrStatus && typeof plotOrStatus === "object") {
+            status = plotOrStatus.status || plotOrStatus.plot_status || "";
+            occupied = plotOrStatus.occupiedCount != null ? Number(plotOrStatus.occupiedCount) : null;
+            maxCap = plotOrStatus.maxCapacity != null ? Number(plotOrStatus.maxCapacity) : (plotOrStatus.capacity != null ? Number(plotOrStatus.capacity) : null);
+        } else {
+            status = String(plotOrStatus || "");
+        }
+
+        const s = status.toLowerCase().trim();
+
+        if (s === "partial" || s === "partially occupied" || s === "partially-occupied") return "partial";
+        if (s === "occupied" || s === "taken" || s === "used") {
+            if (occupied != null && maxCap != null && maxCap > 1 && occupied > 0 && occupied < maxCap) {
+                return "partial";
+            }
+            return "occupied";
+        }
         if (s === "reserved" || s === "pending") return "reserved";
+        if (s === "available" || s === "vacant" || s === "open") {
+            if (occupied != null && occupied > 0) {
+                if (maxCap != null && maxCap > 0 && occupied >= maxCap) return "occupied";
+                return "partial";
+            }
+            return "available";
+        }
+
+        if (occupied != null && occupied > 0) {
+            if (maxCap != null && maxCap > 0 && occupied >= maxCap) return "occupied";
+            return "partial";
+        }
+
         return "available";
     };
 
@@ -161,6 +176,8 @@ function GraveLotsModal({
         switch (statusKey) {
             case "available":
                 return "Available";
+            case "partial":
+                return "Partial";
             case "occupied":
                 return "Occupied";
             case "reserved":
@@ -169,6 +186,8 @@ function GraveLotsModal({
                 return "Available";
         }
     };
+
+    const allPlots = (propPlots && propPlots.length > 0) ? propPlots : livePlots;
 
     const getLotTitle = (plot) => {
         return (
@@ -219,49 +238,178 @@ function GraveLotsModal({
         return "Grave Lot";
     };
 
+    // Helper to check if a grave type is active
+    const isGraveTypeActive = (gt) => {
+        if (!gt) return true;
+        if (gt.status !== undefined && gt.status !== null && gt.status !== "") {
+            const s = String(gt.status).toLowerCase().trim();
+            if (s === "inactive" || s === "disabled" || s === "archived") return false;
+            if (s === "active" || s === "enabled") return true;
+        }
+        if (gt.isActive !== undefined && gt.isActive !== null) {
+            return Boolean(gt.isActive);
+        }
+        return true;
+    };
+
     const getLotSection = (plot) => {
         if (plot.section) {
-            return String(plot.section).startsWith("Section") ? String(plot.section) : `Section ${plot.section}`;
+            const s = String(plot.section).trim();
+            if (/^section\b/i.test(s)) return s;
+            return `Section ${s}`;
         }
         const code = getLotTitle(plot);
-        const match = code.match(/^([A-Za-z]+)-/);
+        const match = code.match(/^[A-Z]+-([A-Za-z0-9]+)-/i);
         if (match) return `Section ${match[1].toUpperCase()}`;
+        const match2 = code.match(/^([A-Za-z]+)-/);
+        if (match2) return `Section ${match2[1].toUpperCase()}`;
         return "General Section";
     };
 
-    // Generate unique grave_type options (only grave_type, NO id and NO section)
-    const availableGraveTypes = useMemo(() => {
-        const typesSet = new Set();
+    // Generate unique GraveType & Section combined options (segregated in a single dropdown)
+    const availableGraveTypeSectionOptions = useMemo(() => {
+        const optionsMap = new Map();
 
-        // 1. From configured grave types
-        allGraveTypes.forEach((gt) => {
-            const name = gt.name || gt.grave_type || gt.graveType;
-            if (name && !/^GT\d+$/i.test(String(name).trim())) {
-                typesSet.add(String(name).trim());
-            }
-        });
-
-        // 2. From actual plots
+        // 1. Gather all unique (GraveType, Section) pairs from actual plots
         allPlots.forEach((p) => {
             const type = getLotType(p);
-            if (type && type !== "Grave Lot" && !/^GT\d+$/i.test(String(type).trim())) {
-                typesSet.add(String(type).trim());
+            if (!type || type === "Grave Lot" || /^GT\d+$/i.test(String(type).trim())) {
+                return;
+            }
+
+            // Filter out if grave type is inactive in allGraveTypes
+            const matchingGt = allGraveTypes.find((gt) => {
+                const gtId = String(gt.id || gt.grave_type_id || "").trim().toLowerCase();
+                const gtName = String(gt.name || gt.grave_type || "").trim().toLowerCase();
+                const pTypeId = String(p.grave_type_id || p.graveLotTypeID || "").trim().toLowerCase();
+                return (gtId && gtId === pTypeId) || (gtName && gtName === type.toLowerCase());
+            });
+            if (matchingGt && !isGraveTypeActive(matchingGt)) {
+                return;
+            }
+
+            const sec = getLotSection(p);
+            const key = `${type}__${sec}`;
+            if (!optionsMap.has(key)) {
+                optionsMap.set(key, {
+                    key,
+                    type,
+                    section: sec,
+                    label: `${type} - ${sec}`
+                });
             }
         });
 
-        return Array.from(typesSet).sort((a, b) =>
-            a.localeCompare(b, undefined, { sensitivity: "base" })
+        // 2. Fallback for configured active grave types that don't have plots yet
+        allGraveTypes.forEach((gt) => {
+            if (!isGraveTypeActive(gt)) return;
+            const name = gt.name || gt.grave_type || gt.graveType;
+            if (name && !/^GT\d+$/i.test(String(name).trim())) {
+                const trimmedName = String(name).trim();
+                const hasEntry = Array.from(optionsMap.values()).some(
+                    (opt) => opt.type.toLowerCase() === trimmedName.toLowerCase()
+                );
+                if (!hasEntry) {
+                    const key = `${trimmedName}__General Section`;
+                    optionsMap.set(key, {
+                        key,
+                        type: trimmedName,
+                        section: "General Section",
+                        label: `${trimmedName}`
+                    });
+                }
+            }
+        });
+
+        return Array.from(optionsMap.values()).sort((a, b) =>
+            a.label.localeCompare(b.label, undefined, { numeric: true, sensitivity: "base" })
         );
-    }, [allGraveTypes, allPlots]);
+    }, [allPlots, allGraveTypes]);
+
+    // Sync active filters when modal opens or selectedGraveType changes
+    useEffect(() => {
+        if (isOpen) {
+            if (selectedPlotId && allPlots.length > 0) {
+                const initialPlot = allPlots.find((p) => p.id === selectedPlotId);
+                if (initialPlot) {
+                    const key = `${getLotType(initialPlot)}__${getLotSection(initialPlot)}`;
+                    setSelectedGraveTypeFilter(key);
+                } else if (selectedGraveType) {
+                    const resolvedName = resolveGraveTypeName(selectedGraveType);
+                    const matching = availableGraveTypeSectionOptions.filter(
+                        (opt) => opt.type.toLowerCase() === (resolvedName || "").toLowerCase()
+                    );
+                    setSelectedGraveTypeFilter(matching.length > 0 ? matching[0].key : (resolvedName || "ALL"));
+                } else {
+                    setSelectedGraveTypeFilter("ALL");
+                }
+            } else if (selectedGraveType) {
+                const resolvedName = resolveGraveTypeName(selectedGraveType);
+                if (resolvedName) {
+                    const matching = availableGraveTypeSectionOptions.filter(
+                        (opt) => opt.type.toLowerCase() === resolvedName.toLowerCase()
+                    );
+                    if (matching.length > 0) {
+                        setSelectedGraveTypeFilter(matching[0].key);
+                    } else {
+                        setSelectedGraveTypeFilter(resolvedName);
+                    }
+                } else {
+                    setSelectedGraveTypeFilter("ALL");
+                }
+            } else {
+                setSelectedGraveTypeFilter("ALL");
+            }
+            setActiveStatus("ALL");
+            setSearchQuery("");
+            setCurrentPage(1);
+            setSelectedPlot(null);
+            setFocusedPlot(null);
+        }
+    }, [isOpen, selectedGraveType, selectedPlotId, availableGraveTypeSectionOptions]);
 
     const matchesGraveType = (plot, targetFilter) => {
         if (!targetFilter || targetFilter === "ALL") return true;
-        const normTarget = String(targetFilter).trim().toLowerCase();
+
         const plotLotType = getLotType(plot).trim().toLowerCase();
+        const plotSec = getLotSection(plot).trim().toLowerCase();
 
-        if (plotLotType === normTarget) return true;
+        // 1. If filtering by combined GraveType & Section ("Type__Section")
+        if (targetFilter.includes("__")) {
+            const [filterType, filterSec] = targetFilter.split("__");
+            const normFilterType = filterType.trim().toLowerCase();
+            const normFilterSec = filterSec.trim().toLowerCase();
 
-        // Also match plot.grave_type_id against targetFilter's id in allGraveTypes
+            let isTypeMatch = (plotLotType === normFilterType) ||
+                plotLotType.includes(normFilterType) ||
+                normFilterType.includes(plotLotType);
+
+            if (!isTypeMatch) {
+                const plotTypeId = String(plot.grave_type_id || plot.graveLotTypeID || "").trim().toLowerCase();
+                const targetObj = allGraveTypes.find((gt) => {
+                    const n = String(gt.name || gt.grave_type || "").trim().toLowerCase();
+                    return n === normFilterType;
+                });
+                if (targetObj) {
+                    const targetId = String(targetObj.id || targetObj.grave_type_id || "").trim().toLowerCase();
+                    if (targetId && plotTypeId === targetId) isTypeMatch = true;
+                }
+            }
+
+            if (!isTypeMatch) return false;
+
+            const isSecMatch = (plotSec === normFilterSec) ||
+                (plot.section && String(plot.section).trim().toLowerCase() === normFilterSec.replace(/^section\s*/i, "").trim().toLowerCase());
+
+            return isSecMatch;
+        }
+
+        // 2. If targetFilter is a simple type name
+        const normTarget = String(targetFilter).trim().toLowerCase();
+        if (plotLotType === normTarget || plotLotType.includes(normTarget) || normTarget.includes(plotLotType)) {
+            return true;
+        }
+
         const plotTypeId = String(plot.grave_type_id || plot.graveLotTypeID || "").trim().toLowerCase();
         const targetObj = allGraveTypes.find((gt) => {
             const n = String(gt.name || gt.grave_type || "").trim().toLowerCase();
@@ -272,28 +420,41 @@ function GraveLotsModal({
             if (targetId && plotTypeId === targetId) return true;
         }
 
-        if (plotLotType.includes(normTarget) || normTarget.includes(plotLotType)) return true;
-
         return false;
     };
 
     // Filtered plots based on Grave Type, Status, and Search Query
     const filteredPlots = useMemo(() => {
+        const hasSearch = searchQuery.trim().length > 0;
+
         return allPlots
             .filter((plot) => {
+                const statusKey = getStatusKey(plot);
+
                 // 1. Grave Type filter (only grave_type)
                 if (!matchesGraveType(plot, selectedGraveTypeFilter)) {
                     return false;
                 }
 
-                // 2. Status filter
-                if (activeStatus !== "ALL") {
-                    const statusKey = getStatusKey(plot.status);
-                    if (statusKey !== activeStatus) return false;
+                // 2. Status filter:
+                // When NOT searching: only display the available graves (or respect explicit status filter)
+                // When searching: partial, reserved, occupied, available are all able to render
+                if (!hasSearch) {
+                    if (activeStatus !== "ALL") {
+                        if (statusKey !== activeStatus) return false;
+                    } else {
+                        // Default when user is not searching: only display available graves
+                        if (statusKey !== "available") return false;
+                    }
+                } else {
+                    // When searching: respect activeStatus if user selected one
+                    if (activeStatus !== "ALL" && statusKey !== activeStatus) {
+                        return false;
+                    }
                 }
 
                 // 3. Search query
-                if (searchQuery.trim()) {
+                if (hasSearch) {
                     const q = searchQuery.toLowerCase().trim();
                     const code = getLotTitle(plot).toLowerCase();
                     const sec = getLotSection(plot).toLowerCase();
@@ -339,6 +500,14 @@ function GraveLotsModal({
     const handleNavigateOnMap = (plot) => {
         setSelectedPlot(null);
         setFocusedPlot(plot);
+
+        // Center on the page containing the navigated plot
+        const targetIdx = filteredPlots.findIndex((p) => String(p.id) === String(plot?.id));
+        if (targetIdx !== -1) {
+            const pageNum = Math.floor(targetIdx / ITEMS_PER_PAGE) + 1;
+            setCurrentPage(pageNum);
+        }
+
         setTimeout(() => {
             const mapEl = document.querySelector(".glm-map-panel-card");
             if (mapEl) {
@@ -348,6 +517,10 @@ function GraveLotsModal({
     };
 
     const handleSelectGraveLot = (plot) => {
+        if (!plot) return;
+        const statusKey = getStatusKey(plot);
+        // Only available grave is selectable
+        if (statusKey !== "available") return;
         if (onSelectPlot) {
             onSelectPlot(plot);
         }
@@ -355,9 +528,25 @@ function GraveLotsModal({
         onClose?.();
     };
 
-    const totalAvailable = filteredPlots.filter((p) => getStatusKey(p.status) === "available").length;
+    const totalAvailable = allPlots.filter((p) => getStatusKey(p) === "available").length;
 
-    // Pagination calculations
+    const handleLocationSelectFromMap = (locationKeyOrLabel, limitedPlots, selectedOpt) => {
+        const matched = availableGraveTypeSectionOptions.find(
+            (o) => o.key === locationKeyOrLabel || o.label.toLowerCase() === String(locationKeyOrLabel).toLowerCase()
+        );
+        if (matched) {
+            setSelectedGraveTypeFilter(matched.key);
+        } else if (selectedOpt) {
+            const fallbackKey = `${selectedOpt.type}__${selectedOpt.section}`;
+            const fallbackOpt = availableGraveTypeSectionOptions.find((o) => o.key === fallbackKey);
+            if (fallbackOpt) setSelectedGraveTypeFilter(fallbackOpt.key);
+        }
+        setActiveStatus("ALL");
+        setFocusedPlot(null);
+        setCurrentPage(1);
+    };
+
+    // Pagination calculations (12 plots per page)
     const totalPlots = filteredPlots.length;
     const totalPages = Math.ceil(totalPlots / ITEMS_PER_PAGE) || 1;
     const startIdx = totalPlots === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
@@ -367,19 +556,29 @@ function GraveLotsModal({
         currentPage * ITEMS_PER_PAGE
     );
 
+    // 12-plot centered slice around the navigated plot (5 before, navigate in middle, 6 after)
+    const centered12Plots = useMemo(() => {
+        if (!focusedPlot) return null;
+        return getCentered12Plots(filteredPlots.length > 0 ? filteredPlots : allPlots, focusedPlot);
+    }, [filteredPlots, allPlots, focusedPlot]);
+
+    const displayedPlots = centered12Plots || paginatedPlots;
+
     const title = useMemo(() => {
         if (selectedGraveTypeFilter !== "ALL") {
-            return `Grave Lot Selection – ${selectedGraveTypeFilter}`;
+            const opt = availableGraveTypeSectionOptions.find((o) => o.key === selectedGraveTypeFilter);
+            const label = opt ? opt.label : selectedGraveTypeFilter;
+            return `Grave Lot Selection – ${label}`;
         }
         if (selectedGraveType) {
             const name = resolveGraveTypeName(selectedGraveType);
             if (name) return `Grave Lot Selection – ${name}`;
         }
         return "Grave Lots";
-    }, [selectedGraveTypeFilter, selectedGraveType, allGraveTypes]);
+    }, [selectedGraveTypeFilter, selectedGraveType, availableGraveTypeSectionOptions]);
 
     // Selected plot metadata for the popup
-    const popupStatusKey = selectedPlot ? getStatusKey(selectedPlot.status) : "available";
+    const popupStatusKey = selectedPlot ? getStatusKey(selectedPlot) : "available";
     const popupStatusLabel = getStatusLabel(popupStatusKey);
     const popupLotCode = selectedPlot ? getLotTitle(selectedPlot) : "";
     const popupGraveType = selectedPlot ? getLotType(selectedPlot) : "Apartment";
@@ -446,6 +645,7 @@ function GraveLotsModal({
                                         value={searchQuery}
                                         onChange={(e) => {
                                             setSearchQuery(e.target.value);
+                                            setFocusedPlot(null);
                                             setCurrentPage(1);
                                         }}
                                     />
@@ -455,6 +655,7 @@ function GraveLotsModal({
                                             className="glm-search-clear-btn"
                                             onClick={() => {
                                                 setSearchQuery("");
+                                                setFocusedPlot(null);
                                                 setCurrentPage(1);
                                             }}
                                             aria-label="Clear search"
@@ -464,21 +665,22 @@ function GraveLotsModal({
                                     )}
                                 </div>
 
-                                {/* Grave Type Dropdown (only grave_type, NO id and NO section) */}
+                                {/* Grave Type & Section Combined Dropdown */}
                                 <div className="glm-select-wrap glm-select-wrap-type">
                                     <select
                                         className="glm-select-control"
                                         value={selectedGraveTypeFilter}
                                         onChange={(e) => {
                                             setSelectedGraveTypeFilter(e.target.value);
+                                            setFocusedPlot(null);
                                             setCurrentPage(1);
                                         }}
-                                        aria-label="Filter by grave type"
+                                        aria-label="Filter by grave type and section"
                                     >
                                         <option value="ALL">All Grave Types</option>
-                                        {availableGraveTypes.map((type) => (
-                                            <option key={type} value={type}>
-                                                {type}
+                                        {availableGraveTypeSectionOptions.map((opt) => (
+                                            <option key={opt.key} value={opt.key}>
+                                                {opt.label}
                                             </option>
                                         ))}
                                     </select>
@@ -492,12 +694,14 @@ function GraveLotsModal({
                                         value={activeStatus}
                                         onChange={(e) => {
                                             setActiveStatus(e.target.value);
+                                            setFocusedPlot(null);
                                             setCurrentPage(1);
                                         }}
                                         aria-label="Filter by status"
                                     >
                                         <option value="ALL">Status</option>
                                         <option value="available">Available</option>
+                                        <option value="partial">Partial</option>
                                         <option value="occupied">Occupied</option>
                                         <option value="reserved">Reserved</option>
                                     </select>
@@ -515,7 +719,7 @@ function GraveLotsModal({
                                 </div>
                             </div>
 
-                            {/* Plots Grid (4 columns) */}
+                            {/* Plots Grid (4 columns, 12 slots) */}
                             <div className="glm-slots-grid">
                                 {totalPlots === 0 ? (
                                     <div className="glm-slots-empty">
@@ -523,23 +727,29 @@ function GraveLotsModal({
                                         <p>No plots found. Please add plots in Map Management.</p>
                                     </div>
                                 ) : (
-                                    paginatedPlots.map((plot, idx) => {
-                                        const statusKey = getStatusKey(plot.status);
+                                    displayedPlots.map((plot, idx) => {
+                                        const statusKey = getStatusKey(plot);
                                         const lotTitle = getLotTitle(plot);
                                         const lotType = getLotType(plot);
                                         const statusLabel = getStatusLabel(statusKey);
                                         const isSelected = selectedPlotId && (String(selectedPlotId) === String(plot.id));
-
+                                        const isNavigated = focusedPlot && (String(focusedPlot.id) === String(plot.id));
                                         return (
                                             <div
                                                 key={plot.id || idx}
-                                                className={`glm-slot-card ${statusKey} ${isSelected ? "selected" : ""}`}
+                                                className={`glm-slot-card ${statusKey} ${isSelected ? "selected" : ""} ${isNavigated ? "navigated-focused" : ""}`}
                                                 onClick={() => setSelectedPlot(plot)}
-                                                title={`Click to view details for ${lotTitle}`}
+                                                title={`${lotTitle} (${statusLabel}) - Click to view details`}
                                             >
                                                 <div className={`glm-card-status-icon ${statusKey}`}>
                                                     {statusKey === "available" && (
                                                         <Check size={12} strokeWidth={3.5} color="#ffffff" />
+                                                    )}
+                                                    {statusKey === "partial" && (
+                                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                                                            <line x1="12" y1="5" x2="12" y2="19" />
+                                                            <line x1="5" y1="12" x2="12" y2="12" />
+                                                        </svg>
                                                     )}
                                                     {statusKey === "occupied" && (
                                                         <X size={12} strokeWidth={3.5} color="#ffffff" />
@@ -564,36 +774,14 @@ function GraveLotsModal({
                                         Showing {startIdx} to {endIdx} of {totalPlots} slots
                                     </span>
                                     {totalPages > 1 && (
-                                        <div className="glm-pagination-controls">
-                                            <button
-                                                type="button"
-                                                className="glm-page-btn"
-                                                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                                                disabled={currentPage === 1}
-                                                aria-label="Previous Page"
-                                            >
-                                                <ChevronLeft size={14} />
-                                            </button>
-                                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                                <button
-                                                    type="button"
-                                                    key={page}
-                                                    className={`glm-page-btn ${page === currentPage ? "active" : ""}`}
-                                                    onClick={() => setCurrentPage(page)}
-                                                >
-                                                    {page}
-                                                </button>
-                                            ))}
-                                            <button
-                                                type="button"
-                                                className="glm-page-btn"
-                                                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-                                                disabled={currentPage === totalPages}
-                                                aria-label="Next Page"
-                                            >
-                                                <ChevronRight size={14} />
-                                            </button>
-                                        </div>
+                                        <Pagination
+                                            currentPage={currentPage}
+                                            totalPages={totalPages}
+                                            onPageChange={(page) => {
+                                                setFocusedPlot(null);
+                                                setCurrentPage(page);
+                                            }}
+                                        />
                                     )}
                                 </div>
                             )}
@@ -604,6 +792,10 @@ function GraveLotsModal({
                                     <div className="glm-legend-item">
                                         <span className="glm-legend-badge available"></span>
                                         <span>Available</span>
+                                    </div>
+                                    <div className="glm-legend-item">
+                                        <span className="glm-legend-badge partial"></span>
+                                        <span>Partial</span>
                                     </div>
                                     <div className="glm-legend-item">
                                         <span className="glm-legend-badge occupied"></span>
@@ -636,8 +828,11 @@ function GraveLotsModal({
 
                             <div className="glm-map-container">
                                 <SatelliteMap
-                                    plots={allPlots}
+                                    allPlots={allPlots}
+                                    plots={displayedPlots}
                                     focusPlot={focusedPlot}
+                                    currentLocationKey={selectedGraveTypeFilter}
+                                    onLocationSelect={handleLocationSelectFromMap}
                                     mapId="grave-lots-modal-map"
                                     onRegisterPlot={(plot) => handleSelectGraveLot(plot)}
                                 />
@@ -721,15 +916,16 @@ function GraveLotsModal({
                             </a>
                         </div>
 
-                        {/* Action Button Row 2: Select Grave Lot */}
-                        <button
-                            type="button"
-                            className="glm-popup-btn-select"
-                            disabled={popupStatusKey === "occupied"}
-                            onClick={() => handleSelectGraveLot(selectedPlot)}
-                        >
-                            {popupStatusKey === "occupied" ? "Plot is Occupied" : "Select Grave Lot"}
-                        </button>
+                        {/* Action Button Row 2: Select Grave Lot (Only when Available) */}
+                        {popupStatusKey === "available" && (
+                            <button
+                                type="button"
+                                className="glm-popup-btn-select"
+                                onClick={() => handleSelectGraveLot(selectedPlot)}
+                            >
+                                Select Grave Lot
+                            </button>
+                        )}
                     </div>
                 </div>
             )}

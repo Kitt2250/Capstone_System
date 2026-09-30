@@ -1,4 +1,527 @@
-/* ===== WakeSpace – only styles not already in UserManagement.css ===== */
+/* ===== WakeSpace – Premium Memorial System Styling ===== */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SECTION HEADERS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ws-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 28px 0 16px 0;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #eef2f6;
+}
+
+.ws-section-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ws-section-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #004d8c;
+}
+
+.ws-section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   3-COLUMN WAKE SPACE CARDS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ws-spaces-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 12px;
+}
+
+@media (max-width: 1100px) {
+    .ws-spaces-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.ws-spaces-empty {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 40px 20px;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px dashed #e2e8f0;
+}
+
+/* ── Individual Space Card ── */
+.ws-space-card {
+    background: #ffffff;
+    border: 1px solid #e8ecf1;
+    border-radius: 16px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ws-space-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Card top accent line */
+.ws-space-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.ws-space-card.ws-space-occupied::before {
+    background: linear-gradient(90deg, #ef4444, #f87171);
+}
+
+.ws-space-card.ws-space-available::before {
+    background: linear-gradient(90deg, #10b981, #34d399);
+}
+
+/* ── Card Header ── */
+.ws-space-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 20px 20px 14px;
+    gap: 12px;
+}
+
+.ws-space-name-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ws-space-icon-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+}
+
+.ws-space-icon-circle.occupied {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.ws-space-icon-circle.available {
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+.ws-space-name-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ws-space-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.ws-space-id-pill {
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: monospace;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 2px 7px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.ws-space-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.ws-price-val {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #004d8c;
+}
+
+.ws-price-unit {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+/* ── Status Badge ── */
+.ws-space-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ws-badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.ws-badge-occupied {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.ws-badge-occupied .ws-badge-dot {
+    background: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+    animation: ws-pulse 1.6s ease-in-out infinite;
+}
+
+.ws-badge-available {
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+
+.ws-badge-available .ws-badge-dot {
+    background: #10b981;
+}
+
+@keyframes ws-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* ── Current Booking (Occupied) ── */
+.ws-space-current {
+    margin: 0 18px 14px;
+    padding: 14px 16px;
+    background: #fff8f8;
+    border: 1px solid #fed7d7;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(239, 68, 68, 0.04);
+}
+
+.ws-space-current-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #fee2e2;
+}
+
+.ws-space-current-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.725rem;
+    font-weight: 700;
+    color: #dc2626;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.ws-duration-badge {
+    font-size: 0.725rem;
+    font-weight: 700;
+    color: #991b1b;
+    background: #fee2e2;
+    padding: 2px 8px;
+    border-radius: 9999px;
+}
+
+.ws-space-current-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ws-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8125rem;
+    color: #334155;
+}
+
+.ws-detail-row.highlight {
+    background: #ffffff;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #fecaca;
+}
+
+.ws-icon-deceased {
+    color: #e11d48;
+    flex-shrink: 0;
+}
+
+.ws-icon-client {
+    color: #3b82f6;
+    flex-shrink: 0;
+}
+
+.ws-icon-dates {
+    color: #64748b;
+    flex-shrink: 0;
+}
+
+.ws-detail-label {
+    min-width: 58px;
+    font-weight: 600;
+    color: #64748b;
+    font-size: 0.725rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.ws-detail-val {
+    font-size: 0.8125rem;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+.ws-detail-val.deceased {
+    font-weight: 700;
+    color: #991b1b;
+}
+
+.ws-detail-val.dates {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+/* ── No Current Booking (Available) ── */
+.ws-space-no-current {
+    margin: 0 18px 14px;
+    padding: 20px 16px;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ws-vacant-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #ecfdf5;
+    color: #10b981;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ws-vacant-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.ws-vacant-sub {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* ── Upcoming Queue ── */
+.ws-space-upcoming {
+    padding: 0 18px 14px;
+    flex: 1;
+}
+
+.ws-space-upcoming-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.725rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+}
+
+.ws-upcoming-count {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #475569;
+    background: #f1f5f9;
+    padding: 2px 7px;
+    border-radius: 9999px;
+}
+
+.ws-upcoming-empty {
+    font-size: 0.775rem;
+    color: #94a3b8;
+    padding: 6px 0;
+}
+
+.ws-upcoming-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ws-upcoming-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border: 1px solid #edf2f7;
+    border-radius: 8px;
+    gap: 10px;
+}
+
+.ws-upcoming-item-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.ws-upcoming-dates {
+    font-size: 0.775rem;
+    font-weight: 600;
+    color: #334155;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ws-upcoming-client {
+    font-size: 0.725rem;
+    color: #64748b;
+}
+
+.ws-upcoming-nights-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #004d8c;
+    background: #eff6ff;
+    padding: 2px 7px;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.ws-upcoming-more {
+    font-size: 0.725rem;
+    color: #004d8c;
+    font-weight: 600;
+    text-align: center;
+    padding: 4px 0;
+}
+
+/* ── Footer Stats ── */
+.ws-space-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 12px 18px;
+    background: #f8fafc;
+    border-top: 1px solid #edf2f7;
+}
+
+.ws-space-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+}
+
+.ws-stat-divider {
+    width: 1px;
+    height: 24px;
+    background-color: #e2e8f0;
+}
+
+.ws-stat-value {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.ws-stat-label {
+    font-size: 0.6875rem;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* ── Space Tag (table view) ── */
+.ws-space-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Responsive – stack cards on narrow screens
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+    .ws-spaces-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
+    .ws-spaces-grid {
+        grid-template-columns: 1fr;
+    }
+}
 
 /* KPI grid override – icon instead of pill */
 .ws-kpi-grid .um-kpi-card-header {
@@ -250,11 +773,7 @@
 
 .ws-cell.ws-cell-out .ws-cell-day { color: #cbd5e1; }
 
-/* Today */
-.ws-cell.ws-cell-today {
-    border: 1.5px solid #3b82f6;
-}
-
+/* Today: subtle highlight on the day text only, no outline */
 .ws-cell.ws-cell-today .ws-cell-day {
     color: #1d4ed8;
     font-weight: 700;

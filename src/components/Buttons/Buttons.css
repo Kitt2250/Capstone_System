@@ -155,3 +155,39 @@
     transform: rotate(-45deg);
     color: #dc2626;
 }
+
+/* ===== Disabled State ===== */
+.btn:disabled,
+.btn.btn-disabled {
+    opacity: 0.45;
+    cursor: not-allowed !important;
+    pointer-events: auto;
+}
+
+.btn:disabled *,
+.btn.btn-disabled * {
+    pointer-events: none;
+}
+
+.btn:disabled:hover,
+.btn.btn-disabled:hover {
+    background-color: transparent !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    cursor: not-allowed !important;
+}
+
+.btn-deactivate:disabled,
+.btn-deactivate.btn-disabled {
+    color: #dc2626;
+    opacity: 0.4;
+    cursor: not-allowed !important;
+}
+
+.btn-deactivate:disabled:hover,
+.btn-deactivate.btn-disabled:hover {
+    background-color: transparent !important;
+    border-color: #e2e8f0 !important;
+    color: #dc2626 !important;
+}
