@@ -14,6 +14,7 @@ import {
     where,
 } from "firebase/firestore";
 import { db } from "../firebase/config";
+import { logAuditEvent } from "../utils/auditLogger";
 
 const COLLECTION = "wakeSpaceRental";
 const WAKE_SPACE_COLLECTION = "wake_space";
@@ -133,6 +134,19 @@ export async function updateWakeSpaceBooking(docId, fields) {
             ...fields,
             updatedAt: serverTimestamp(),
         });
+
+        // Audit Log
+        try {
+            await logAuditEvent({
+                module: "Wake Space",
+                actionType: "UPDATE_BOOKING",
+                description: `Updated wake space booking details (${fields.bookingId || docId})`,
+                targetItem: fields.bookingId || docId,
+                details: fields
+            });
+        } catch (auditErr) {
+            console.warn("Could not log audit event for wake space update:", auditErr);
+        }
     } catch (error) {
         console.error("Error updating wake space booking:", error);
         throw error;
@@ -143,6 +157,19 @@ export async function updateWakeSpaceBooking(docId, fields) {
 export async function deleteWakeSpaceBooking(docId) {
     try {
         await deleteDoc(doc(db, COLLECTION, docId));
+
+        // Audit Log
+        try {
+            await logAuditEvent({
+                module: "Wake Space",
+                actionType: "DELETE_BOOKING",
+                description: `Deleted wake space booking (${docId})`,
+                targetItem: docId,
+                details: { docId }
+            });
+        } catch (auditErr) {
+            console.warn("Could not log audit event for wake space deletion:", auditErr);
+        }
     } catch (error) {
         console.error("Error deleting wake space booking:", error);
         throw error;

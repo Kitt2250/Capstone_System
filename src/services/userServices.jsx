@@ -1,7 +1,7 @@
 import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import { initializeApp, deleteApp } from "firebase/app";
-import { db, firebaseConfig } from "../firebase/config";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { db, firebaseConfig, auth } from "../firebase/config";
+import { createUserWithEmailAndPassword, getAuth, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
 
 
 export async function getUserData(uid) {
@@ -119,5 +119,58 @@ export const archiveUser = async (userId) => {
     } catch (error) {
         console.error("Error archiving user:", error);
         throw error;
+    }
+};
+
+export const updateUserProfile = async (userId, profileData) => {
+    try {
+        const userRef = doc(db, "users", userId);
+
+        const payload = {
+            name: (profileData.fullName || profileData.name || "").trim(),
+            email: (profileData.email || "").trim(),
+            contactNo: (profileData.contactNo || profileData.phone || "").trim(),
+            address: (profileData.address || "").trim(),
+            updatedAt: new Date()
+        };
+
+        await updateDoc(userRef, payload);
+        return true;
+    } catch (error) {
+        console.error("Error updating user profile:", error);
+        throw error;
+    }
+};
+
+export const changeUserPassword = async (currentPassword, newPassword) => {
+    const user = auth.currentUser;
+    if (!user || !user.email) {
+        throw new Error("No active authenticated user session found.");
+    }
+
+    try {
+        // Re-authenticate user with current password
+        const credential = EmailAuthProvider.credential(user.email, currentPassword);
+        await reauthenticateWithCredential(user, credential);
+
+        // Update password in Firebase Auth
+        await updatePassword(user, newPassword);
+
+        return true;
+    } catch (error) {
+        console.error("Error changing password:", error);
+        if (
+            error.code === "auth/invalid-credential" ||
+            error.code === "auth/wrong-password"
+        ) {
+            throw new Error("Incorrect current password.");
+        }
+        if (error.code === "auth/weak-password") {
+            throw new Error("Password should be at least 6 characters.");
+        }
+        if (error.code === "auth/requires-recent-login") {
+            throw new Error("Please log in again before changing your password.");
+        }
+        throw new Error(error.message || "Failed to update password.");
     }
 };

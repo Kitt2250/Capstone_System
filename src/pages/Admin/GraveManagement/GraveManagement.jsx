@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import { useLocation } from "react-router";
 import Header from "../../../components/Header/Header";
 import Table from "../../../components/Table/Table";
 import Pagination from "../../../components/Pagination/Pagination";
@@ -80,8 +81,17 @@ export function computePaymentCategory(payment, plot, burial, systemDateStr) {
     return "installment";
 }
 
-export default function GraveManagement() {
-    const [activeTab, setActiveTab] = useState("config");
+export default function GraveManagement({ isStaff: isStaffProp }) {
+    const location = useLocation();
+    const isStaff = isStaffProp ?? location.pathname.startsWith("/staff");
+
+    const [activeTab, setActiveTab] = useState(isStaff ? "lot" : "config");
+
+    useEffect(() => {
+        if (isStaff) {
+            setActiveTab("lot");
+        }
+    }, [isStaff]);
 
     // ── Grave Configuration states ──
     const [graveTypes, setGraveTypes] = useState([]);
@@ -673,29 +683,31 @@ export default function GraveManagement() {
             <Header page="grave" />
 
             <div className="grave-management-container">
-                {/* ── Tab Switcher ── */}
-                <div className="gm-tab-bar">
-                    <button
-                        className={`gm-tab-btn ${activeTab === "config" ? "gm-tab-active" : ""}`}
-                        onClick={() => setActiveTab("config")}
-                    >
-                        <Settings size={15} />
-                        <span>Grave Configuration</span>
-                    </button>
-                    <button
-                        className={`gm-tab-btn ${activeTab === "lot" ? "gm-tab-active" : ""}`}
-                        onClick={() => setActiveTab("lot")}
-                    >
-                        <LayoutGrid size={15} />
-                        <span>Grave Lot &amp; Burials</span>
-                        {plots.length > 0 && (
-                            <span className="gm-tab-counter">{plots.length}</span>
-                        )}
-                    </button>
-                </div>
+                {/* ── Tab Switcher (Only visible to Admin) ── */}
+                {!isStaff && (
+                    <div className="gm-tab-bar">
+                        <button
+                            className={`gm-tab-btn ${activeTab === "config" ? "gm-tab-active" : ""}`}
+                            onClick={() => setActiveTab("config")}
+                        >
+                            <Settings size={15} />
+                            <span>Grave Configuration</span>
+                        </button>
+                        <button
+                            className={`gm-tab-btn ${activeTab === "lot" ? "gm-tab-active" : ""}`}
+                            onClick={() => setActiveTab("lot")}
+                        >
+                            <LayoutGrid size={15} />
+                            <span>Grave Lot &amp; Burials</span>
+                            {plots.length > 0 && (
+                                <span className="gm-tab-counter">{plots.length}</span>
+                            )}
+                        </button>
+                    </div>
+                )}
 
-                {/* ── TAB: Grave Configuration ── */}
-                {activeTab === "config" && (
+                {/* ── TAB: Grave Configuration (Admin Only) ── */}
+                {!isStaff && activeTab === "config" && (
                     <div className="gm-config-section">
                         <div className="page-title-bar">
                             <h2>Grave Type Configuration</h2>
@@ -751,7 +763,7 @@ export default function GraveManagement() {
                 )}
 
                 {/* ── TAB: Grave Lot & Burials ── */}
-                {activeTab === "lot" && (
+                {(isStaff || activeTab === "lot") && (
                     <div className="gm-lot-section">
                         {/* KPI Cards Grid */}
                         <div className="gm-lot-kpi-grid">
@@ -951,24 +963,28 @@ export default function GraveManagement() {
                 )}
             </div>
 
-            {/* ── Grave Update Modal ── */}
-            <GraveUpdateModal
-                isOpen={showUpdateModal}
-                grave={selectedGrave}
-                intermentFees={intermentFees}
-                onClose={() => {
-                    setShowUpdateModal(false);
-                    setSelectedGrave(null);
-                }}
-                onUpdate={handleUpdate}
-            />
+            {/* ── Grave Update Modal (Admin Only) ── */}
+            {!isStaff && (
+                <GraveUpdateModal
+                    isOpen={showUpdateModal}
+                    grave={selectedGrave}
+                    intermentFees={intermentFees}
+                    onClose={() => {
+                        setShowUpdateModal(false);
+                        setSelectedGrave(null);
+                    }}
+                    onUpdate={handleUpdate}
+                />
+            )}
 
-            {/* ── Grave Add Modal ── */}
-            <GraveAddModal
-                isOpen={showAddModal}
-                onClose={() => setShowAddModal(false)}
-                onAdd={handleAdd}
-            />
+            {/* ── Grave Add Modal (Admin Only) ── */}
+            {!isStaff && (
+                <GraveAddModal
+                    isOpen={showAddModal}
+                    onClose={() => setShowAddModal(false)}
+                    onAdd={handleAdd}
+                />
+            )}
 
             {/* ── Grave Lot Detail Modal (Burial & Plot Inspector) ── */}
             <GraveLotDetailModal

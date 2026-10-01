@@ -1,4 +1,5 @@
-import { archiveUser, createUser, updateUser } from "../services/userServices";
+import { archiveUser, createUser, updateUser, updateUserProfile, getUserData, changeUserPassword } from "../services/userServices";
+import { logAuditEvent } from "../utils/auditLogger";
 
 export const createUserController = async (userData) => {
 
@@ -30,7 +31,22 @@ export const createUserController = async (userData) => {
     }
 
     // Call the service
-    return await createUser(userData);
+    const created = await createUser(userData);
+
+    // Audit Log
+    try {
+        await logAuditEvent({
+            module: "User Management",
+            actionType: "CREATE_USER",
+            description: `Created user account for ${userData.name} (${userData.role})`,
+            targetItem: userData.email,
+            details: { name: userData.name, email: userData.email, role: userData.role }
+        });
+    } catch (auditErr) {
+        console.warn("Could not log audit event for user creation:", auditErr);
+    }
+
+    return created;
 };
 
 
@@ -72,6 +88,19 @@ export const updateUserController = async (userId, formData) => {
         status: formData.status,
     });
 
+    // Audit Log
+    try {
+        await logAuditEvent({
+            module: "User Management",
+            actionType: "UPDATE_USER",
+            description: `Updated user details for ${formData.name}`,
+            targetItem: formData.email || userId,
+            details: { userId, ...formData }
+        });
+    } catch (auditErr) {
+        console.warn("Could not log audit event for user update:", auditErr);
+    }
+
     return {
         success: true,
         message: "User updated successfully.",
@@ -86,6 +115,19 @@ export const archiveUserController = async (userId) => {
 
         await archiveUser(userId);
 
+        // Audit Log
+        try {
+            await logAuditEvent({
+                module: "User Management",
+                actionType: "ARCHIVE_USER",
+                description: `Archived user account (ID: ${userId})`,
+                targetItem: userId,
+                details: { userId }
+            });
+        } catch (auditErr) {
+            console.warn("Could not log audit event for user archive:", auditErr);
+        }
+
         return {
             success: true,
             message: "User archived successfully.",
@@ -94,4 +136,113 @@ export const archiveUserController = async (userId) => {
         console.error("Archive user controller error:", error);
         throw error;
     }
+};
+
+export const getUserProfileController = async (userId) => {
+    if (!userId) {
+        throw new Error("User ID is required.");
+    }
+    return await getUserData(userId);
+};
+
+export const updateUserProfileController = async (userId, profileData) => {
+    if (!userId) {
+        throw new Error("User ID is required.");
+    }
+
+    const name = (profileData.fullName || profileData.name || "").trim();
+    if (!name) {
+        throw new Error("Full name is required.");
+    }
+
+    const email = (profileData.email || "").trim();
+    if (!email) {
+        throw new Error("Email address is required.");
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        throw new Error("Please enter a valid email address.");
+    }
+
+    const phone = (profileData.phone || profileData.contactNo || "").trim();
+    if (!phone) {
+        throw new Error("Phone number is required.");
+    }
+
+    await updateUserProfile(userId, {
+        name,
+        email,
+        contactNo: phone,
+        address: (profileData.address || "").trim(),
+    });
+
+    // Audit Log
+    try {
+        await logAuditEvent({
+            module: "User Management",
+            actionType: "UPDATE_PROFILE",
+            description: `Updated profile details for ${name}`,
+            targetItem: email || userId,
+            details: { userId, name, email, phone }
+        });
+    } catch (auditErr) {
+        console.warn("Could not log audit event for profile update:", auditErr);
+    }
+
+    return {
+        success: true,
+        message: "Profile updated successfully.",
+    };
+};
+
+export const changePasswordController = async ({ currentPassword, newPassword, confirmPassword }) => {
+    if (!currentPassword) {
+        throw new Error("Please enter your current password.");
+    }
+
+    if (!newPassword) {
+        throw new Error("Please enter a new password.");
+    }
+
+    if (newPassword.length < 8) {
+        throw new Error("New password must be at least 8 characters long.");
+    }
+
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>_\-+~=[\]\\/`]/;
+    if (!specialCharRegex.test(newPassword)) {
+        throw new Error("New password must contain at least one special character.");
+    }
+
+    if (!confirmPassword) {
+        throw new Error("Please confirm your new password.");
+    }
+
+    if (newPassword !== confirmPassword) {
+        throw new Error("New password and confirm password do not match.");
+    }
+
+    if (currentPassword === newPassword) {
+        throw new Error("New password cannot be the same as your current password.");
+    }
+
+    await changeUserPassword(currentPassword, newPassword);
+
+    // Audit Log
+    try {
+        await logAuditEvent({
+            module: "User Management",
+            actionType: "CHANGE_PASSWORD",
+            description: `User successfully changed account password`,
+            targetItem: "Account Password",
+            details: {}
+        });
+    } catch (auditErr) {
+        console.warn("Could not log audit event for password change:", auditErr);
+    }
+
+    return {
+        success: true,
+        message: "Password updated successfully.",
+    };
 };

@@ -21,6 +21,7 @@ import {
     ReceiptGenerator,
 } from "./paymentServices";
 import { createNotification } from "./notificationServices";
+import { logAuditEvent } from "../utils/auditLogger";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STEP 1: Create Firebase Auth account
@@ -177,6 +178,28 @@ export async function processPOSTransaction(transactionData) {
         });
     } catch (notifErr) {
         console.warn("Could not log notification for POS transaction:", notifErr);
+    }
+
+    // 9. Create Audit Log
+    try {
+        const clientName = `${clientData?.firstName || ""} ${clientData?.lastName || ""}`.trim() || "Client";
+        await logAuditEvent({
+            module: "Point of Sale",
+            actionType: "POS_TRANSACTION",
+            description: `Completed POS payment (${historyData.receipt || "Receipt"}) for ${clientName}. Total: ₱${Number(paymentData?.total || 0).toLocaleString()}`,
+            targetItem: historyData.receipt || plotId,
+            details: {
+                receipt: historyData.receipt,
+                clientName,
+                plotId,
+                needType,
+                total: paymentData.total,
+                balance: paymentData.balance,
+                amountPaid: historyData.amount,
+            }
+        });
+    } catch (auditErr) {
+        console.warn("Could not log audit event for POS transaction:", auditErr);
     }
 
     return {

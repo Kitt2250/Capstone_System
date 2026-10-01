@@ -1,0 +1,317 @@
+/* ===== Staff My Account Page Styles ===== */
+.staff-account-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Card Container matching Admin / Staff Aesthetic */
+.staff-account-card {
+    background-color: #ffffff;
+    border-radius: 14px;
+    padding: 26px 30px;
+    border: 1px solid #e8ecf1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+/* Card Header */
+.staff-account-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 18px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.staff-account-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background-color: #f0f7ff;
+    color: #004d8c;
+    flex-shrink: 0;
+}
+
+.staff-account-icon-wrap.security {
+    background-color: #f8fafc;
+    color: #004d8c;
+}
+
+.staff-account-header-text h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.staff-account-header-text p {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin: 3px 0 0 0;
+}
+
+/* Form Grid */
+.staff-account-form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.staff-account-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.staff-account-form-group.span-1 {
+    grid-column: span 1;
+}
+
+.staff-account-form-group.span-2 {
+    grid-column: span 2;
+}
+
+.staff-account-form-group.span-full {
+    grid-column: 1 / -1;
+}
+
+/* Labels */
+.staff-account-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Input Fields */
+.staff-account-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.staff-account-input {
+    width: 100%;
+    height: 42px;
+    padding: 9px 14px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    color: #0f172a;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.staff-account-input:focus {
+    border-color: #004d8c;
+    box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.08);
+}
+
+.staff-account-input::placeholder {
+    color: #94a3b8;
+}
+
+/* Password Toggle Icon */
+.staff-account-pw-toggle {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.staff-account-pw-toggle:hover {
+    color: #475569;
+}
+
+/* Security Form Stack */
+.staff-account-security-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 440px;
+}
+
+/* Button Bars */
+.staff-account-actions-right {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #f8fafc;
+}
+
+.staff-account-actions-left {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #f8fafc;
+}
+
+/* Primary Button (Save Changes) */
+.staff-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 22px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #ffffff;
+    background-color: #004d8c;
+    border: 1px solid #004d8c;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.staff-btn-primary:hover {
+    background-color: #003d70;
+    border-color: #003d70;
+    box-shadow: 0 2px 6px rgba(0, 77, 140, 0.25);
+}
+
+/* Secondary Button (Update Password) */
+.staff-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #004d8c;
+    background-color: #ffffff;
+    border: 1px solid #004d8c;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.staff-btn-secondary:hover {
+    background-color: #f0f7ff;
+    border-color: #003d70;
+    color: #003d70;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .staff-account-form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .staff-account-form-group.span-1 {
+        grid-column: span 1;
+    }
+    .staff-account-security-stack {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .staff-account-card {
+        padding: 20px 18px;
+    }
+    .staff-account-form-grid {
+        grid-template-columns: 1fr;
+    }
+    .staff-account-form-group.span-1,
+    .staff-account-form-group.span-2 {
+        grid-column: 1 / -1;
+    }
+    .staff-account-actions-right {
+        justify-content: stretch;
+    }
+    .staff-btn-primary,
+    .staff-btn-secondary {
+        width: 100%;
+    }
+}
+
+/* Feedback Banner */
+.staff-account-feedback {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 16px;
+    margin-bottom: 0;
+    animation: staffFadeIn 0.2s ease;
+}
+
+.staff-account-security-stack .staff-account-feedback {
+    margin-top: 4px;
+    margin-bottom: 0;
+}
+
+.staff-account-feedback.success {
+    background-color: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.staff-account-feedback.error {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+@keyframes staffFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Spinner & Loading */
+.staff-spin {
+    animation: staffSpin 1s linear infinite;
+}
+
+@keyframes staffSpin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.staff-account-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 40px;
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+

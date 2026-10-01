@@ -115,7 +115,8 @@ function Sidebar({ role = "admin" }) {
                 title: "MAIN",
                 links: [
                     { name: "Dashboard", path: "/staff", icon: LayoutGrid, exact: true },
-                    { name: "Burials", path: "/staff/burials", icon: Landmark },
+                    { name: "Grave Management", path: "/staff/grave-management", icon: Landmark },
+                    { name: "Burials", path: "/staff/burials", icon: Heart },
                     { name: "Interment", path: "/staff/interment", icon: Cross },
                     { name: "POS", path: "/staff/point-of-sale", icon: Wallet },
                     { name: "Payments", path: "/staff/payments", icon: CreditCard },

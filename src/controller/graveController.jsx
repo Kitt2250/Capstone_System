@@ -6,6 +6,7 @@ import {
     generateNextIntermentFeeId,
     getIntermentFees
 } from "../services/graveServices";
+import { logAuditEvent } from "../utils/auditLogger";
 
 // ── Add Grave Type ──────────────────────────────────────────────────────────
 export const createGraveTypeController = async (payload, stagedInterments = []) => {
@@ -44,6 +45,19 @@ export const createGraveTypeController = async (payload, stagedInterments = []) 
         });
     }
 
+    // Audit Log
+    try {
+        await logAuditEvent({
+            module: "Grave Management",
+            actionType: "CREATE_GRAVE_TYPE",
+            description: `Created grave type "${payload.grave_type}" with lot price ₱${Number(payload.lot_price || 0).toLocaleString()}`,
+            targetItem: payload.grave_type,
+            details: { id: createdId, ...payload }
+        });
+    } catch (err) {
+        console.warn("Could not log audit event for grave type creation:", err);
+    }
+
     return createdId;
 };
 
@@ -70,6 +84,19 @@ export const updateGraveTypeController = async (graveId, payload) => {
     }
 
     await updateGraveType(graveId, payload);
+
+    // Audit Log
+    try {
+        await logAuditEvent({
+            module: "Grave Management",
+            actionType: "UPDATE_GRAVE_TYPE",
+            description: `Updated grave type "${payload.grave_type || graveId}"`,
+            targetItem: payload.grave_type || graveId,
+            details: { graveId, ...payload }
+        });
+    } catch (err) {
+        console.warn("Could not log audit event for grave type update:", err);
+    }
 
     return { success: true, message: "Grave type updated successfully." };
 };
@@ -103,6 +130,19 @@ export const createIntermentFeeController = async (feeData) => {
         interment_type: feeData.interment_type.trim()
     });
 
+    // Audit Log
+    try {
+        await logAuditEvent({
+            module: "Grave Management",
+            actionType: "CREATE_INTERMENT_FEE",
+            description: `Created interment fee for "${feeData.interment_type}" (₱${Number(feeData.fee || 0).toLocaleString()})`,
+            targetItem: feeData.interment_type,
+            details: feeData
+        });
+    } catch (err) {
+        console.warn("Could not log audit event for interment fee creation:", err);
+    }
+
     return savedId;
 };
 
@@ -124,6 +164,19 @@ export const updateIntermentFeeController = async (feeId, updatedData) => {
         fee: Number(updatedData.fee),
         interment_type: updatedData.interment_type.trim()
     });
+
+    // Audit Log
+    try {
+        await logAuditEvent({
+            module: "Grave Management",
+            actionType: "UPDATE_INTERMENT_FEE",
+            description: `Updated interment fee for "${updatedData.interment_type}" (₱${Number(updatedData.fee || 0).toLocaleString()})`,
+            targetItem: updatedData.interment_type || feeId,
+            details: { feeId, ...updatedData }
+        });
+    } catch (err) {
+        console.warn("Could not log audit event for interment fee update:", err);
+    }
 
     return { success: true, message: "Interment fee updated successfully." };
 };

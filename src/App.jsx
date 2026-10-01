@@ -109,6 +109,7 @@ function App() {
             <>
               <Route path="/staff" element={<Staff />}>
                 <Route index element={<StaffDashboard />} />
+                <Route path="grave-management" element={<GraveManagement isStaff={true} />} />
                 <Route path="point-of-sale" element={<PointOfSale />} />
                 <Route path="interment" element={<Interment />} />
                 <Route path="burials" element={<Burials />} />
