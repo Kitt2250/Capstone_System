@@ -16,12 +16,62 @@ import {
     Eye
 } from "lucide-react";
 import SatelliteMap from "../../Admin/MapManagement/MapFolder/SatelliteMap.jsx";
+import { isApartmentPlot, getPlotRowAndColumn } from "../../Admin/MapManagement/MapFolder/mapInit.js";
 import { getCentered12Plots } from "../../../services/plotServices.jsx";
 import BurialDetailModal from "./BurialDetailModal.jsx";
 import Pagination from "../../../components/Pagination/Pagination";
 import "./Burials.css";
 
 const ITEMS_PER_PAGE = 10;
+
+// Helper to extract clean plot title
+const getLotTitle = (plot) => {
+    if (!plot) return "";
+    return String(plot.plotCode || plot.name || plot.lotName || plot.title || plot.id || "");
+};
+
+// Helper to determine grave type
+const getLotType = (plot, graveTypes = []) => {
+    if (!plot) return "Standard Plot";
+    const targetTypeId = String(plot.grave_type_id || plot.graveLotTypeID || plot.graveType || plot.type || "").trim().toLowerCase();
+    const gt = graveTypes.find((item) => {
+        const id = String(item.id || item.grave_type_id || "").trim().toLowerCase();
+        const name = String(item.grave_type || item.name || "").trim().toLowerCase();
+        return (id && id === targetTypeId) || (targetTypeId && name === targetTypeId);
+    });
+    if (gt?.grave_type || gt?.name) return gt.grave_type || gt.name;
+    if (plot.graveType) return plot.graveType;
+
+    const title = getLotTitle(plot);
+    if (/^SN/i.test(title)) return "Single Niche";
+    if (/^AP/i.test(title)) return "Apartment";
+    if (/^GB/i.test(title)) return "Ground Burial";
+    if (/^CB/i.test(title)) return "Cherubim";
+    if (/^MA/i.test(title)) return "Mausoleum";
+    if (/^CO/i.test(title)) return "Columbarium";
+    if (/^BV/i.test(title)) return "Bone Vault";
+    if (/^GT/i.test(title)) return "Garden Type";
+    if (/^LL/i.test(title)) return "Lawn Lot";
+    if (/^FE/i.test(title)) return "Family Estate";
+
+    return "Ground Grave";
+};
+
+// Helper to extract cemetery section
+const getLotSection = (plot) => {
+    if (!plot) return "General Section";
+    if (plot.section) {
+        const s = String(plot.section).trim();
+        if (/^section\b/i.test(s)) return s;
+        return `Section ${s}`;
+    }
+    const title = getLotTitle(plot);
+    const match = title.match(/^[A-Z]+-([A-Za-z0-9]+)-/i);
+    if (match) return `Section ${match[1].toUpperCase()}`;
+    const match2 = title.match(/^(?:Lot\s+)?([A-Za-z])/i);
+    if (match2) return `Section ${match2[1].toUpperCase()}`;
+    return "General Section";
+};
 
 export default function Burials() {
     const [burials, setBurials] = useState([]);
@@ -30,10 +80,9 @@ export default function Burials() {
     const [graveTypes, setGraveTypes] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Filters
+    // Filter - Combined Grave Type & Section
     const [searchQuery, setSearchQuery] = useState("");
-    const [intermentFilter, setIntermentFilter] = useState("all");
-    const [sectionFilter, setSectionFilter] = useState("all");
+    const [combinedFilter, setCombinedFilter] = useState("all");
 
     // Pagination State (10 items per page)
     const [currentPage, setCurrentPage] = useState(1);
@@ -140,14 +189,6 @@ export default function Burials() {
             // Find linked plot
             const plot = plots.find((p) => p.id === burial.plot_id);
 
-            // Find grave type
-            const targetTypeId = String(plot?.grave_type_id || plot?.graveLotTypeID || plot?.graveType || plot?.type || "").trim().toLowerCase();
-            const graveType = graveTypes.find((gt) => {
-                const gtId = String(gt.id || gt.grave_type_id || "").trim().toLowerCase();
-                const gtName = String(gt.grave_type || gt.name || "").trim().toLowerCase();
-                return (gtId && gtId === targetTypeId) || (targetTypeId && gtName === targetTypeId);
-            });
-
             // Find linked client / family
             const clientId = burial.user_id || plot?.user_id;
             const client = clients.find((c) => c.user_id === clientId || c.id === clientId);
@@ -160,16 +201,24 @@ export default function Burials() {
             }
 
             const plotCode = plot?.plotCode || plot?.id || "Unassigned";
-            const section = plot?.section ? `Section ${plot.section}` : "";
-            const graveTypeName = graveType?.grave_type || graveType?.name || plot?.graveType || "Grave Plot";
 
-            // Interment classification
-            const typeLower = String(burial.interment_type || "").toLowerCase();
+            // Unified Grave Type and Section
+            const graveTypeName = getLotType(plot || burial, graveTypes);
+            const section = getLotSection(plot || burial);
+            const graveTypeAndSection = `${graveTypeName} - ${section}`;
+            const combinedKey = `${graveTypeName}__${section}`;
+
+            // Visual badge styling theme based on grave type
+            const gtLower = graveTypeName.toLowerCase();
             let typeBadgeClass = "standard";
-            if (typeLower.includes("cremat")) {
-                typeBadgeClass = "cremation";
-            } else if (typeLower.includes("bone") || typeLower.includes("vault")) {
-                typeBadgeClass = "bone";
+            if (gtLower.includes("apartment")) {
+                typeBadgeClass = "apartment";
+            } else if (gtLower.includes("niche")) {
+                typeBadgeClass = "niche";
+            } else if (gtLower.includes("vault") || gtLower.includes("bone")) {
+                typeBadgeClass = "vault";
+            } else if (gtLower.includes("mausoleum")) {
+                typeBadgeClass = "mausoleum";
             }
 
             return {
@@ -179,6 +228,8 @@ export default function Burials() {
                 plotCode,
                 section,
                 graveTypeName,
+                graveTypeAndSection,
+                combinedKey,
                 familyName,
                 typeBadgeClass,
                 displayBuriedDate: formatDisplayDate(burial.date_buried || burial.created_at),
@@ -188,31 +239,46 @@ export default function Burials() {
         });
     }, [burials, plots, clients, graveTypes]);
 
-    // ── Available Unique Sections ──
-    const uniqueSections = useMemo(() => {
-        const set = new Set();
-        plots.forEach((p) => {
-            if (p.section) set.add(p.section);
+    // ── Generate Combined Unique Grave Type & Section Options ──
+    const combinedFilterOptions = useMemo(() => {
+        const map = new Map();
+        enrichedBurials.forEach((b) => {
+            const key = b.combinedKey;
+            if (key && !map.has(key)) {
+                map.set(key, {
+                    key,
+                    type: b.graveTypeName,
+                    section: b.section,
+                    label: b.graveTypeAndSection,
+                });
+            }
         });
-        return Array.from(set).sort();
-    }, [plots]);
+        plots.forEach((p) => {
+            const type = getLotType(p, graveTypes);
+            const sec = getLotSection(p);
+            const key = `${type}__${sec}`;
+            if (!map.has(key)) {
+                map.set(key, {
+                    key,
+                    type,
+                    section: sec,
+                    label: `${type} - ${sec}`,
+                });
+            }
+        });
+        return Array.from(map.values()).sort((a, b) =>
+            a.label.localeCompare(b.label, undefined, { numeric: true, sensitivity: "base" })
+        );
+    }, [enrichedBurials, plots, graveTypes]);
 
     // ── Filtered Records ──
     const filteredBurials = useMemo(() => {
         const query = searchQuery.trim().toLowerCase();
 
         return enrichedBurials.filter((b) => {
-            // Filter by interment type
-            if (intermentFilter !== "all") {
-                const bType = String(b.interment_type || "").toLowerCase();
-                if (intermentFilter === "cremation" && !bType.includes("cremat")) return false;
-                if (intermentFilter === "standard" && !bType.includes("standard") && bType.includes("cremat")) return false;
-                if (intermentFilter === "bone" && !bType.includes("bone") && !bType.includes("vault")) return false;
-            }
-
-            // Filter by section
-            if (sectionFilter !== "all") {
-                if (String(b.plot?.section || "").toLowerCase() !== sectionFilter.toLowerCase()) {
+            // Filter by combined Grave Type & Section
+            if (combinedFilter !== "all") {
+                if (b.combinedKey !== combinedFilter) {
                     return false;
                 }
             }
@@ -224,10 +290,12 @@ export default function Burials() {
             const matchPlot = String(b.plotCode || "").toLowerCase().includes(query);
             const matchFamily = String(b.familyName || "").toLowerCase().includes(query);
             const matchGraveType = String(b.graveTypeName || "").toLowerCase().includes(query);
+            const matchSection = String(b.section || "").toLowerCase().includes(query);
+            const matchCombined = String(b.graveTypeAndSection || "").toLowerCase().includes(query);
 
-            return matchName || matchPlot || matchFamily || matchGraveType;
+            return matchName || matchPlot || matchFamily || matchGraveType || matchSection || matchCombined;
         });
-    }, [enrichedBurials, searchQuery, intermentFilter, sectionFilter]);
+    }, [enrichedBurials, searchQuery, combinedFilter]);
 
     // ── Pagination Calculation ──
     const totalPages = Math.ceil(filteredBurials.length / ITEMS_PER_PAGE) || 1;
@@ -239,7 +307,7 @@ export default function Burials() {
     // Reset to page 1 whenever filters or search change
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchQuery, intermentFilter, sectionFilter]);
+    }, [searchQuery, combinedFilter]);
 
     // Clamp current page if total pages decreases
     useEffect(() => {
@@ -367,9 +435,9 @@ export default function Burials() {
                             <Layers size={22} />
                         </div>
                         <div className="burials-kpi-info">
-                            <span className="burials-kpi-label">Interment Types</span>
+                            <span className="burials-kpi-label">Grave Types &amp; Sections</span>
                             <span className="burials-kpi-value">
-                                {new Set(burials.map((b) => b.interment_type).filter(Boolean)).size || 1}
+                                {new Set(enrichedBurials.map((b) => b.combinedKey)).size || 0}
                             </span>
                         </div>
                     </div>
@@ -391,29 +459,16 @@ export default function Burials() {
                     <div className="burials-filter-group">
                         <select
                             className="burials-filter-select"
-                            value={intermentFilter}
-                            onChange={(e) => setIntermentFilter(e.target.value)}
+                            value={combinedFilter}
+                            onChange={(e) => setCombinedFilter(e.target.value)}
                         >
-                            <option value="all">All Interment Types</option>
-                            <option value="standard">Standard Burial</option>
-                            <option value="cremation">Cremation</option>
-                            <option value="bone">Bone Vault</option>
+                            <option value="all">All Grave Types &amp; Sections</option>
+                            {combinedFilterOptions.map((opt) => (
+                                <option key={opt.key} value={opt.key}>
+                                    {opt.label}
+                                </option>
+                            ))}
                         </select>
-
-                        {uniqueSections.length > 0 && (
-                            <select
-                                className="burials-filter-select"
-                                value={sectionFilter}
-                                onChange={(e) => setSectionFilter(e.target.value)}
-                            >
-                                <option value="all">All Sections</option>
-                                {uniqueSections.map((sec) => (
-                                    <option key={sec} value={sec}>
-                                        Section {sec}
-                                    </option>
-                                ))}
-                            </select>
-                        )}
 
                         <span className="burials-count-badge">
                             {filteredBurials.length} record{filteredBurials.length === 1 ? "" : "s"}
@@ -443,7 +498,7 @@ export default function Burials() {
                                             <th>Deceased Name</th>
                                             <th>Grave Plot Location</th>
                                             <th>Date Buried</th>
-                                            <th>Interment Service</th>
+                                            <th>Grave Type &amp; Section</th>
                                             <th>Next of Kin / Family</th>
                                             <th style={{ textAlign: "center" }}>Actions</th>
                                         </tr>
@@ -474,9 +529,15 @@ export default function Burials() {
                                                             >
                                                                 <MapPin size={11} /> {burial.plotCode}
                                                             </span>
-                                                            <span className="plot-type-sub">
-                                                                {burial.graveTypeName} {burial.section ? `• ${burial.section}` : ""}
-                                                            </span>
+                                                            {isApartmentPlot(burial.plot || burial) ? (
+                                                                <span className="plot-type-sub apartment-loc">
+                                                                    Row {getPlotRowAndColumn(burial.plot || burial).row || "—"}, Col {getPlotRowAndColumn(burial.plot || burial).column || "—"}
+                                                                </span>
+                                                            ) : (
+                                                                <span className="plot-type-sub">
+                                                                    {burial.plotCode !== "Unassigned" ? "Click to view on map" : "No plot assigned"}
+                                                                </span>
+                                                            )}
                                                         </div>
                                                     </td>
 
@@ -487,10 +548,11 @@ export default function Burials() {
                                                         </span>
                                                     </td>
 
-                                                    {/* 4. Interment Type */}
+                                                    {/* 4. Grave Type & Section (Replaced Interment Type) */}
                                                     <td>
-                                                        <span className={`interment-type-badge ${burial.typeBadgeClass}`}>
-                                                            {burial.interment_type || "Standard Burial / Interment"}
+                                                        <span className={`grave-type-section-badge ${burial.typeBadgeClass}`}>
+                                                            <Layers size={12} />
+                                                            {burial.graveTypeAndSection}
                                                         </span>
                                                     </td>
 
@@ -596,9 +658,25 @@ export default function Burials() {
                             <div className="burials-map-info-item">
                                 <span className="info-label">Section & Grave Type</span>
                                 <span className="info-value">
-                                    {selectedBurialForMap.graveTypeName} {selectedBurialForMap.section ? `• ${selectedBurialForMap.section}` : ""}
+                                    {selectedBurialForMap.graveTypeAndSection || `${selectedBurialForMap.graveTypeName} ${selectedBurialForMap.section ? `• ${selectedBurialForMap.section}` : ""}`}
                                 </span>
                             </div>
+                            {isApartmentPlot(selectedBurialForMap.plot || selectedBurialForMap) && (
+                                <>
+                                    <div className="burials-map-info-item">
+                                        <span className="info-label">Row</span>
+                                        <span className="info-value">
+                                            {getPlotRowAndColumn(selectedBurialForMap.plot || selectedBurialForMap).row || "—"}
+                                        </span>
+                                    </div>
+                                    <div className="burials-map-info-item">
+                                        <span className="info-label">Column</span>
+                                        <span className="info-value">
+                                            {getPlotRowAndColumn(selectedBurialForMap.plot || selectedBurialForMap).column || "—"}
+                                        </span>
+                                    </div>
+                                </>
+                            )}
                             <div className="burials-map-info-item">
                                 <span className="info-label">Deceased Name</span>
                                 <span className="info-value">{selectedBurialForMap.name || "Unnamed"}</span>

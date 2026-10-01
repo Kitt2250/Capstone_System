@@ -106,16 +106,19 @@ function UserManagement() {
     };
 
     const handleExport = (format) => {
+        const hasFilters = searchQuery.trim() !== "" || roleFilter !== "all" || statusFilter !== "all";
+        const exportData = hasFilters ? filteredUsers : users;
+
         if (format === "csv") {
-            exportToCSV(users, "users");
+            exportToCSV(exportData, "users");
         }
 
         if (format === "json") {
-            exportToJSON(users, "users");
+            exportToJSON(exportData, "users");
         }
 
         if (format === "pdf") {
-            exportToPDF(users, "users");
+            exportToPDF(exportData, "users");
         }
     };
 

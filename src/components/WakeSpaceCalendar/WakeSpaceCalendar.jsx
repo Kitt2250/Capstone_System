@@ -289,85 +289,90 @@ function WakeSpaceCalendar({
                 </div>
             </div>
 
-            {/* Day labels */}
-            <div className="ws-calendar-grid ws-day-labels">
-                {dayNames.map((d) => (
-                    <div key={d} className="ws-day-label">{d}</div>
-                ))}
-            </div>
+            {/* Scrollable calendar container with bottom scroller */}
+            <div className="ws-calendar-scroll-body">
+                <div className="ws-calendar-scroll-content">
+                    {/* Day labels */}
+                    <div className="ws-calendar-grid ws-day-labels">
+                        {dayNames.map((d) => (
+                            <div key={d} className="ws-day-label">{d}</div>
+                        ))}
+                    </div>
 
-            {/* Cells */}
-            <div className="ws-calendar-grid ws-cells-grid">
-                {cells.map((cell, idx) => {
-                    const cellDate        = new Date(year, month, cell.day);
-                    const isPast          = cell.currentMonth && cellDate < todayStart;
-                    const occInfo         = cell.currentMonth && !isPast ? getCellOccupancy(year, month, cell.day) : null;
-                    const occupied        = Boolean(occInfo);
-                    const available       = cell.currentMonth && !isPast && !occupied;
-                    const todayCell       = isToday(cell);
-                    const isSelectedStart = cell.currentMonth && isSameDay(cellDate, selectedDate);
-                    const isSelectedEnd   = cell.currentMonth && isSameDay(cellDate, endDate);
-                    const isSelectedRange = cell.currentMonth && isInRange(cellDate, selectedDate, endDate);
+                    {/* Cells */}
+                    <div className="ws-calendar-grid ws-cells-grid">
+                        {cells.map((cell, idx) => {
+                            const cellDate        = new Date(year, month, cell.day);
+                            const isPast          = cell.currentMonth && cellDate < todayStart;
+                            const occInfo         = cell.currentMonth && !isPast ? getCellOccupancy(year, month, cell.day) : null;
+                            const occupied        = Boolean(occInfo);
+                            const available       = cell.currentMonth && !isPast && !occupied;
+                            const todayCell       = isToday(cell);
+                            const isSelectedStart = cell.currentMonth && isSameDay(cellDate, selectedDate);
+                            const isSelectedEnd   = cell.currentMonth && isSameDay(cellDate, endDate);
+                            const isSelectedRange = cell.currentMonth && isInRange(cellDate, selectedDate, endDate);
 
-                    const cellClassList = [
-                        "ws-cell",
-                        !cell.currentMonth ? "ws-cell-out" : "",
-                        isPast ? "ws-cell-past" : "",
-                        todayCell ? "ws-cell-today" : "",
-                        occupied ? "ws-cell-occupied" : "",
-                        occupied && occInfo?.type === "all" ? "ws-cell-occupied-all" : "",
-                        occupied && occInfo?.type === "partial" ? "ws-cell-occupied-partial" : "",
-                        occupied && occInfo?.type === "single" ? "ws-cell-occupied-single" : "",
-                        available ? "ws-cell-available" : "",
-                        isSelectedStart ? "ws-cell-selected ws-cell-range-start" : "",
-                        isSelectedEnd ? "ws-cell-range-end" : "",
-                        isSelectedRange ? "ws-cell-in-range" : "",
-                    ].filter(Boolean).join(" ");
+                            const cellClassList = [
+                                "ws-cell",
+                                !cell.currentMonth ? "ws-cell-out" : "",
+                                isPast ? "ws-cell-past" : "",
+                                todayCell ? "ws-cell-today" : "",
+                                occupied ? "ws-cell-occupied" : "",
+                                occupied && occInfo?.type === "all" ? "ws-cell-occupied-all" : "",
+                                occupied && occInfo?.type === "partial" ? "ws-cell-occupied-partial" : "",
+                                occupied && occInfo?.type === "single" ? "ws-cell-occupied-single" : "",
+                                available ? "ws-cell-available" : "",
+                                isSelectedStart ? "ws-cell-selected ws-cell-range-start" : "",
+                                isSelectedEnd ? "ws-cell-range-end" : "",
+                                isSelectedRange ? "ws-cell-in-range" : "",
+                            ].filter(Boolean).join(" ");
 
-                    return (
-                        <div
-                            key={idx}
-                            className={cellClassList}
-                            onClick={() => handleCellClick(cell)}
-                            title={
-                                !cell.currentMonth ? "" :
-                                isPast ? "Past date" :
-                                occupied ? occInfo?.description || "Occupied" :
-                                isSelectedStart ? "Selected check-in date" :
-                                "Click to book"
-                            }
-                        >
-                            <div className="ws-cell-header">
-                                <span className="ws-cell-day">{cell.day}</span>
-                                {todayCell && <span className="ws-today-pill">Today</span>}
-                            </div>
+                            return (
+                                <div
+                                    key={idx}
+                                    className={cellClassList}
+                                    onClick={() => handleCellClick(cell)}
+                                    title={
+                                        !cell.currentMonth ? "" :
+                                        isPast ? "Past date" :
+                                        occupied ? occInfo?.description || "Occupied" :
+                                        isSelectedStart ? "Selected check-in date" :
+                                        "Click to book"
+                                    }
+                                >
+                                    <div className="ws-cell-header">
+                                        <span className="ws-cell-day">{cell.day}</span>
+                                        {todayCell && <span className="ws-today-pill">Today</span>}
+                                    </div>
 
-                            {cell.currentMonth && !isPast && (
-                                <div className="ws-cell-body">
-                                    {occupied ? (
-                                        <div className={`ws-occ-badge ws-occ-${occInfo.type}`}>
-                                            <span className="ws-occ-dot">●</span>
-                                            <span className="ws-occ-text">{occInfo.badgeText}</span>
-                                        </div>
-                                    ) : (
-                                        <div className="ws-avail-badge">
-                                            <span className="ws-avail-dot">●</span>
-                                            <span className="ws-avail-text">Available</span>
+                                    {cell.currentMonth && !isPast && (
+                                        <div className="ws-cell-body">
+                                            {occupied ? (
+                                                <div className={`ws-occ-badge ws-occ-${occInfo.type}`}>
+                                                    <span className="ws-occ-dot">●</span>
+                                                    <span className="ws-occ-text">{occInfo.badgeText}</span>
+                                                </div>
+                                            ) : (
+                                                <div className="ws-avail-badge">
+                                                    <span className="ws-avail-dot">●</span>
+                                                    <span className="ws-avail-text">Available</span>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
+                            );
+                        })}
+                    </div>
 
-            {/* Legend */}
-            <div className="ws-calendar-legend">
-                <span className="ws-legend-item ws-legend-occupied-all">● All Occupied</span>
-                <span className="ws-legend-item ws-legend-occupied-partial">● Wake Space 1 & 2 (Partial)</span>
-                <span className="ws-legend-item ws-legend-occupied-single">● Wake Space 1 (Single)</span>
-                <span className="ws-legend-item ws-legend-available">● Available</span>
+                    {/* Legend */}
+                    <div className="ws-calendar-legend">
+                        <span className="ws-legend-item ws-legend-occupied-all">● All Occupied</span>
+                        <span className="ws-legend-item ws-legend-occupied-partial">● Wake Space 1 & 2 (Partial)</span>
+                        <span className="ws-legend-item ws-legend-occupied-single">● Wake Space 1 (Single)</span>
+                        <span className="ws-legend-item ws-legend-available">● Available</span>
+                    </div>
+                </div>
             </div>
         </div>
     );

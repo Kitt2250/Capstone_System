@@ -18,6 +18,7 @@ import {
     Hash
 } from "lucide-react";
 import "./BurialDetailModal.css";
+import { isApartmentPlot, getPlotRowAndColumn } from "../../Admin/MapManagement/MapFolder/mapInit.js";
 
 export default function BurialDetailModal({
     isOpen,
@@ -127,9 +128,9 @@ export default function BurialDetailModal({
                             <div className="burial-profile-meta">
                                 <h4 className="burial-deceased-name">{burial.name || "Unnamed Record"}</h4>
                                 <div className="burial-profile-badges">
-                                    <span className={`interment-type-badge ${burial.typeBadgeClass || "standard"}`}>
+                                    <span className={`grave-type-section-badge ${burial.typeBadgeClass || "standard"}`}>
                                         <Layers size={12} />
-                                        {burial.interment_type || "Standard Burial / Interment"}
+                                        {burial.graveTypeAndSection || `${burial.graveTypeName || "Standard Plot"}${burial.section ? ` • ${burial.section}` : ""}`}
                                     </span>
                                     <span className="burial-plot-pill">
                                         <MapPin size={11} /> Lot {burial.plotCode}
@@ -266,17 +267,27 @@ export default function BurialDetailModal({
                                 </span>
                             </div>
                             <div className="burial-info-item">
-                                <span className="burial-info-label">Grave Type</span>
+                                <span className="burial-info-label">Grave Type &amp; Section</span>
                                 <span className="burial-info-value">
-                                    {burial.graveTypeName || burial.plot?.graveType || "Standard Plot"}
+                                    {burial.graveTypeAndSection || `${burial.graveTypeName || burial.plot?.graveType || "Standard Plot"} - ${burial.section || (burial.plot?.section ? `Section ${burial.plot.section}` : "General Section")}`}
                                 </span>
                             </div>
-                            <div className="burial-info-item">
-                                <span className="burial-info-label">Cemetery Section</span>
-                                <span className="burial-info-value">
-                                    {burial.section || (burial.plot?.section ? `Section ${burial.plot.section}` : "Main Section")}
-                                </span>
-                            </div>
+                            {isApartmentPlot(burial.plot || burial) && (
+                                <>
+                                    <div className="burial-info-item">
+                                        <span className="burial-info-label">Row</span>
+                                        <span className="burial-info-value">
+                                            {getPlotRowAndColumn(burial.plot || burial).row || "—"}
+                                        </span>
+                                    </div>
+                                    <div className="burial-info-item">
+                                        <span className="burial-info-label">Column</span>
+                                        <span className="burial-info-value">
+                                            {getPlotRowAndColumn(burial.plot || burial).column || "—"}
+                                        </span>
+                                    </div>
+                                </>
+                            )}
                             <div className="burial-info-item">
                                 <span className="burial-info-label">Plot Status</span>
                                 <span className="burial-info-value">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../../../components/Header/Header';
 import SatelliteMap from './MapFolder/SatelliteMap';
+import { isApartmentPlot, getPlotRowAndColumn } from './MapFolder/mapInit';
 import BuildPlotStudio from './MapFolder/BuildPlotStudio';
 import { deletePlotController, subscribePlots, syncAllPlotsOccupancy, updatePlotOccupancy } from '../../../controller/plotController';
 import { subscribeGraveTypes } from '../../../services/graveServices';
@@ -796,7 +797,14 @@ function MapManagement() {
                                             </div>
                                             <div className="slot-name">{title}</div>
                                             <div className="slot-status-text">{statusLabel}</div>
-                                            <div className="slot-type">{type}</div>
+                                            <div className="slot-type">
+                                                {type}
+                                                {isApartmentPlot(plot) && (
+                                                    <span style={{ display: 'block', fontSize: '11px', color: '#64748b', marginTop: '2px', fontWeight: 600 }}>
+                                                        Row {getPlotRowAndColumn(plot).row || '—'} • Col {getPlotRowAndColumn(plot).column || '—'}
+                                                    </span>
+                                                )}
+                                            </div>
                                             {(statusKey === 'occupied' || statusKey === 'partial') && (
                                                 <div className="slot-capacity">
                                                     <span>Capacity:</span>
@@ -976,6 +984,18 @@ function MapManagement() {
                                     <span className="nav-detail-label">Grave Type</span>
                                     <span className="nav-detail-value">{getLotType(selectedPlotModal)}</span>
                                 </div>
+                                {isApartmentPlot(selectedPlotModal) && (
+                                    <>
+                                        <div className="slot-nav-detail-row">
+                                            <span className="nav-detail-label">Row</span>
+                                            <span className="nav-detail-value">{getPlotRowAndColumn(selectedPlotModal).row || '—'}</span>
+                                        </div>
+                                        <div className="slot-nav-detail-row">
+                                            <span className="nav-detail-label">Column</span>
+                                            <span className="nav-detail-value">{getPlotRowAndColumn(selectedPlotModal).column || '—'}</span>
+                                        </div>
+                                    </>
+                                )}
                                 <div className="slot-nav-detail-row">
                                     <span className="nav-detail-label">Status</span>
                                     <span className="nav-detail-value capitalize">{getStatusLabel(getStatusKey(selectedPlotModal.status))}</span>

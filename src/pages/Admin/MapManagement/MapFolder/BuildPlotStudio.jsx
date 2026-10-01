@@ -42,6 +42,8 @@ function BuildPlotStudio({ onPlotSaved }) {
   // Modals State
   const [modalConfig, setModalConfig] = useState({ isOpen: false, title: '', body: '', onConfirm: null });
   const [saveSuccessModal, setSaveSuccessModal] = useState({ isOpen: false, count: 0, prefix: '', startNum: 0, endNum: 0 });
+  const [showInstructionsModal, setShowInstructionsModal] = useState(false);
+  const [showQuickGuide, setShowQuickGuide] = useState(true);
 
   // References for Drawing & Layer Management
   const currentPointsRef = useRef([]);
@@ -685,7 +687,22 @@ function BuildPlotStudio({ onPlotSaved }) {
           <h3 className="studio-title">Plot Settings</h3>
         </div>
 
-        {statusMessage && <div className="drawing-status-badge">{statusMessage}</div>}
+        <div className="studio-header-actions">
+          {statusMessage && <div className="drawing-status-badge">{statusMessage}</div>}
+          <button
+            type="button"
+            className="studio-instructions-btn"
+            onClick={() => setShowInstructionsModal(true)}
+            title="View Step-by-Step Instructions on Building Plots"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <span>Instructions</span>
+          </button>
+        </div>
       </div>
 
       {/* Two-Column Studio Layout */}
@@ -703,6 +720,61 @@ function BuildPlotStudio({ onPlotSaved }) {
                 <span>{errorMessage}</span>
               </div>
             )}
+
+            {/* Quick Step-by-Step Guide Panel */}
+            <div className={`studio-quick-guide-card ${showQuickGuide ? 'expanded' : 'collapsed'}`}>
+              <div className="quick-guide-header" onClick={() => setShowQuickGuide(!showQuickGuide)}>
+                <div className="quick-guide-title">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="16" x2="12" y2="12" />
+                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                  </svg>
+                  <span>Build Plot Instructions</span>
+                </div>
+                <div className="quick-guide-actions">
+                  <button 
+                    type="button" 
+                    className="quick-guide-details-btn" 
+                    onClick={(e) => { e.stopPropagation(); setShowInstructionsModal(true); }}
+                  >
+                    Full Guide
+                  </button>
+                  <span className="quick-guide-toggle-icon">{showQuickGuide ? '▲' : '▼'}</span>
+                </div>
+              </div>
+
+              {showQuickGuide && (
+                <div className="quick-guide-body">
+                  <ol className="quick-guide-steps">
+                    <li>
+                      <span className="step-num">1</span>
+                      <div>
+                        <strong>Draw boundary:</strong> Click <em>Draw Plot (4 nodes)</em> and click 4 corners on the map.
+                      </div>
+                    </li>
+                    <li>
+                      <span className="step-num">2</span>
+                      <div>
+                        <strong>Set grid:</strong> Specify <em>Rows</em> and <em>Columns</em> (e.g. 2 rows × 3 columns).
+                      </div>
+                    </li>
+                    <li>
+                      <span className="step-num">3</span>
+                      <div>
+                        <strong>Assign type &amp; section:</strong> Select <em>Grave Type</em> and enter <em>Section</em> name.
+                      </div>
+                    </li>
+                    <li>
+                      <span className="step-num">4</span>
+                      <div>
+                        <strong>Generate &amp; Save:</strong> Click <em>Generate Plot</em>, then click <em>Save</em> on the polygon card.
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+              )}
+            </div>
 
             {/* Drawing Controls */}
             <div className="studio-controls-toolbar">
@@ -1052,6 +1124,110 @@ function BuildPlotStudio({ onPlotSaved }) {
                 onClick={() => setSaveSuccessModal({ isOpen: false, count: 0, prefix: '', startNum: 0, endNum: 0 })}
               >
                 Okay
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Full Instructions Modal */}
+      {showInstructionsModal && (
+        <div className="studio-modal-backdrop" onClick={() => setShowInstructionsModal(false)}>
+          <div className="instructions-modal-box" onClick={(e) => e.stopPropagation()}>
+            <div className="instructions-modal-header">
+              <div className="instructions-header-title-group">
+                <div className="instructions-header-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="instructions-title">Build Plot Instructions &amp; Guide</h4>
+                  <p className="instructions-subtitle">
+                    Step-by-step instructions for drawing boundaries, setting grids, and saving plots
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="instructions-close-btn"
+                onClick={() => setShowInstructionsModal(false)}
+                title="Close Instructions"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="instructions-modal-body">
+              <div className="instruction-step-card">
+                <div className="instruction-step-badge">1</div>
+                <div className="instruction-step-content">
+                  <h5 className="instruction-step-title">Draw Plot Boundary (4 Corner Nodes)</h5>
+                  <p className="instruction-step-desc">
+                    Click the <strong>Draw Plot (4 nodes)</strong> button on the left panel. On the satellite map, click 4 corner points around the perimeter of the plot area or structure. The polygon closes automatically after placing the 4th point.
+                  </p>
+                  <div className="instruction-step-note">
+                    <strong>Tip:</strong> Use the location dropdown on the top-left of the map (e.g. <em>Apartment - Section A</em>) to quickly fly directly to that section.
+                  </div>
+                </div>
+              </div>
+
+              <div className="instruction-step-card">
+                <div className="instruction-step-badge">2</div>
+                <div className="instruction-step-content">
+                  <h5 className="instruction-step-title">Reshape / Adjust Corners (Optional)</h5>
+                  <p className="instruction-step-desc">
+                    If your corner points need fine-tuning, select the polygon and click the <strong>Reshape</strong> (pencil) icon. Drag the amber vertex handles or midpoint markers to align lines along cemetery walkways and borders. Click <strong>Done Reshaping</strong> when aligned.
+                  </p>
+                </div>
+              </div>
+
+              <div className="instruction-step-card">
+                <div className="instruction-step-badge">3</div>
+                <div className="instruction-step-content">
+                  <h5 className="instruction-step-title">Configure Rows, Columns &amp; Details</h5>
+                  <p className="instruction-step-desc">
+                    Click the polygon card so it shows <em>(Selected)</em>. Enter the number of <strong>Rows</strong> and <strong>Columns</strong> (e.g. 2 Rows × 3 Columns = 6 plots). Then select the <strong>Grave Type</strong> (e.g. <em>Apartment</em>) and type the <strong>Section</strong> name (e.g. <em>A</em>).
+                  </p>
+                </div>
+              </div>
+
+              <div className="instruction-step-card">
+                <div className="instruction-step-badge">4</div>
+                <div className="instruction-step-content">
+                  <h5 className="instruction-step-title">Generate Plot Boxes &amp; Save to Database</h5>
+                  <p className="instruction-step-desc">
+                    Click <strong>Generate Plot</strong> to divide your polygon into bilinear plot boxes. Check the numbering preview on the map. Once satisfied, click the green <strong>Save</strong> button on the polygon card to commit all plots to Firestore.
+                  </p>
+                </div>
+              </div>
+
+              <div className="instructions-pro-tips">
+                <div className="instructions-pro-tips-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="16" x2="12" y2="12" />
+                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                  </svg>
+                  <span>Pro-Tips &amp; Best Practices</span>
+                </div>
+                <ul>
+                  <li><strong>Overlap Protection:</strong> The studio automatically prevents saving plots that overlap existing graves.</li>
+                  <li><strong>Visibility:</strong> Use the <em>Hide Label</em> and <em>No Fill</em> buttons on the polygon card to clearly inspect satellite imagery beneath.</li>
+                  <li><strong>Plot Code Format:</strong> Plot codes are generated automatically in the standard format (e.g. <code>AP-A-001</code>).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="instructions-modal-footer">
+              <button
+                type="button"
+                className="studio-btn primary"
+                style={{ padding: '8px 24px', height: '38px' }}
+                onClick={() => setShowInstructionsModal(false)}
+              >
+                Got it, Start Building
               </button>
             </div>
           </div>

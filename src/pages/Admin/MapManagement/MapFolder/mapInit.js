@@ -66,6 +66,113 @@ export function initMap(containerId = 'map') {
   };
 }
 
+// ===== Helper to check if a plot is an apartment =====
+export function isApartmentPlot(plot) {
+  if (!plot) return false;
+  const type = String(
+    plot.grave_type ||
+    plot.graveType ||
+    plot.lotType ||
+    plot.type ||
+    plot.graveTypeName ||
+    plot.grave_type_id ||
+    plot.graveLotTypeID ||
+    ''
+  ).toLowerCase().trim();
+
+  if (type.includes('apartment')) return true;
+
+  const code = String(
+    plot.plotCode ||
+    plot.plotcode ||
+    plot.plot_code ||
+    plot.name ||
+    plot.lotNumber ||
+    plot.plotNumber ||
+    ''
+  ).trim();
+
+  return /^AP/i.test(code);
+}
+
+// ===== Helper to extract row and column from plot object or code =====
+export function getPlotRowAndColumn(plot) {
+  if (!plot) return { row: null, column: null };
+
+  // 1. Direct fields
+  let row = plot.row ?? plot.plot_row ?? plot.plotRow ?? plot.gridRow ?? plot.grid_row ?? plot.level ?? plot.tier ?? plot.details?.row ?? plot.grid?.row ?? plot.position?.row ?? plot.location?.row ?? null;
+  let column = plot.column ?? plot.col ?? plot.plot_column ?? plot.plot_col ?? plot.plotColumn ?? plot.plotCol ?? plot.gridCol ?? plot.grid_col ?? plot.slot ?? plot.details?.column ?? plot.details?.col ?? plot.grid?.col ?? plot.position?.col ?? plot.location?.col ?? null;
+
+  const cleanNum = (val) => {
+    if (val === null || val === undefined) return null;
+    const str = String(val).trim();
+    if (!str) return null;
+    const m = str.match(/\d+/);
+    return m ? m[0] : str;
+  };
+
+  if (row != null) row = cleanNum(row);
+  if (column != null) column = cleanNum(column);
+
+  const code = String(
+    plot.plotCode ||
+    plot.plotcode ||
+    plot.plot_code ||
+    plot.name ||
+    plot.lotNumber ||
+    plot.plotNumber ||
+    ''
+  ).trim();
+
+  // 2. Parse from plotCode or name (e.g. AP-A-R1-C2, AP-R02-C05, AP-A-Row1-Col2, AP-A-1-2)
+  if (row == null || column == null) {
+    const rcMatch = code.match(/R(?:ow)?[\s-_]*(\d+)[^0-9a-zA-Z]*C(?:ol(?:umn)?)?[\s-_]*(\d+)/i);
+    if (rcMatch) {
+      if (row == null) row = rcMatch[1];
+      if (column == null) column = rcMatch[2];
+    } else {
+      if (row == null) {
+        const rMatch = code.match(/(?:^|[_-])R(?:ow)?[\s-_]*(\d+)(?:[_-]|$)/i);
+        if (rMatch) row = rMatch[1];
+      }
+      if (column == null) {
+        const cMatch = code.match(/(?:^|[_-])C(?:ol(?:umn)?)?[\s-_]*(\d+)(?:[_-]|$)/i);
+        if (cMatch) column = cMatch[1];
+      }
+      if (row == null && column == null) {
+        const parts = code.split(/[-_]/);
+        if (parts.length >= 4 && /^\d+$/.test(parts[2]) && /^\d+$/.test(parts[3])) {
+          row = parts[2];
+          column = parts[3];
+        }
+      }
+    }
+  }
+
+  // 3. Parse from description or notes if available
+  if (row == null || column == null) {
+    const descText = String(plot.description || plot.notes || plot.remarks || '').trim();
+    if (descText) {
+      const descRcMatch = descText.match(/R(?:ow)?[\s-_:]*(\d+)[^0-9a-zA-Z]+C(?:ol(?:umn)?)?[\s-_:]*(\d+)/i);
+      if (descRcMatch) {
+        if (row == null) row = descRcMatch[1];
+        if (column == null) column = descRcMatch[2];
+      } else {
+        if (row == null) {
+          const rM = descText.match(/Row[\s-_:]*(\d+)/i);
+          if (rM) row = rM[1];
+        }
+        if (column == null) {
+          const cM = descText.match(/Col(?:umn)?[\s-_:]*(\d+)/i);
+          if (cM) column = cM[1];
+        }
+      }
+    }
+  }
+
+  return { row, column };
+}
+
 // ===== Render Plot Data onto Map =====
 export function renderPlotsOnMap(instances, plots, shouldFitBounds = true, onRegisterPlot = null) {
   if (!instances || !instances.map || !window.L) return;
@@ -96,9 +203,39 @@ export function renderPlotsOnMap(instances, plots, shouldFitBounds = true, onReg
 
   plots.forEach((plot) => {
     const code = plot.plotCode || plot.plotcode || plot.plot_code || plot.lotNumber || plot.plotNumber || plot.name || `Lot ${plot.id}`;
-    const type = plot.grave_type_id || plot.grave_type || plot.graveLotTypeID || plot.graveLotType || plot.graveType || plot.type || 'Ground Grave';
+    let type = plot.grave_type || plot.graveType || plot.lotType || plot.type || '';
+    if (!type || /^GT\d+$/i.test(String(type).trim()) || String(type).startsWith('grave_type_')) {
+      if (/^AP/i.test(code) || /apartment/i.test(String(plot.grave_type_id || ''))) {
+        type = 'Apartment';
+      } else if (/^SN/i.test(code)) {
+        type = 'Single Niche';
+      } else if (/^GB/i.test(code)) {
+        type = 'Ground Burial';
+      } else if (/^CB/i.test(code)) {
+        type = 'Cherubim';
+      } else if (/^MA/i.test(code)) {
+        type = 'Mausoleum';
+      } else if (/^CO/i.test(code)) {
+        type = 'Columbarium';
+      } else if (/^BV/i.test(code)) {
+        type = 'Bone Vault';
+      } else {
+        type = plot.grave_type_id || 'Ground Grave';
+      }
+    }
     const section = plot.section ? (plot.section.startsWith('Section') ? plot.section : `Section ${plot.section}`) : '';
     const statusInfo = getStatusColor(plot.status);
+
+    const isApartment = isApartmentPlot(plot) || /^AP/i.test(code);
+    const { row: aptRow, column: aptCol } = getPlotRowAndColumn(plot);
+    const rowStr = aptRow != null && String(aptRow).trim() !== '' ? String(aptRow).trim() : '—';
+    const colStr = aptCol != null && String(aptCol).trim() !== '' ? String(aptCol).trim() : '—';
+
+    // Description text below title - includes Row & Column if it's an Apartment
+    let descriptionText = `${section ? section + ' • ' : ''}${type}`;
+    if (isApartment) {
+      descriptionText += ` • Row ${rowStr}, Column ${colStr}`;
+    }
 
     const occupied = plot.occupiedCount != null ? Number(plot.occupiedCount) : 0;
     const maxCap = plot.maxCapacity != null ? Number(plot.maxCapacity) : (plot.capacity != null ? Number(plot.capacity) : 1);
@@ -126,10 +263,21 @@ export function renderPlotsOnMap(instances, plots, shouldFitBounds = true, onReg
       `
       : '';
 
+    const apartmentMetaBadge = isApartment
+      ? `
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; color: #334155; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 8px; margin-bottom: 8px;">
+          <span><strong style="color: #64748b;">Row:</strong> <span style="color: #0f172a; font-weight: 700;">${rowStr}</span></span>
+          <span style="color: #cbd5e1;">|</span>
+          <span><strong style="color: #64748b;">Column:</strong> <span style="color: #0f172a; font-weight: 700;">${colStr}</span></span>
+        </div>
+      `
+      : '';
+
     const popupContent = `
-      <div style="font-family: inherit; min-width: 160px; padding: 4px;">
+      <div style="font-family: inherit; min-width: 170px; padding: 4px;">
         <div style="font-weight: 800; font-size: 14px; color: #0f172a; margin-bottom: 2px;">${code}</div>
-        <div style="font-size: 12px; color: #64748b; margin-bottom: 6px;">${section ? section + ' • ' : ''}${type}</div>
+        <div style="font-size: 12px; color: #64748b; margin-bottom: 6px;">${descriptionText}</div>
+        ${apartmentMetaBadge}
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px;">
           <div style="display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 12px; background: ${statusInfo.fill}22; color: ${statusInfo.stroke};">
             ● ${statusInfo.label}
@@ -150,6 +298,10 @@ export function renderPlotsOnMap(instances, plots, shouldFitBounds = true, onReg
         ${registerBtnHtml}
       </div>
     `;
+
+    const tooltipContent = isApartment
+      ? `${code} (${type} • Row ${rowStr}, Col ${colStr})`
+      : `${code} (${type})`;
 
     // 1. Polygon / Polyline coordinates
     const rawCoords = plot.coordinates || plot.polygon || plot.latlngs || plot.points || plot.bounds;
@@ -191,6 +343,7 @@ export function renderPlotsOnMap(instances, plots, shouldFitBounds = true, onReg
         }).addTo(labelLayer);
 
         polygon.bindPopup(popupContent);
+        polygon.bindTooltip(tooltipContent, { className: 'plot-map-tooltip', direction: 'top' });
 
         bounds.extend(polygon.getBounds());
         hasValidCoordinates = true;
@@ -227,6 +380,7 @@ export function renderPlotsOnMap(instances, plots, shouldFitBounds = true, onReg
       }).addTo(labelLayer);
 
       marker.bindPopup(popupContent);
+      marker.bindTooltip(tooltipContent, { className: 'plot-map-tooltip', direction: 'top' });
 
       bounds.extend(pt);
       hasValidCoordinates = true;

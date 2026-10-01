@@ -325,6 +325,14 @@ export async function saveBoxesToFirestore({ boxes, polyId, grave_type_id, grave
       createdAt: new Date().toISOString()
     };
 
+    if (box.row != null) {
+      plotDoc.row = box.row;
+    }
+    if (box.col != null || box.column != null) {
+      plotDoc.column = box.col ?? box.column;
+      plotDoc.col = box.col ?? box.column;
+    }
+
     try {
       await addDoc(collection(db, 'plots'), plotDoc);
       savedCount++;

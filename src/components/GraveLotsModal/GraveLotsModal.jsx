@@ -14,6 +14,7 @@ import {
     ExternalLink
 } from "lucide-react";
 import SatelliteMap from "../../pages/Admin/MapManagement/MapFolder/SatelliteMap.jsx";
+import { isApartmentPlot, getPlotRowAndColumn } from "../../pages/Admin/MapManagement/MapFolder/mapInit.js";
 import { subscribePlots, getCentered12Plots } from "../../services/plotServices.jsx";
 import { subscribeGraveTypes } from "../../services/graveServices.jsx";
 import Pagination from "../Pagination/Pagination.jsx";
@@ -760,7 +761,14 @@ function GraveLotsModal({
                                                 </div>
                                                 <div className="glm-slot-code">{lotTitle}</div>
                                                 <div className="glm-slot-status">{statusLabel}</div>
-                                                <div className="glm-slot-type">{lotType}</div>
+                                                <div className="glm-slot-type">
+                                                    {lotType}
+                                                    {isApartmentPlot(plot) && (
+                                                        <span style={{ display: 'block', fontSize: '10.5px', color: '#64748b', marginTop: '2px', fontWeight: 600 }}>
+                                                            Row {getPlotRowAndColumn(plot).row || '—'} • Col {getPlotRowAndColumn(plot).column || '—'}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
                                         );
                                     })
@@ -885,6 +893,18 @@ function GraveLotsModal({
                                 <span className="glm-popup-label">Grave Type</span>
                                 <span className="glm-popup-value">{popupGraveType}</span>
                             </div>
+                            {isApartmentPlot(selectedPlot) && (
+                                <>
+                                    <div className="glm-popup-detail-row">
+                                        <span className="glm-popup-label">Row</span>
+                                        <span className="glm-popup-value">{getPlotRowAndColumn(selectedPlot).row || "—"}</span>
+                                    </div>
+                                    <div className="glm-popup-detail-row">
+                                        <span className="glm-popup-label">Column</span>
+                                        <span className="glm-popup-value">{getPlotRowAndColumn(selectedPlot).column || "—"}</span>
+                                    </div>
+                                </>
+                            )}
                             <div className="glm-popup-detail-row">
                                 <span className="glm-popup-label">Status</span>
                                 <span className="glm-popup-value">{popupStatusLabel}</span>
