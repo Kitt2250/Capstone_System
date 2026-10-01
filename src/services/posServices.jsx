@@ -62,12 +62,14 @@ async function createAuthAccount(email, password) {
 // ─────────────────────────────────────────────────────────────────────────────
 // STEP 2: Write Firestore user document  (collection: "users")
 // ─────────────────────────────────────────────────────────────────────────────
-async function createUserDocument(uid, email) {
+async function createUserDocument(uid, email, clientData = null) {
+    const fullName = clientData ? `${clientData.firstName ?? ""} ${clientData.lastName ?? ""}`.trim() : "";
     await setDoc(doc(db, "users", uid), {
+        ...(fullName ? { name: fullName } : {}),
         email,
         role: "family",          // default for POS-created accounts
         status: "inactive",
-        created_at: serverTimestamp(),
+        createdAt: serverTimestamp(),
         last_login: null,
     });
 }
@@ -142,7 +144,7 @@ export async function processPOSTransaction(transactionData) {
     );
 
     // 2. Create Firestore user document
-    await createUserDocument(uid, clientData.email);
+    await createUserDocument(uid, clientData.email, clientData);
 
     // 3. Create client record
     const clientId = await createClientDocument(uid, clientData);

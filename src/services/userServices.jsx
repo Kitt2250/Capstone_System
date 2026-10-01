@@ -22,10 +22,14 @@ export async function getUsers() {
     const usersRef = collection(db, "users");
     const usersSnap = await getDocs(usersRef);
 
-    return usersSnap.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-    }));
+    return usersSnap.docs.map((doc) => {
+        const data = doc.data();
+        return {
+            id: doc.id,
+            ...data,
+            createdAt: data.createdAt || data.created_at || null
+        };
+    });
 }
 
 

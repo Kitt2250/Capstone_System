@@ -74,7 +74,6 @@ function PointOfSale() {
     const [deceasedLastName, setDeceasedLastName] = useState("");
     const [deceasedDOB, setDeceasedDOB] = useState("");
     const [deceasedDOD, setDeceasedDOD] = useState("");
-    const [deceasedDateBuried, setDeceasedDateBuried] = useState("");
 
     // Static UI state without business logic (as requested: "dont add function yet")
     const [needType, setNeedType] = useState("actual");
@@ -385,10 +384,9 @@ function PointOfSale() {
         setDeceasedLastName("");
         setDeceasedDOB("");
         setDeceasedDOD("");
-        setDeceasedDateBuried("");
     };
 
-    const effectiveBurialDate = deceasedDateBuried || burialDate || getSystemDateISO();
+    const effectiveBurialDate = burialDate || getSystemDateISO();
 
     // Interment calculation via controller (applies weekend +₱3,000 surcharge for Mausoleum & Single Niche Fresh Burial)
     const intermentCalculation = useMemo(() => {
@@ -1252,22 +1250,6 @@ function PointOfSale() {
                                             onChange={(e) => setDeceasedDOD(e.target.value)}
                                         />
                                     </div>
-
-                                    <div className="pos-form-group pos-form-group-full">
-                                        <label className="pos-form-label" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                            <Calendar size={13} className="pos-form-icon" />
-                                            Date Buried
-                                        </label>
-                                        <input
-                                            type="date"
-                                            className="pos-input-control"
-                                            value={deceasedDateBuried}
-                                            onChange={(e) => {
-                                                setDeceasedDateBuried(e.target.value);
-                                                setBurialDate(e.target.value);
-                                            }}
-                                        />
-                                    </div>
                                 </div>
                             </div>
                         ) : (
@@ -1591,7 +1573,7 @@ function PointOfSale() {
                                                 deceasedLastName,
                                                 deceasedDOB,
                                                 deceasedDOD,
-                                                deceasedDateBuried,
+                                                deceasedDateBuried: burialDate || getSystemDateISO(),
                                                 intermentType: selectedInterment?.type ?? "",
                                                 intermentFee: intermentFee,
                                                 weekendSurcharge: intermentCalculation.weekendSurcharge,
