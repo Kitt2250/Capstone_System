@@ -211,6 +211,7 @@ export async function recordInstallmentPayment({
 
     const newBalance = Math.max(0, currentBalance - payAmount);
     const newStatus = newBalance === 0 ? "paid" : "partial";
+    const mAmount = Number(monthlyAmount || payment.monthly_amount || payment.monthly_installment || 0);
 
     // Advance due date by 1 month (or proportional months if paying multiple installments) if balance remains
     let newDueDate = null;
@@ -230,7 +231,6 @@ export async function recordInstallmentPayment({
         }
 
         // Calculate months to advance (at least 1 month per installment payment)
-        const mAmount = Number(monthlyAmount || payment.monthly_amount || payment.monthly_installment || 0);
         let monthsToAdvance = 1;
         if (mAmount > 0 && payAmount >= mAmount * 1.8) {
             monthsToAdvance = Math.max(1, Math.round(payAmount / mAmount));

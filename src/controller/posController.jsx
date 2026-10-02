@@ -48,7 +48,14 @@ export async function processPOSController(transactionData) {
     }
 
     // ── Interment Validation ──────────────────────────────────────────────────
-    if (needType !== "pre-need" && !burialData?.intermentType?.trim()) {
+    const isApartmentLot = Boolean(
+        transactionData.isApartment ||
+        burialData?.isApartment ||
+        String(transactionData.graveType || "").toLowerCase().includes("apartment") ||
+        /^AP/i.test(String(transactionData.plotCode || ""))
+    );
+
+    if (needType !== "pre-need" && !isApartmentLot && !burialData?.intermentType?.trim()) {
         throw new Error("Interment service is required.");
     }
 
@@ -77,6 +84,11 @@ export async function processPOSController(transactionData) {
     }
     if (Number(amountTendered) < totalCash) {
         throw new Error(`Amount tendered is insufficient. Total Cash required is ₱${totalCash.toLocaleString()}.`);
+    }
+
+    // ── Payment Plan Validation ───────────────────────────────────────────────
+    if (needType === "actual" && paymentData?.paymentStatus === "partial") {
+        throw new Error("Installment is only available for pre-reserved (pre-need) purchases. Actual burial requires on the spot cash payment.");
     }
 
     // ── Delegate to service ───────────────────────────────────────────────────

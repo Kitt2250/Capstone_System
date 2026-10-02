@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { Navigation, X, Volume2, VolumeX, Moon, Sun, LocateFixed, AlertTriangle, RefreshCw, Compass } from "lucide-react";
+import { Navigation, X, Volume2, VolumeX, LocateFixed, AlertTriangle, RefreshCw, Compass } from "lucide-react";
 import "./NavigateGpsModal.css";
 
 const CEMETERY_ENTRANCE = [14.839013, 120.759680];
@@ -750,16 +750,6 @@ export default function NavigateGpsModal({ plot, deceasedNames = [], onClose }) 
 
       {/* ── Floating Action Buttons (Right side) ── */}
       <div className="gl-nav-fab-group">
-        <button
-          type="button"
-          className="gl-nav-fab"
-          onClick={toggleMapLayer}
-          title={isHybridLayer ? "Switch to Pure Satellite" : "Switch to Hybrid Labels"}
-          aria-label="Toggle Satellite / Hybrid layer"
-        >
-          {isHybridLayer ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
-
         <button
           type="button"
           className={`gl-nav-fab ${!isMuted ? "gl-nav-fab--sound-on" : ""}`}

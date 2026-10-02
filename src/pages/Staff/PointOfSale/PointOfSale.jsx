@@ -21,6 +21,7 @@ import {
 import "./PointOfSale.css";
 import WakeSpaceModal from "../../../components/WakeSpaceModal/WakeSpaceModal.jsx";
 import GraveLotsModal from "../../../components/GraveLotsModal/GraveLotsModal.jsx";
+import { isApartmentPlot } from "../../Admin/MapManagement/MapFolder/mapInit.js";
 import {
     createWakeSpaceBooking,
     subscribeWakeSpaceBookings,
@@ -319,9 +320,27 @@ function PointOfSale() {
 
     const completedDocsCount = documents.filter((d) => d.checked).length;
 
-    // Filter matching interment fees for the given selected grave lot
+    // Check if the currently selected grave lot is an Apartment
+    const isApartment = useMemo(() => {
+        if (!selectedGravePlot) return false;
+        if (isApartmentPlot(selectedGravePlot.rawPlot || selectedGravePlot)) return true;
+        const gt = String(selectedGravePlot.graveType || "").toLowerCase();
+        if (gt.includes("apartment")) return true;
+        const code = String(selectedGravePlot.plotCode || "").toUpperCase();
+        if (code.startsWith("AP")) return true;
+        return false;
+    }, [selectedGravePlot]);
+
+    // Ensure selectedInterment is immediately reset if an Apartment lot is selected
+    useEffect(() => {
+        if (isApartment && selectedInterment) {
+            setSelectedInterment(null);
+        }
+    }, [isApartment, selectedInterment]);
+
+    // Filter matching interment fees for the given selected grave lot (Apartment does not have interment)
     const matchingIntermentFees = useMemo(() => {
-        if (!selectedGravePlot) return [];
+        if (!selectedGravePlot || isApartment) return [];
 
         const targetId = String(selectedGravePlot.lotId || "").trim().toLowerCase();
         const targetName = String(selectedGravePlot.graveType || "").trim().toLowerCase();
@@ -441,11 +460,14 @@ function PointOfSale() {
 
     const isLotInstallmentEligible = useMemo(() => {
         if (!selectedGravePlot || !activeGraveTypeConfig) return false;
+        // Installment is ONLY available when pre-reserved (pre-need). Actual burial is cash only!
+        if (needType !== "pre-need") return false;
+
         const inst = activeGraveTypeConfig.installment;
         if (inst === true || inst === "true" || inst === "Eligible") return true;
         if (inst === false || inst === "false" || inst === "No" || !inst) return false;
         return Boolean(inst);
-    }, [selectedGravePlot, activeGraveTypeConfig]);
+    }, [selectedGravePlot, activeGraveTypeConfig, needType]);
 
     const lotInstallmentDuration = useMemo(() => {
         if (!activeGraveTypeConfig) return 12;
@@ -640,8 +662,8 @@ function PointOfSale() {
                             </div>
                         </div>
 
-                        {/* ── Interment Section (Shown for the selected grave lot) ── */}
-                        {needType === "pre-need" ? (
+                        {/* ── Interment Section (Hidden for Apartment lots since Apartment does not have Interment) ── */}
+                        {isApartment ? null : needType === "pre-need" ? (
                             <div className="pos-card pos-card-dimmed">
                                 <div className="pos-card-header">
                                     <h3 className="pos-card-title">
@@ -1056,7 +1078,10 @@ function PointOfSale() {
                                                 name="burialNeed"
                                                 value="actual"
                                                 checked={needType === "actual"}
-                                                onChange={() => setNeedType("actual")}
+                                                onChange={() => {
+                                                    setNeedType("actual");
+                                                    setPaymentPlan("On the Spot Cash");
+                                                }}
                                             />
                                             <span>
                                                 Actual Burial <span className="pos-badge-subtext">(Ililibing na)</span>
@@ -1332,7 +1357,9 @@ function PointOfSale() {
                                     {selectedGravePlot ? (
                                         !isLotInstallmentEligible && (
                                             <div style={{ fontSize: "0.725rem", color: "#64748b", marginTop: "4px" }}>
-                                                On the spot cash only (installment not available)
+                                                {needType === "actual"
+                                                    ? "Actual burial requires cash payment only (installment is available for pre-reserved / pre-need)."
+                                                    : "On the spot cash only (installment not available for this lot type)"}
                                             </div>
                                         )
                                     ) : (
@@ -1574,12 +1601,16 @@ function PointOfSale() {
                                                 deceasedDOB,
                                                 deceasedDOD,
                                                 deceasedDateBuried: burialDate || getSystemDateISO(),
-                                                intermentType: selectedInterment?.type ?? "",
-                                                intermentFee: intermentFee,
-                                                weekendSurcharge: intermentCalculation.weekendSurcharge,
+                                                intermentType: isApartment ? "" : (selectedInterment?.type ?? ""),
+                                                intermentFee: isApartment ? 0 : intermentFee,
+                                                weekendSurcharge: isApartment ? 0 : intermentCalculation.weekendSurcharge,
                                                 documents: checkedDocs,
+                                                isApartment: Boolean(isApartment),
                                             },
                                             plotId: selectedGravePlot?.id ?? "",
+                                            plotCode: selectedGravePlot?.plotCode ?? "",
+                                            graveType: selectedGravePlot?.graveType ?? "",
+                                            isApartment: Boolean(isApartment),
                                             needType,
                                             paymentData: {
                                                 total: totalDue,
