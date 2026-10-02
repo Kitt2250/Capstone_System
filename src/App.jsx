@@ -25,6 +25,11 @@ import Notifications from "./pages/Staff/Notifications/Notifications"
 import Renewals from "./pages/Staff/Renewals/Renewals"
 import StaffDashboard from "./pages/Staff/Dashboard/StaffDashboard"
 import StaffMyAccount from "./pages/Staff/MyAccount/StaffMyAccount"
+import BurialRecords from "./pages/Family/BurialRecords/BurialRecords"
+import GraveLocation from "./pages/Family/GraveLocation/GraveLocation"
+import MyPayment from "./pages/Family/MyPayments/MyPayment"
+import FamilyNotifications from "./pages/Family/Notifications/Notifications"
+import MyAccount from "./pages/Family/MyAccount/MyAccount"
 import { initWakeSpaceAutoSync } from "./controller/wakeSpaceController"
 import { initOperationalAlertsAutoSync } from "./controller/notificationController"
 function App() {
@@ -78,6 +83,7 @@ function App() {
           {!user && (
             <>
               <Route path="/login" element={<Login />} />
+              <Route path="/forgot-password" element={<Login initialView="forgot" />} />
               <Route
                 path="*"
                 element={<Navigate to="/login" replace />}
@@ -128,7 +134,14 @@ function App() {
 
           {user && role === "family" && (
             <>
-              <Route path="/family/*" element={<Family />} />
+              <Route path="/family" element={<Family />}>
+                <Route index element={<Navigate to="burial-records" replace />} />
+                <Route path="burial-records" element={<BurialRecords />} />
+                <Route path="grave-location" element={<GraveLocation />} />
+                <Route path="my-payments" element={<MyPayment />} />
+                <Route path="notifications" element={<FamilyNotifications />} />
+                <Route path="my-account" element={<MyAccount />} />
+              </Route>
               <Route
                 path="*"
                 element={<Navigate to="/family" replace />}

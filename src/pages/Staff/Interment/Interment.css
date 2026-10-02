@@ -30,8 +30,8 @@
     width: 38px;
     height: 38px;
     border-radius: 10px;
-    background: #eff6ff;
-    color: #004d8c;
+    background: #faf3e0;
+    color: #d4af37;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -382,7 +382,7 @@
     padding: 0 16px;
     font-size: 0.825rem;
     font-weight: 700;
-    color: #004d8c;
+    color: #1a3d5c;
     background: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 8px;
@@ -392,9 +392,9 @@
 }
 
 .interment-btn-choose-plot:hover {
-    background: #eff6ff;
-    border-color: #93c5fd;
-    color: #003866;
+    background: #faf3e0;
+    border-color: #d4af37;
+    color: #1a3d5c;
 }
 
 /* Owned Plot Full Details View Card */
@@ -546,16 +546,17 @@
     padding: 0 12px;
     font-size: 0.75rem;
     font-weight: 700;
-    color: #004d8c;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
+    color: #1a3d5c;
+    background: #faf3e0;
+    border: 1px solid rgba(212, 175, 55, 0.3);
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.15s ease;
 }
 
 .interment-btn-book:hover {
-    background: #dbeafe;
+    background: #d4af37;
+    color: #1a3d5c;
 }
 
 .interment-btn-remove {
@@ -705,17 +706,17 @@
     width: 100%;
     font-size: 0.875rem;
     font-weight: 700;
-    color: #ffffff;
-    background: #004d8c;
+    color: #1a3d5c;
+    background: #d4af37;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.15s ease;
-    box-shadow: 0 2px 4px rgba(0, 77, 140, 0.25);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35);
 }
 
 .interment-submit-btn:hover:not(:disabled) {
-    background: #003866;
+    background: #c49a2e;
 }
 
 .interment-submit-btn:disabled {

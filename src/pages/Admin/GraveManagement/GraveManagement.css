@@ -1,745 +1,939 @@
-/* ===== Grave Management Container Card ===== */
+/* =====================================================
+   GRAVE MANAGEMENT — GraveManagement.css
+   Matches Cherubim Admin Portal styling exactly
+   ===================================================== */
+
+/* ── Page Wrapper ─────────────────────────────────── */
 .grave-management-page {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 100%;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
+/* ── Main Container Card ──────────────────────────── */
 .grave-management-container {
-    background-color: #ffffff;
-    border-radius: 14px;
-    padding: 24px;
-    border: 1px solid #e8ecf1;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.02);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 24px;
+  border: 1px solid #e8ecf1;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
-/* ===== Tab Bar ===== */
+/* ── Tab Switcher Bar ─────────────────────────────── */
 .gm-tab-bar {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-bottom: 24px;
-    padding: 4px;
-    background-color: #f1f5f9;
-    border-radius: 10px;
-    width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  width: fit-content;
+  margin-bottom: 18px;
 }
 
 .gm-tab-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 9px 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    font-family: inherit;
-    color: #64748b;
-    background: transparent;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 16px;
+  font-size: 0.83rem;
+  font-weight: 500;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
 }
-
 .gm-tab-btn:hover {
-    color: #334155;
-    background-color: rgba(255, 255, 255, 0.5);
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.6);
 }
-
 .gm-tab-btn.gm-tab-active {
-    color: #0f172a;
-    background-color: #ffffff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  color: #0f172a;
+  font-weight: 600;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-/* ===== Page Title Bar ===== */
-.gm-config-section .page-title-bar,
-.gm-lot-section .page-title-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.gm-config-section .page-title-bar h2,
-.gm-lot-section .page-title-bar h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #0f172a;
-    margin: 0;
-}
-
-.grave-management-container .page-actions-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-/* ===== Filters Bar ===== */
-.grave-management-container .filters-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
-.grave-management-container .search-wrapper {
-    position: relative;
-    width: 280px;
-    max-width: 100%;
-    display: flex;
-    align-items: center;
-}
-
-.grave-management-container .search-wrapper .search-icon {
-    position: absolute;
-    left: 12px;
-    color: #94a3b8;
-    pointer-events: none;
-}
-
-.grave-management-container .search-wrapper .search-input {
-    width: 100%;
-    height: 38px;
-    padding: 8px 14px 8px 36px;
-    font-size: 0.85rem;
-    font-family: inherit;
-    color: #1e293b;
-    background-color: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    outline: none;
-    transition: all 0.2s ease;
-}
-
-.grave-management-container .search-wrapper .search-input:focus {
-    border-color: #004d8c;
-    box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.08);
-}
-
-/* ===== Config Table Cells ===== */
-.config-index {
-    font-size: 0.825rem;
-    font-weight: 600;
-    color: #94a3b8;
-    min-width: 24px;
-    display: inline-block;
-    text-align: center;
-}
-
-.config-type-name {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #0f172a;
-}
-
-.config-description {
-    font-size: 0.85rem;
-    color: #64748b;
-}
-
-/* ===== Lot Price ===== */
-.lot-price {
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: #059669;
-}
-
-/* ===== Interment Count ===== */
-.interment-count {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #1d4ed8;
-    background-color: #eff6ff;
-    border: 1px solid #bfdbfe;
-    padding: 2px 10px;
-    border-radius: 9999px;
-    display: inline-block;
-    min-width: 28px;
-    text-align: center;
-}
-
-/* ===== Installment Pill ===== */
-.installment-pill {
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 3px 12px;
-    border-radius: 9999px;
-    display: inline-block;
-}
-
-.installment-yes {
-    background-color: #ecfdf5;
-    color: #059669;
-    border: 1px solid #a7f3d0;
-}
-
-.installment-no {
-    background-color: #f1f5f9;
-    color: #64748b;
-    border: 1px solid #cbd5e1;
-}
-
-/* ===== Contract / Ownership ===== */
-.config-contract {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: #334155;
-}
-
-.contract-perpetual {
-    font-weight: 600;
-    color: #7e22ce;
-}
-
-/* ===== Config Divider ===== */
-.config-divider {
-    height: 1px;
-    background-color: #e2e8f0;
-    margin: 28px 0;
-}
-
-/* ===== Config Action Buttons ===== */
-.config-action-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    background-color: #ffffff;
-    cursor: pointer;
-    transition: all 0.15s ease;
-}
-
-.config-edit-btn {
-    color: #3b82f6;
-}
-
-.config-edit-btn:hover {
-    background-color: #eff6ff;
-    border-color: #93c5fd;
-    color: #1d4ed8;
-}
-
-.config-delete-btn {
-    color: #ef4444;
-}
-
-.config-delete-btn:hover {
-    background-color: #fef2f2;
-    border-color: #fca5a5;
-    color: #b91c1c;
-}
-
-/* ===== Grave Lot Empty State ===== */
-.gm-lot-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    color: #94a3b8;
-    gap: 12px;
-}
-
-.gm-lot-empty p {
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #94a3b8;
-    margin: 0;
-}
-
-/* ===== Tab Counter Badge ===== */
 .gm-tab-counter {
-    background-color: #e2e8f0;
-    color: #0f172a;
-    font-size: 0.725rem;
-    font-weight: 700;
-    padding: 1px 7px;
-    border-radius: 9999px;
-    margin-left: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 7px;
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+/* ── Section Title Bar ────────────────────────────── */
+.gm-config-section .page-title-bar,
+.gm-lot-section .page-title-bar,
+.grave-management-container .page-title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.grave-management-container .page-title-bar h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .gm-page-subtitle {
-    font-size: 0.8rem;
-    color: #64748b;
-    margin: 3px 0 0 0;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 3px 0 0 0;
 }
 
-/* ===== Lot KPI Grid ===== */
+.page-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Add Type / Primary Buttons ───────────────────── */
+.page-actions-group .btn-create,
+.btn-action-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #1a3d5c;
+  background: #d4af37;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  height: 36px;
+}
+.page-actions-group .btn-create:hover,
+.btn-action-primary:hover {
+  background: #c49a2e;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35);
+}
+
+.gm-outline-btn,
+.btn-action-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #334155;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  height: 36px;
+}
+.gm-outline-btn:hover:not(:disabled),
+.btn-action-outline:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+/* Sync Occupancy Button */
+.gm-sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 15px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #334155;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  height: 36px;
+}
+.gm-sync-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+.gm-sync-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Filters Bar ──────────────────────────────────── */
+.filters-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.search-wrapper {
+  flex: 1;
+  min-width: 220px;
+  max-width: 360px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-wrapper .search-icon {
+  position: absolute;
+  left: 12px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.search-wrapper .search-input {
+  width: 100%;
+  padding: 8px 12px 8px 34px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.83rem;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  height: 36px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+.search-wrapper .search-input:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+.search-wrapper .search-input::placeholder {
+  color: #94a3b8;
+}
+
+.gm-select-filter,
+.filter-select {
+  height: 36px;
+  padding: 0 30px 0 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #334155;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 8px center;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  min-width: 110px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.gm-select-filter:hover,
+.filter-select:hover {
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+}
+
+.gm-select-filter:focus,
+.filter-select:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+  background-color: #ffffff;
+}
+
+.btn-reset-filters {
+  padding: 7px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #64748b;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  height: 36px;
+  transition: 0.2s;
+}
+.btn-reset-filters:hover {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fca5a5;
+}
+
+/* ── Table Container & General Styles ─────────────── */
+.table-wrapper,
+.table-container {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid #edf2f7;
+  margin-bottom: 12px;
+  background: #ffffff;
+}
+
+.grave-management-container table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  table-layout: fixed;
+}
+
+.grave-management-container thead {
+  background: #ffffff;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.grave-management-container thead th {
+  padding: 11px 12px;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.grave-management-container tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  background-color: #ffffff;
+  transition: background-color 0.15s ease;
+}
+.grave-management-container tbody tr:hover {
+  background-color: #fafbfc;
+}
+.grave-management-container tbody tr:last-child {
+  border-bottom: none;
+}
+
+.grave-management-container tbody td {
+  padding: 10px 12px;
+  color: #0f172a;
+  font-size: 0.84rem;
+  vertical-align: middle;
+}
+
+/* ── TAB 1: Grave Type Configuration Table Columns ── */
+.gm-config-section table {
+  width: 100%;
+  min-width: unset;
+  table-layout: fixed;
+}
+
+.gm-config-section .th-grave_type_id,
+.gm-config-section .td-grave_type_id {
+  width: 45px;
+  padding-left: 16px;
+  text-align: left;
+}
+
+.gm-config-section .th-grave_type,
+.gm-config-section .td-grave_type {
+  width: 23%;
+  text-align: left;
+}
+
+.gm-config-section .th-lot_price,
+.gm-config-section .td-lot_price {
+  width: 18%;
+  text-align: left;
+}
+
+.gm-config-section .th-interment,
+.gm-config-section .td-interment {
+  width: 14%;
+  text-align: left;
+}
+
+.gm-config-section .th-installment,
+.gm-config-section .td-installment {
+  width: 16%;
+  text-align: left;
+}
+
+.gm-config-section .th-contract,
+.gm-config-section .td-contract {
+  width: 19%;
+  text-align: left;
+}
+
+.gm-config-section .th-actions,
+.gm-config-section .td-actions {
+  width: 85px;
+  text-align: right;
+  padding-right: 20px;
+}
+
+/* ── TAB 2: Grave Lot & Burials Table Columns ─────── */
+.gm-lot-section table {
+  width: 100%;
+  min-width: unset;
+  table-layout: fixed;
+}
+
+.gm-lot-section .th-index,
+.gm-lot-section .td-index {
+  width: 40px;
+  padding-left: 16px;
+  text-align: left;
+}
+
+.gm-lot-section .th-plotCode,
+.gm-lot-section .td-plotCode {
+  width: 13%;
+  text-align: left;
+}
+
+.gm-lot-section .th-graveType,
+.gm-lot-section .td-graveType {
+  width: 14%;
+  text-align: left;
+}
+
+.gm-lot-section .th-status,
+.gm-lot-section .td-status {
+  width: 12%;
+  text-align: left;
+}
+
+.gm-lot-section .th-payment,
+.gm-lot-section .td-payment {
+  width: 12%;
+  text-align: left;
+}
+
+.gm-lot-section .th-occupancy,
+.gm-lot-section .td-occupancy {
+  width: 11%;
+  text-align: left;
+}
+
+.gm-lot-section .th-burials,
+.gm-lot-section .td-burials {
+  width: 18%;
+  text-align: left;
+}
+
+.gm-lot-section .th-owner,
+.gm-lot-section .td-owner {
+  width: 13%;
+  text-align: left;
+}
+
+.gm-lot-section .th-actions,
+.gm-lot-section .td-actions {
+  width: 48px;
+  text-align: right;
+  padding-right: 16px;
+}
+
+/* ── Grave Type Configuration Cells ───────────────── */
+/* Index # */
+.config-index {
+  font-size: 0.82rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Grave Type Name */
+.config-type-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* Lot Price (Bold Emerald Green) */
+.lot-price {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #059669;
+}
+
+/* Interment Count (Soft Blue Circular Badge) */
+.interment-count {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #2563eb;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Installment Eligibility Pills */
+.installment-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.installment-pill.installment-yes {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.installment-pill.installment-no {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+/* Contract / Ownership */
+.config-contract {
+  font-size: 0.83rem;
+  color: #334155;
+  font-weight: 400;
+}
+
+/* Action Buttons (Edit / Delete) */
+.actions-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.config-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+  background: #ffffff;
+}
+
+/* Edit button - White background, soft blue outline */
+.config-edit-btn {
+  color: #0284c7;
+  background: #ffffff;
+  border: 1px solid #bae6fd;
+}
+.config-edit-btn:hover {
+  background: #f0f9ff;
+  border-color: #0284c7;
+  color: #0284c7;
+}
+
+/* Delete button - White background, soft red outline */
+.config-delete-btn {
+  color: #ef4444;
+  background: #ffffff;
+  border: 1px solid #fecaca;
+}
+.config-delete-btn:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* View button - White background, soft blue outline */
+.config-view-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: #0284c7;
+  background: #ffffff;
+  border: 1px solid #bae6fd;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+.config-view-btn:hover {
+  background: #f0f9ff;
+  border-color: #0284c7;
+  color: #0284c7;
+}
+
+/* ── TAB 2: Grave Lot & Burials Specific Styles ───── */
 .gm-lot-kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 14px;
-    margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
 }
 
 .gm-lot-kpi-card {
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 16px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  background: #ffffff;
+  border: 1px solid #edf2f7;
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.18s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
-
 .gm-lot-kpi-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-color: #d4af37;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.08);
 }
 
 .lot-kpi-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .lot-kpi-label {
-    font-size: 0.725rem;
-    font-weight: 700;
-    color: #64748b;
-    letter-spacing: 0.04em;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .lot-kpi-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
-.lot-kpi-icon.blue { background-color: #e0f2fe; color: #0284c7; }
-.lot-kpi-icon.green { background-color: #ecfdf5; color: #059669; }
-.lot-kpi-icon.amber { background-color: #fef3c7; color: #d97706; }
-.lot-kpi-icon.red { background-color: #fee2e2; color: #e11d48; }
+.lot-kpi-icon.blue  { background: #eff6ff; color: #0284c7; }
+.lot-kpi-icon.green { background: #ecfdf5; color: #10b981; }
+.lot-kpi-icon.amber { background: #fffbeb; color: #f59e0b; }
+.lot-kpi-icon.red   { background: #fef2f2; color: #ef4444; }
 
 .lot-kpi-body {
-    display: flex;
-    align-items: baseline;
+  display: flex;
+  align-items: baseline;
 }
 
 .lot-kpi-value {
-    font-size: 1.55rem;
-    font-weight: 800;
-    color: #0f172a;
-    line-height: 1.1;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.1;
+  margin-top: 1px;
 }
 
 .lot-kpi-sub {
-    font-size: 0.75rem;
-    color: #64748b;
+  font-size: 0.74rem;
+  color: #64748b;
+  margin-top: 1px;
 }
 
-/* ===== Outline Sync Button ===== */
-.gm-outline-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    height: 38px;
-    padding: 0 14px;
-    font-size: 0.825rem;
-    font-weight: 600;
-    font-family: inherit;
-    color: #004d8c;
-    background-color: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-}
-
-.gm-outline-btn:hover:not(:disabled) {
-    background-color: #eff6ff;
-    border-color: #93c5fd;
-}
-
-.gm-outline-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* ===== Select Filters ===== */
-.gm-select-filter {
-    height: 38px;
-    padding: 0 12px;
-    font-size: 0.825rem;
-    font-family: inherit;
-    color: #1e293b;
-    background-color: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    outline: none;
-    cursor: pointer;
-    transition: all 0.15s ease;
-}
-
-.gm-select-filter:focus {
-    border-color: #004d8c;
-    box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.08);
-}
-
-/* ===== Column Widths for Grave Lot Table ===== */
-.gm-lot-section table {
-    min-width: 950px;
-}
-
-.gm-lot-section .th-index, .gm-lot-section .td-index {
-    width: 4%;
-    text-align: center;
-}
-
-.gm-lot-section .th-plotCode, .gm-lot-section .td-plotCode {
-    width: 13%;
-}
-
-.gm-lot-section .th-graveType, .gm-lot-section .td-graveType {
-    width: 14%;
-}
-
-.gm-lot-section .th-status, .gm-lot-section .td-status {
-    width: 14%;
-}
-
-.gm-lot-section .th-payment, .gm-lot-section .td-payment {
-    width: 15%;
-}
-
-.gm-lot-section .th-occupancy, .gm-lot-section .td-occupancy {
-    width: 13%;
-}
-
-.gm-lot-section .th-burials, .gm-lot-section .td-burials {
-    width: 18%;
-}
-
-.gm-lot-section .th-owner, .gm-lot-section .td-owner {
-    width: 14%;
-}
-
-.gm-lot-section .th-actions, .gm-lot-section .td-actions {
-    width: 7%;
-    text-align: right;
-    padding-right: 18px;
-}
-
-/* ===== Table Cells for Grave Lot ===== */
+/* Plot Code & Section Cell */
 .lot-code-cell {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
 }
 
 .lot-code-pill {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #0f172a;
-    background-color: #f1f5f9;
-    padding: 2px 8px;
-    border-radius: 6px;
-    width: fit-content;
-    font-family: monospace;
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 0.78rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 1px 7px;
+  border-radius: 5px;
+  display: inline-block;
+  line-height: 1.3;
 }
 
 .lot-section-sub {
-    font-size: 0.725rem;
-    color: #64748b;
-    font-weight: 500;
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 400;
+  line-height: 1.25;
 }
 
+/* Grave Type Cell */
 .lot-type-cell {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  align-items: flex-start;
 }
 
 .lot-type-name {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #1e293b;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.25;
 }
 
 .lot-type-price {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #059669;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #059669;
+  line-height: 1.25;
 }
 
 /* Status Pills */
-.lot-table-status-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 9999px;
-    white-space: nowrap;
+.lot-table-status-pill,
+.lot-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
 }
 
-.lot-table-status-pill .lot-badge-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
+.lot-badge-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
 }
 
-.lot-table-status-pill.status-available {
-    background-color: #ecfdf5;
-    color: #059669;
-    border: 1px solid #a7f3d0;
-}
-.lot-table-status-pill.status-available .lot-badge-dot { background-color: #10b981; }
-
-.lot-table-status-pill.status-partial {
-    background-color: #fffbeb;
-    color: #b45309;
-    border: 1px solid #fde68a;
-}
-.lot-table-status-pill.status-partial .lot-badge-dot { background-color: #f59e0b; }
-
-.lot-table-status-pill.status-occupied {
-    background-color: #fef2f2;
-    color: #dc2626;
-    border: 1px solid #fecaca;
-}
-.lot-table-status-pill.status-occupied .lot-badge-dot { background-color: #ef4444; }
-
-.lot-table-status-pill.status-reserved {
-    background-color: #f5f3ff;
-    color: #7c3aed;
-    border: 1px solid #ddd6fe;
-}
-.lot-table-status-pill.status-reserved .lot-badge-dot { background-color: #8b5cf6; }
-
-/* Occupancy Mini Bar */
-.lot-table-occ-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 90px;
+.lot-table-status-pill.status-available,
+.lot-status-pill.status-available {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
 }
 
-.lot-table-occ-text {
-    font-size: 0.775rem;
-    color: #475569;
+.lot-table-status-pill.status-occupied,
+.lot-status-pill.status-occupied {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
 }
 
-.lot-mini-bar {
-    width: 100%;
-    height: 5px;
-    background-color: #e2e8f0;
-    border-radius: 9999px;
-    overflow: hidden;
+.lot-table-status-pill.status-reserved,
+.lot-status-pill.status-reserved {
+  background: #fffbeb;
+  color: #d97706;
+  border: 1px solid #fde68a;
 }
 
-.lot-mini-bar-fill {
-    height: 100%;
-    border-radius: 9999px;
-    transition: width 0.2s ease;
+.lot-table-status-pill.status-partial,
+.lot-status-pill.status-partial {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
 }
 
-/* Burials in Table */
-.lot-table-burial-cell {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.burial-name-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.burial-person-name {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #0f172a;
-}
-
-.burial-more-tag {
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: #b45309;
-    background: #fef3c7;
-    padding: 1px 5px;
-    border-radius: 4px;
-}
-
-.burial-sub-meta {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.725rem;
-    color: #64748b;
-}
-
-.burial-type-micro {
-    background: #f1f5f9;
-    color: #334155;
-    padding: 1px 5px;
-    border-radius: 4px;
-    font-weight: 600;
-}
-
-.burial-date-micro {
-    color: #64748b;
-}
-
-.lot-table-vacant {
-    font-size: 0.8rem;
-    color: #94a3b8;
-    font-style: italic;
-}
-
-/* Client in Table */
-.lot-table-client-cell {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.client-main-name {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #1e293b;
-}
-
-.client-contact-sub {
-    font-size: 0.725rem;
-    color: #64748b;
-    font-family: monospace;
-}
-
-.lot-table-unassigned {
-    font-size: 0.775rem;
-    color: #059669;
-    font-weight: 600;
-    background: #ecfdf5;
-    padding: 2px 7px;
-    border-radius: 5px;
-    width: fit-content;
-}
-
-.config-view-btn {
-    color: #0284c7;
-}
-
-.config-view-btn:hover {
-    background-color: #f0f9ff;
-    border-color: #7dd3fc;
-    color: #0369a1;
-}
-
-/* Contract in Table */
-.lot-contract-cell {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.lot-contract-renewal {
-    font-size: 0.725rem;
-    color: #64748b;
-}
-
-/* Payment in Table */
+/* Payment Cells */
 .lot-payment-cell {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.lot-payment-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 9999px;
-    width: fit-content;
-}
-
-.lot-payment-pill.payment-paid {
-    background-color: #ecfdf5;
-    color: #059669;
-    border: 1px solid #a7f3d0;
-}
-
-.lot-payment-pill.payment-partial {
-    background-color: #fffbeb;
-    color: #b45309;
-    border: 1px solid #fde68a;
-}
-
-.lot-payment-pill.payment-overdue {
-    background-color: #fef2f2;
-    color: #dc2626;
-    border: 1px solid #fecaca;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  align-items: flex-start;
 }
 
 .lot-payment-unpaid {
-    font-size: 0.75rem;
-    color: #64748b;
-    font-weight: 600;
-    background: #f1f5f9;
-    padding: 2px 7px;
-    border-radius: 5px;
-    width: fit-content;
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 500;
+  line-height: 1.25;
 }
 
 .lot-payment-sub {
-    font-size: 0.725rem;
-    color: #64748b;
-    font-weight: 600;
+  font-size: 0.73rem;
+  color: #64748b;
+  line-height: 1.25;
 }
 
-.lot-payment-sub.balance-text {
-    color: #d97706;
-    font-weight: 700;
+.lot-payment-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  width: fit-content;
+}
+.lot-payment-pill.payment-paid    { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+.lot-payment-pill.payment-partial { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.lot-payment-pill.payment-overdue { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+
+.lot-payment-due-date { font-size: 0.68rem; color: #94a3b8; }
+.overdue-due { color: #dc2626 !important; font-weight: 600; }
+
+/* Occupancy Bar */
+.lot-table-occ-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 75px;
+}
+.lot-table-occ-text {
+  font-size: 0.78rem;
+  color: #334155;
+  line-height: 1.25;
+}
+.lot-table-occ-text strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+.lot-mini-bar {
+  width: 75px;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.lot-mini-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
 }
 
-.lot-payment-sub.overdue-text {
-    color: #dc2626;
-    font-weight: 700;
+/* Burial Cell */
+.lot-table-burial-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.burial-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.burial-person-name {
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 0.82rem;
+}
+.burial-more-tag {
+  background: #faf5ff;
+  color: #7c3aed;
+  padding: 1px 5px;
+  border-radius: 10px;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+.burial-sub-meta {
+  display: flex;
+  gap: 8px;
+  font-size: 0.71rem;
+  color: #94a3b8;
+}
+.lot-table-vacant {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  font-style: normal;
 }
 
-.lot-payment-due-date {
-    font-size: 0.7rem;
-    color: #64748b;
-    font-weight: 500;
+/* Buyer / Owner Cell */
+.lot-table-unassigned {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  line-height: 1.4;
 }
 
-.lot-payment-due-date.overdue-due {
-    color: #dc2626;
-    font-weight: 700;
+.lot-table-client-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.client-main-name {
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 0.82rem;
+}
+.client-contact-sub {
+  font-size: 0.72rem;
+  color: #64748b;
 }
 
-/* ===== Standard Pagination Bar ===== */
+/* ── Pagination Bar ────────────────────────────────── */
 .gm-pagination-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 18px;
-    padding-top: 14px;
-    border-top: 1px solid #f1f5f9;
-    flex-wrap: wrap;
-    gap: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .gm-showing-text {
-    font-size: 13px;
-    color: #64748b;
-    font-weight: 500;
+  font-size: 0.8rem;
+  color: #64748b;
 }
 
+/* ── Spinning loader ───────────────────────────────── */
+.spinning {
+  animation: gm-spin 1s linear infinite;
+}
+@keyframes gm-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
 
+/* ── Responsive ────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .gm-lot-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
 
+@media (max-width: 900px) {
+  .grave-management-container .page-title-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .page-actions-group { width: 100%; }
+  .page-actions-group button { flex: 1; justify-content: center; }
+  .filters-bar { flex-direction: column; align-items: stretch; }
+  .filter-select { width: 100%; }
+}
+
+@media (max-width: 600px) {
+  .grave-management-container { padding: 16px 14px; }
+  .gm-tab-bar { width: 100%; }
+  .gm-tab-btn { flex: 1; justify-content: center; }
+  .gm-lot-kpi-grid { grid-template-columns: 1fr; }
+  .gm-pagination-bar { flex-direction: column; }
+}

@@ -112,9 +112,9 @@
 }
 
 .pay-search-wrap:focus-within {
-    border-color: #004d8c;
+    border-color: #d4af37;
     background-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.08);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
 }
 
 .pay-search-icon {
@@ -158,15 +158,15 @@
 }
 
 .pay-select:focus {
-    border-color: #004d8c;
-    box-shadow: 0 0 0 3px rgba(0, 77, 140, 0.08);
+    border-color: #d4af37;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
 }
 
 .pay-select.pay-select-sort {
     font-weight: 600;
-    color: #004d8c;
-    background-color: #f8fafc;
-    border-color: #cbd5e1;
+    color: #1a3d5c;
+    background-color: #faf3e0;
+    border-color: rgba(212, 175, 55, 0.3);
 }
 
 /* ===== Feedback Banner ===== */
@@ -741,17 +741,17 @@
     padding: 0 20px;
     font-size: 0.825rem;
     font-weight: 700;
-    color: #ffffff;
-    background-color: #004d8c;
+    color: #1a3d5c;
+    background-color: #d4af37;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.15s ease;
-    box-shadow: 0 1px 2px rgba(0, 77, 140, 0.2);
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
 }
 
 .pay-btn-primary:hover:not(:disabled) {
-    background-color: #003866;
+    background-color: #c49a2e;
 }
 
 .pay-btn-primary:disabled,

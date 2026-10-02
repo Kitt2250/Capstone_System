@@ -173,9 +173,11 @@
 
 .burials-table {
     width: 100%;
+    min-width: 960px;
     border-collapse: collapse;
     font-size: 0.875rem;
     text-align: left;
+    table-layout: fixed;
 }
 
 .burials-table thead tr {
@@ -184,13 +186,14 @@
 }
 
 .burials-table th {
-    padding: 12px 18px;
+    padding: 13px 16px;
     font-size: 0.725rem;
     font-weight: 700;
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     white-space: nowrap;
+    vertical-align: middle;
 }
 
 .burials-table tbody tr {
@@ -207,9 +210,58 @@
 }
 
 .burials-table td {
-    padding: 14px 18px;
+    padding: 14px 16px;
     color: #334155;
     vertical-align: middle;
+}
+
+/* First & last column edge spacing */
+.burials-table th:first-child,
+.burials-table td:first-child {
+    padding-left: 20px;
+}
+
+.burials-table th:last-child,
+.burials-table td:last-child {
+    padding-right: 20px;
+}
+
+/* ── Precise Column Widths & Spacing ──────────────── */
+/* 1. Deceased Name */
+.burials-table th:nth-child(1),
+.burials-table td:nth-child(1) {
+    width: 22%;
+}
+
+/* 2. Grave Plot Location */
+.burials-table th:nth-child(2),
+.burials-table td:nth-child(2) {
+    width: 16%;
+}
+
+/* 3. Date Buried */
+.burials-table th:nth-child(3),
+.burials-table td:nth-child(3) {
+    width: 13%;
+}
+
+/* 4. Grave Type & Section */
+.burials-table th:nth-child(4),
+.burials-table td:nth-child(4) {
+    width: 20%;
+}
+
+/* 5. Next of Kin / Family */
+.burials-table th:nth-child(5),
+.burials-table td:nth-child(5) {
+    width: 15%;
+}
+
+/* 6. Actions */
+.burials-table th:nth-child(6),
+.burials-table td:nth-child(6) {
+    width: 14%;
+    text-align: center;
 }
 
 /* Cell Specific Styles */
@@ -415,6 +467,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+    white-space: nowrap;
 }
 
 .burials-action-view-btn {
@@ -497,8 +550,13 @@
 }
 
 @keyframes burials-fade-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .burials-modal-card {
@@ -516,8 +574,15 @@
 }
 
 @keyframes burials-scale-up {
-    from { transform: scale(0.96); opacity: 0; }
-    to   { transform: scale(1); opacity: 1; }
+    from {
+        transform: scale(0.96);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 /* Modal Header */
@@ -708,4 +773,3 @@
 .burials-btn-modal-close:hover {
     background-color: #003663;
 }
-

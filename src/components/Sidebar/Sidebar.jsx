@@ -6,11 +6,12 @@ import { auth } from "../../firebase/config";
 import { getUserData } from "../../services/userServices";
 import "./Sidebar.css";
 import cherubimLogo from "../../assets/cherubim_logo.jpg";
-import { LayoutGrid, Users, FileText, MapPin, Landmark, BarChart2, Settings, Database, LogOut, ChevronLeft, ChevronRight, CreditCard, Building2, Heart, Wallet, RefreshCw, Bell, User, ShieldAlert, Cross } from "lucide-react";
+import { LayoutGrid, Users, FileText, MapPin, Landmark, BarChart2, Settings, Database, LogOut, ChevronLeft, ChevronRight, CreditCard, Building2, Heart, Wallet, RefreshCw, Bell, User, ShieldAlert, Cross, DollarSign } from "lucide-react";
 import { subscribeNotifications } from "../../services/notificationServices";
 
 function Sidebar({ role = "admin" }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
     const [userProfile, setUserProfile] = useState(null);
     const [unreadNotifCount, setUnreadNotifCount] = useState(0);
 
@@ -79,6 +80,8 @@ function Sidebar({ role = "admin" }) {
             await signOut(auth);
         } catch (error) {
             console.error("Failed to sign out:", error);
+        } finally {
+            setShowLogoutModal(false);
         }
     };
 
@@ -137,10 +140,16 @@ function Sidebar({ role = "admin" }) {
             {
                 title: "MAIN",
                 links: [
-                    { name: "Dashboard", path: "/family", icon: LayoutGrid, exact: true },
-                    { name: "My Family", path: "/family/my-family", icon: Users },
-                    { name: "Memorial", path: "/family/memorial", icon: Heart },
-                    { name: "Payments", path: "/family/payments", icon: CreditCard }
+                    { name: "Burial Records", path: "/family/burial-records", icon: FileText },
+                    { name: "Grave Location", path: "/family/grave-location", icon: MapPin }
+                ]
+            },
+            {
+                title: "ACCOUNT",
+                links: [
+                    { name: "My Payments", path: "/family/my-payments", icon: DollarSign },
+                    { name: "Notifications", path: "/family/notifications", icon: Bell },
+                    { name: "My Account", path: "/family/my-account", icon: User }
                 ]
             }
         ]
@@ -155,6 +164,7 @@ function Sidebar({ role = "admin" }) {
     const activeSections = navSections[role] || navSections.admin;
 
     return (
+        <>
         <aside className={`sidebar-container ${isCollapsed ? "collapsed" : ""}`}>
             <div className="sidebar-header">
                 <div className="sidebar-brand-wrapper">
@@ -282,7 +292,7 @@ function Sidebar({ role = "admin" }) {
                         <button
                             type="button"
                             className="sidebar-logout-btn"
-                            onClick={handleLogout}
+                            onClick={() => setShowLogoutModal(true)}
                             title="Log Out"
                             aria-label="Log Out"
                         >
@@ -297,6 +307,44 @@ function Sidebar({ role = "admin" }) {
             </div>
 
         </aside>
+
+        {/* Logout Confirmation Modal */}
+        {showLogoutModal && (
+            <div
+                className="sb-logout-overlay"
+                onClick={() => setShowLogoutModal(false)}
+            >
+                <div
+                    className="sb-logout-modal"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="sb-logout-modal-icon">
+                        <LogOut size={28} strokeWidth={2} />
+                    </div>
+                    <h2 className="sb-logout-modal-title">Confirm Logout</h2>
+                    <p className="sb-logout-modal-desc">
+                        Are you sure you want to sign out of your account?
+                    </p>
+                    <div className="sb-logout-modal-actions">
+                        <button
+                            type="button"
+                            className="sb-logout-modal-cancel"
+                            onClick={() => setShowLogoutModal(false)}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            className="sb-logout-modal-confirm"
+                            onClick={handleLogout}
+                        >
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
+        </>
     );
 }
 

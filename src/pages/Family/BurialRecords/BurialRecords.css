@@ -1,0 +1,239 @@
+/* =====================================================
+   BURIAL RECORDS — BurialRecords.css
+   ===================================================== */
+
+/* ── Page Wrapper & Topbar ───────────────────────── */
+.fam-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.fam-topbar {
+  margin-bottom: 0.5rem;
+}
+
+.fam-topbar-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1a3d5c;
+  margin: 0 0 4px 0;
+}
+
+.fam-topbar-greeting {
+  font-size: 0.95rem;
+  color: #6a8aaa;
+  margin: 0;
+}
+
+/* ── Container (Shared) ──────────────────────────── */
+.fam-container {
+  background: white;
+  border-radius: 20px;
+  padding: 1.8rem 2rem 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(212, 175, 55, 0.08);
+  position: relative;
+}
+
+/* ── Buttons (Shared) ────────────────────────────── */
+.fam-btn-secondary {
+  background: white;
+  border: 1px solid #d4af37;
+  padding: 0.6rem 1.5rem;
+  border-radius: 10px;
+  color: #1a3d5c;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  justify-content: center;
+  width: 100%;
+}
+.fam-btn-secondary:hover {
+  background: #faf3e0;
+  transform: translateY(-2px);
+}
+
+/* ── Header ──────────────────────────────────────── */
+.fbr-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.fbr-header-row h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1a3d5c;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Grid ────────────────────────────────────────── */
+.fbr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ── Card ────────────────────────────────────────── */
+.fbr-card {
+  background: #f8fafc;
+  border-radius: 16px;
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s;
+  overflow: hidden;
+}
+.fbr-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border-color: rgba(212, 175, 55, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Header */
+.fbr-card-header {
+  padding: 1.5rem 1.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: #ffffff;
+}
+.fbr-card-title-group {
+  flex: 1;
+}
+.fbr-card-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a3d5c;
+  margin: 0 0 0.3rem 0;
+}
+.fbr-card-id {
+  font-size: 0.8rem;
+  color: #6a8aaa;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Badge */
+.fbr-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+}
+.fbr-badge--active {
+  background: #eafaf1;
+  color: #27ae60;
+  border: 1px solid rgba(39, 174, 96, 0.2);
+}
+.fbr-badge--inactive {
+  background: #fdedec;
+  color: #c0392b;
+  border: 1px solid rgba(192, 57, 43, 0.2);
+}
+
+/* Divider */
+.fbr-divider {
+  height: 1px;
+  background: #e8edf4;
+  margin: 0 1.5rem;
+}
+
+/* Body */
+.fbr-card-body {
+  padding: 1rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* Sections */
+.fbr-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.fbr-section-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  color: #8aaccc;
+  margin: 0 0 0.2rem 0;
+}
+
+/* Rows */
+.fbr-field-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #1a3d5c;
+}
+
+.fbr-kv-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  border-bottom: 1px dashed rgba(0,0,0,0.05);
+  padding-bottom: 0.3rem;
+}
+.fbr-kv-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.fbr-kv-label {
+  color: #6a8aaa;
+}
+.fbr-kv-value {
+  color: #1a3d5c;
+}
+.fbr-kv-value--bold {
+  font-weight: 600;
+}
+
+/* Card Footer */
+.fbr-card-footer {
+  padding: 1rem 1.5rem;
+  background: #ffffff;
+  border-top: 1px solid #e8edf4;
+  display: flex;
+  justify-content: center;
+}
+
+/* ── Empty State ─────────────────────────────────── */
+.fmp-empty {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .fbr-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* -- Mobile additions --------------------------- */
+@media (max-width: 768px) {
+  .fbr-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; padding-top: 3.5rem; }
+  .fbr-table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .fbr-table { min-width: 600px; }
+}
+@media (max-width: 480px) {
+  .fbr-header-actions { flex-direction: column; width: 100%; }
+  .fbr-header-actions button { width: 100%; justify-content: center; }
+  .fbr-search-row { flex-direction: column; }
+  .fbr-search-row input { width: 100%; }
+}

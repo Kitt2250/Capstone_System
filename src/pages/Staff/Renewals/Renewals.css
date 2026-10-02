@@ -350,11 +350,11 @@
 .renew-status-pill.status-expired .renew-dot { background-color: #ef4444; }
 
 .renew-status-pill.status-renewed {
-    background-color: #eff6ff;
-    color: #004d8c;
-    border: 1px solid #bfdbfe;
+    background-color: #faf3e0;
+    color: #1a3d5c;
+    border: 1px solid rgba(212, 175, 55, 0.3);
 }
-.renew-status-pill.status-renewed .renew-dot { background-color: #3b82f6; }
+.renew-status-pill.status-renewed .renew-dot { background-color: #d4af37; }
 
 .renew-term-pill {
     font-size: 0.725rem;
