@@ -20,6 +20,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
 }
 .fnotif-header h2 {
   font-size: 1.2rem;
@@ -28,6 +29,46 @@
   margin: 0;
   display: flex;
   align-items: center;
+  white-space: nowrap;
+}
+
+/* ── Mark All as Read Button ─────────────────────── */
+.fnotif-mark-all-btn {
+  background: #ffffff;
+  color: #1a3d5c;
+  border: 1px solid #d4af37;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  white-space: nowrap;
+  width: auto !important;
+  max-width: fit-content;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  outline: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.fnotif-mark-all-btn:hover {
+  background: #faf3e0;
+  border-color: #b8942e;
+  color: #b8942e;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.18);
+}
+
+.fnotif-mark-all-btn:active {
+  transform: translateY(0);
+}
+
+.fnotif-mark-all-btn:focus-visible {
+  outline: 2px solid #d4af37;
+  outline-offset: 2px;
 }
 
 /* ── List ────────────────────────────────────────── */

@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 import { NavLink } from "react-router";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "../../firebase/config";
+import { auth, db } from "../../firebase/config";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { getUserData } from "../../services/userServices";
 import "./Sidebar.css";
 import cherubimLogo from "../../assets/cherubim_logo.jpg";
@@ -16,12 +17,34 @@ function Sidebar({ role = "admin" }) {
     const [unreadNotifCount, setUnreadNotifCount] = useState(0);
 
     useEffect(() => {
-        const unsub = subscribeNotifications((data) => {
-            const unread = (data || []).filter((n) => !n.is_read).length;
-            setUnreadNotifCount(unread);
-        }, "staff");
-        return () => unsub();
-    }, []);
+        if (role === "family") {
+            // Family: watch notifications where family_user_id == current user uid
+            let unsubNotif = () => {};
+
+            const unsubAuth = onAuthStateChanged(auth, (user) => {
+                unsubNotif();
+                if (!user) { setUnreadNotifCount(0); return; }
+
+                const q = query(
+                    collection(db, "notifications"),
+                    where("family_user_id", "==", user.uid),
+                    where("is_read", "==", false)
+                );
+                unsubNotif = onSnapshot(q, (snap) => {
+                    setUnreadNotifCount(snap.size);
+                }, () => { setUnreadNotifCount(0); });
+            });
+
+            return () => { unsubAuth(); unsubNotif(); };
+        } else {
+            // Staff / Admin: show ALL notifications
+            const unsub = subscribeNotifications((data) => {
+                const unread = (data || []).filter((n) => !n.is_read).length;
+                setUnreadNotifCount(unread);
+            }, null);
+            return () => unsub();
+        }
+    }, [role]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {

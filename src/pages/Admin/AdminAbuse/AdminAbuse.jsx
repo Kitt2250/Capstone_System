@@ -16,6 +16,7 @@ import {
 } from "../../../utils/systemDate";
 import logAuditEvent from "../../../utils/auditLogger";
 import { syncWakeSpaceStatusesController } from "../../../controller/wakeSpaceController";
+import { syncOperationalAlertsController } from "../../../controller/notificationController";
 import {
     Clock,
     RotateCcw,
@@ -116,6 +117,16 @@ function AdminAbuse() {
             console.warn("Wake space status sync error:", err);
         }
 
+        // Auto-sync operational alerts (overdue & due-today installments, wake spaces, contracts)
+        try {
+            const notifCount = await syncOperationalAlertsController([], { forceNotify: true });
+            if (notifCount > 0) {
+                syncMsg += ` • Generated ${notifCount} alert(s)!`;
+            }
+        } catch (err) {
+            console.warn("Operational alert sync error:", err);
+        }
+
         setFeedback({
             type: "success",
             message: `System Date successfully changed to ${inputDate} ${timeToApply} (Philippines Time)!${syncMsg}`
@@ -157,6 +168,16 @@ function AdminAbuse() {
             }
         } catch (err) {
             console.warn("Wake space status sync error:", err);
+        }
+
+        // Auto-sync operational alerts back to real today
+        try {
+            const notifCount = await syncOperationalAlertsController([], { forceNotify: true });
+            if (notifCount > 0) {
+                syncMsg += ` • Checked ${notifCount} operational alert(s)!`;
+            }
+        } catch (err) {
+            console.warn("Operational alert sync error:", err);
         }
 
         setFeedback({
@@ -206,6 +227,16 @@ function AdminAbuse() {
                 console.warn("Wake space status sync error:", err);
             }
 
+            // Auto-sync operational alerts back to real today
+            try {
+                const notifCount = await syncOperationalAlertsController([], { forceNotify: true });
+                if (notifCount > 0) {
+                    syncMsg += ` • Checked ${notifCount} operational alert(s)!`;
+                }
+            } catch (err) {
+                console.warn("Operational alert sync error:", err);
+            }
+
             setFeedback({
                 type: "success",
                 message: `Admin Configuration record permanently deleted from Firestore ${SYSTEM_COLLECTION}! The system stays 100% normal on real Philippines Time (${todayIso}).${syncMsg}`
@@ -225,11 +256,21 @@ function AdminAbuse() {
         setSyncing(true);
         try {
             const res = await syncWakeSpaceStatusesController();
+            let alertMsg = "";
+            try {
+                const notifCount = await syncOperationalAlertsController([], { forceNotify: true });
+                if (notifCount > 0) {
+                    alertMsg = ` • Updated ${notifCount} operational alert(s)!`;
+                }
+            } catch (notifErr) {
+                console.warn("Manual alert sync error:", notifErr);
+            }
+
             setFeedback({
                 type: "success",
-                message: res.updatedCount > 0
+                message: (res.updatedCount > 0
                     ? `Synchronized ${res.updatedCount} Wake Space booking status(es) successfully!`
-                    : "All Wake Space booking statuses are already up to date with the current system date."
+                    : "All Wake Space booking statuses are already up to date with the current system date.") + alertMsg
             });
         } catch (err) {
             setFeedback({ type: "warning", message: "Failed to sync statuses: " + err.message });

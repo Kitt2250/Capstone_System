@@ -1586,6 +1586,10 @@ function PointOfSale() {
                                                 totalCash,
                                                 amountTendered: amountTendered !== "" ? Number(amountTendered) : null,
                                                 balance: isInstallment ? remainingLotBalance : 0,
+                                                initial_balance: isInstallment ? remainingLotBalance : 0,
+                                                monthly_installment: isInstallment ? monthlyStaggered : null,
+                                                monthly_amount: isInstallment ? monthlyStaggered : null,
+                                                installment_duration: isInstallment ? installmentMonths : null,
                                                 paymentStatus: isInstallment ? "partial" : "paid",
                                             },
                                             historyData: {

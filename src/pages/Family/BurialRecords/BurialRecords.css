@@ -47,12 +47,12 @@
   font-weight: 500;
   cursor: pointer;
   transition: 0.3s;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
   justify-content: center;
-  width: 100%;
+  width: auto;
 }
 .fam-btn-secondary:hover {
   background: #faf3e0;

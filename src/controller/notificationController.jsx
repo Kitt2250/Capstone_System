@@ -13,10 +13,11 @@ import {
     deleteNotification,
     clearReadNotifications
 } from "../services/notificationServices";
-import { getSystemDateISO, subscribeSystemDate } from "../utils/systemDate";
+import { getSystemDate, getSystemDateISO, getSystemDateOverrideInfo, subscribeSystemDate } from "../utils/systemDate";
 import { getWakeSpaceBookings } from "../services/wakeSpaceServices";
 import { getPayments } from "../services/paymentServices";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { getSystemTimeISO } from "../utils/systemDate";
 import { db } from "../firebase/config";
 import logAuditEvent from "../utils/auditLogger";
 
@@ -24,8 +25,17 @@ import logAuditEvent from "../utils/auditLogger";
  * Calculates or extracts next payment due date, using fallback calculation if not stored.
  */
 function extractDueDate(p) {
-    if (p.due_date) return p.due_date;
-    if (p.next_due_date) return p.next_due_date;
+    let raw = p.due_date || p.next_due_date || p.dueDate || p.nextDue || null;
+    if (raw) {
+        if (typeof raw === "object" && raw.toDate) {
+            try {
+                return raw.toDate().toISOString().split("T")[0];
+            } catch {}
+        }
+        if (typeof raw === "string") {
+            return raw.split("T")[0];
+        }
+    }
 
     let base = null;
     if (p.last_payment_date) {
@@ -200,17 +210,125 @@ export function computeNotificationStats(notifications = []) {
     };
 }
 
+const recentDispatchedAlerts = new Map(); // runKey -> timestamp
+
+/**
+ * Emits an operational notification.
+ * - Prevents rapid concurrent duplicates within the same 4 seconds (from racing listeners/promises).
+ * - In real-life mode (forceNotify=false), ensures an alert is issued once per day per event (no duplicates on page refresh).
+ * - When forceNotify is true (active simulation test), ALWAYS generates/repeats the notification!
+ * - Guarantees that repeating simulations and real-life scenarios ALWAYS notify.
+ */
+async function emitOperationalAlert(runKey, notifData, forceNotify, existingAlerts = []) {
+    const now = Date.now();
+    const lastDispatched = recentDispatchedAlerts.get(runKey) || 0;
+
+    // Suppress rapid race-condition concurrent duplicates (within 4000ms),
+    // UNLESS forceNotify is explicitly set by a user date-change action.
+    if (!forceNotify && (now - lastDispatched < 4000)) {
+        return false;
+    }
+
+    // In normal real-time mode (without explicit forceNotify simulation),
+    // verify if this event was already created today in Firestore to prevent duplicate cards on browser refresh.
+    if (!forceNotify && existingAlerts.length > 0) {
+        const todayStr = notifData.simulated_date;
+        const alreadyExistsToday = existingAlerts.some((n) => {
+            const sameCat = n.category === notifData.category;
+            const sameTitle = n.title === notifData.title;
+            const sameItem = (notifData.booking_id && n.booking_id === notifData.booking_id) ||
+                             (notifData.payment_id && n.payment_id === notifData.payment_id) ||
+                             (notifData.plot_id && n.plot_id === notifData.plot_id);
+
+            let nDate = n.simulated_date || "";
+            if (!nDate && n.created_at) {
+                try { nDate = new Date(n.created_at).toISOString().split("T")[0]; } catch {}
+            }
+            return sameCat && (sameItem || sameTitle) && (nDate === todayStr);
+        });
+
+        if (alreadyExistsToday) {
+            return false;
+        }
+    }
+
+    recentDispatchedAlerts.set(runKey, now);
+    try {
+        await createNotification(notifData);
+        return true;
+    } catch (err) {
+        console.warn("Failed to create operational alert:", err);
+        return false;
+    }
+}
+
+let isSyncingOperationalAlerts = false;
+let syncQueued = false;
+let lastSyncTimestamp = 0;
+
 /**
  * Scans active wake spaces and operational payment records against the active system date,
- * generating smart system alerts if not already issued.
+ * generating smart system alerts if not already issued for this simulation run.
  */
-export async function syncOperationalAlertsController(currentNotifications = []) {
+export async function syncOperationalAlertsController(currentNotifications = [], options = {}) {
+    const { forceNotify = false } = options;
+    const now = Date.now();
+
+    // Prevent redundant sync runs within 2s unless explicitly forced by simulation action
+    if (!forceNotify && now - lastSyncTimestamp < 2000) {
+        return 0;
+    }
+
+    if (isSyncingOperationalAlerts) {
+        syncQueued = true;
+        return 0;
+    }
+    isSyncingOperationalAlerts = true;
+
     try {
         const todayStr = getSystemDateISO();
-        const existingAlerts = currentNotifications.length > 0 ? currentNotifications : await getNotifications();
-        let createdCount = 0;
+        const overrideInfo = getSystemDateOverrideInfo();
+        const isSimulated = Boolean(overrideInfo?.isOverridden);
 
-        // 1. Check Wake Space Vigils for today
+        const simTimestamp = overrideInfo?.setAt || `${overrideInfo?.activeDate || todayStr}_${overrideInfo?.activeTime || "00:00:00"}`;
+        const currentSimKey = isSimulated
+            ? (forceNotify ? `sim_${simTimestamp}_${now}` : `sim_${simTimestamp}`)
+            : `normal_${todayStr}`;
+
+        const rawAlerts = currentNotifications.length > 0 ? currentNotifications : await getNotifications();
+
+        // 0. Auto-clean rapid concurrent race-condition duplicates (created at the exact same moment)
+        const seenRecords = [];
+        const existingAlerts = [];
+        for (const n of rawAlerts) {
+            const cleanTitle = (n.title || "").trim().toLowerCase();
+            const cleanMsg = (n.message || "").trim().toLowerCase();
+            const nTime = n.created_at ? new Date(n.created_at).getTime() : 0;
+            const nSimKey = n.simulation_key || "";
+
+            const isRapidDuplicate = seenRecords.some((prev) => {
+                const sameContent = prev.cleanTitle === cleanTitle && prev.cleanMsg === cleanMsg;
+                if (!sameContent) return false;
+                if (nSimKey && prev.simKey) {
+                    return nSimKey === prev.simKey;
+                }
+                return nTime && prev.time && Math.abs(nTime - prev.time) < 3000;
+            });
+
+            if (isRapidDuplicate) {
+                try {
+                    await deleteNotification(n.id);
+                } catch (_) {}
+            } else {
+                seenRecords.push({ cleanTitle, cleanMsg, time: nTime, simKey: nSimKey });
+                existingAlerts.push(n);
+            }
+        }
+
+        let createdCount = 0;
+        const createdInThisRun = new Set();
+
+        // 1. Check Wake Space Vigils for today or overdue
         const bookings = await getWakeSpaceBookings();
 
         for (const b of bookings) {
@@ -218,74 +336,135 @@ export async function syncOperationalAlertsController(currentNotifications = [])
 
             const spaceName = b.spaceName || `Wake Space ${b.wake || ""}`;
             const deceasedName = b.deceased || "Family Vigil";
+            const bStart = b.startDate ? String(b.startDate).split("T")[0] : "";
+            const bEnd = b.endDate ? String(b.endDate).split("T")[0] : "";
 
             // A) Vigil Check-in Today
-            if (b.startDate === todayStr) {
-                const alreadyNotified = existingAlerts.some(
-                    (n) => n.title?.includes(spaceName) && n.message?.includes(b.startDate) && n.category === "wake"
-                );
+            if (bStart === todayStr) {
+                const runKey = `wake_${b.id}_checkin_${todayStr}`;
+                if (!createdInThisRun.has(runKey)) {
+                    createdInThisRun.add(runKey);
 
-                if (!alreadyNotified) {
-                    await createNotification({
+                    const notifData = {
                         type: "high",
                         category: "wake",
                         title: `Vigil Check-In: ${spaceName}`,
                         message: `Scheduled check-in today (${todayStr}) for ${deceasedName}. Facility is active.`,
                         action_link: "/staff/wake-spaces",
                         user_id: "staff",
-                    });
-                    createdCount++;
+                        booking_id: b.id,
+                        space_name: spaceName,
+                        simulated_date: todayStr,
+                        is_simulation: isSimulated,
+                        simulation_key: currentSimKey,
+                    };
+
+                    if (await emitOperationalAlert(runKey, notifData, forceNotify, existingAlerts)) {
+                        createdCount++;
+                    }
                 }
             }
 
             // B) Vigil Checkout / Concludes Today
-            if (b.endDate === todayStr) {
-                const alreadyNotified = existingAlerts.some(
-                    (n) => n.title?.includes("Checkout") && n.title?.includes(spaceName) && n.category === "wake"
-                );
+            if (bEnd === todayStr) {
+                const runKey = `wake_${b.id}_checkout_${todayStr}`;
+                if (!createdInThisRun.has(runKey)) {
+                    createdInThisRun.add(runKey);
 
-                if (!alreadyNotified) {
-                    await createNotification({
+                    const notifData = {
                         type: "urgent",
                         category: "wake",
                         title: `Vigil Checkout Today: ${spaceName}`,
                         message: `Vigil for ${deceasedName} concludes today (${todayStr}). Please inspect room for turnover.`,
                         action_link: "/staff/wake-spaces",
                         user_id: "staff",
-                    });
-                    createdCount++;
+                        booking_id: b.id,
+                        space_name: spaceName,
+                        simulated_date: todayStr,
+                        is_simulation: isSimulated,
+                        simulation_key: currentSimKey,
+                    };
+
+                    if (await emitOperationalAlert(runKey, notifData, forceNotify, existingAlerts)) {
+                        createdCount++;
+                    }
+                }
+            }
+
+            // C) Vigil Overdue Checkout (Simulated past checkout date, and booking not cancelled)
+            if (bEnd && bEnd < todayStr && b.status !== "cancelled") {
+                const runKey = `wake_${b.id}_overdue_${todayStr}`;
+                if (!createdInThisRun.has(runKey)) {
+                    createdInThisRun.add(runKey);
+
+                    const notifData = {
+                        type: "urgent",
+                        category: "wake",
+                        title: `Overdue Checkout: ${spaceName}`,
+                        message: `Vigil for ${deceasedName} concluded on ${bEnd}. Please inspect room for turnover.`,
+                        action_link: "/staff/wake-spaces",
+                        user_id: "staff",
+                        booking_id: b.id,
+                        space_name: spaceName,
+                        simulated_date: todayStr,
+                        is_simulation: isSimulated,
+                        simulation_key: currentSimKey,
+                    };
+
+                    if (await emitOperationalAlert(runKey, notifData, forceNotify, existingAlerts)) {
+                        createdCount++;
+                    }
                 }
             }
         }
 
         // 2. Check Installment Payments due today or overdue
+        let payments = [];
+        let clients = [];
+        let plots = [];
+        let burials = [];
+        let users = [];
+        let graveTypes = [];
+
         try {
-            const [payments, clientsSnap, plotsSnap, burialsSnap, usersSnap, graveTypesSnap] = await Promise.all([
-                getPayments(),
-                getDocs(collection(db, "clients")),
-                getDocs(collection(db, "plots")),
-                getDocs(collection(db, "burials")),
-                getDocs(collection(db, "users")),
-                getDocs(collection(db, "grave_type")),
-            ]);
+            payments = await getPayments();
+        } catch (e) {
+            console.warn("Could not fetch payments:", e);
+        }
 
-            const clients = clientsSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
-            const plots = plotsSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
-            const burials = burialsSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
-            const users = usersSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
-            const graveTypes = graveTypesSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        try {
+            const snap = await getDocs(collection(db, "clients"));
+            clients = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        } catch (e) {}
 
-            // Clean up any legacy alert that used the raw plot ID in the title (e.g. "Plot pFT1SQ...")
-            const legacyRawIdAlerts = existingAlerts.filter(
-                (n) => n.category === "installment" && n.title?.includes("Plot ")
-            );
-            for (const leg of legacyRawIdAlerts) {
-                try {
-                    await deleteNotification(leg.id);
-                } catch (e) {
-                    console.warn("Could not remove legacy raw plot ID notification:", e);
-                }
+        try {
+            const snap = await getDocs(collection(db, "plots"));
+            plots = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        } catch (e) {}
+
+        try {
+            const snap = await getDocs(collection(db, "burials"));
+            burials = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        } catch (e) {}
+
+        try {
+            const snap = await getDocs(collection(db, "users"));
+            users = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        } catch (e) {}
+
+        try {
+            const snap = await getDocs(collection(db, "grave_types"));
+            graveTypes = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+            if (graveTypes.length === 0) {
+                const snap2 = await getDocs(collection(db, "grave_type"));
+                graveTypes = snap2.docs.map((d) => ({ id: d.id, ...d.data() }));
             }
+        } catch (e) {}
+
+        try {
+            const sysDate = getSystemDate();
+            const sysHour = sysDate.getHours();
+            const isPastCutoffToday = sysHour >= 18;
 
             for (const p of payments) {
                 const balance = Number(p.balance || 0);
@@ -311,58 +490,67 @@ export async function syncOperationalAlertsController(currentNotifications = [])
                     monthlyAmt = balance;
                 }
 
-                // A) Overdue Installment (Due date has passed)
-                if (dueDate < todayStr) {
-                    const alreadyNotified = existingAlerts.some(
-                        (n) => n.category === "installment" &&
-                               !n.title?.includes("Plot ") &&
-                               (n.title?.includes(clientName) || n.message?.includes(clientName)) &&
-                               n.message?.includes(dueDate)
-                    );
+                const isOverdue = (dueDate < todayStr) || (dueDate === todayStr && isPastCutoffToday) || p.payment_status === "overdue";
+                const isDueToday = (dueDate === todayStr && !isPastCutoffToday && p.payment_status !== "overdue");
 
-                    if (!alreadyNotified) {
-                        await createNotification({
+                // A) Overdue Installment (Due date has passed or past 6 PM today)
+                if (isOverdue) {
+                    const runKey = `installment_${p.id || p.plot_id}_overdue_${todayStr}`;
+                    if (!createdInThisRun.has(runKey)) {
+                        createdInThisRun.add(runKey);
+
+                        const notifData = {
                             type: "urgent",
                             category: "installment",
                             title: `Overdue Installment: ${clientName}`,
                             message: `Payment for ${clientName}${lotTag} is overdue since ${dueDate}. Installment Due: ₱${monthlyAmt.toLocaleString()} | Remaining Balance: ₱${balance.toLocaleString()}. Please follow up with client.`,
                             action_link: "/staff/payments",
                             user_id: "staff",
+                            family_user_id: p.user_id || "",
                             payment_id: p.id,
                             plot_id: p.plot_id || "",
                             balance,
                             monthly_amount: monthlyAmt,
                             client_name: clientName,
                             due_date: dueDate,
-                        });
-                        createdCount++;
+                            simulated_date: todayStr,
+                            is_simulation: isSimulated,
+                            simulation_key: currentSimKey,
+                        };
+
+                        if (await emitOperationalAlert(runKey, notifData, forceNotify, existingAlerts)) {
+                            createdCount++;
+                        }
                     }
                 }
-                // B) Installment Due Today (Due date is today)
-                else if (dueDate === todayStr) {
-                    const alreadyNotified = existingAlerts.some(
-                        (n) => n.category === "installment" &&
-                               !n.title?.includes("Plot ") &&
-                               (n.title?.includes(clientName) || n.message?.includes(clientName)) &&
-                               n.message?.includes(todayStr)
-                    );
+                // B) Installment Due Today (Due date is today and within office hours)
+                else if (isDueToday) {
+                    const runKey = `installment_${p.id || p.plot_id}_due_${todayStr}`;
+                    if (!createdInThisRun.has(runKey)) {
+                        createdInThisRun.add(runKey);
 
-                    if (!alreadyNotified) {
-                        await createNotification({
+                        const notifData = {
                             type: "high",
                             category: "installment",
                             title: `Installment Due Today: ${clientName}`,
                             message: `Installment payment for ${clientName}${lotTag} is due today (${todayStr}). Installment Due: ₱${monthlyAmt.toLocaleString()} | Remaining Balance: ₱${balance.toLocaleString()}.`,
                             action_link: "/staff/payments",
                             user_id: "staff",
+                            family_user_id: p.user_id || "",
                             payment_id: p.id,
                             plot_id: p.plot_id || "",
                             balance,
                             monthly_amount: monthlyAmt,
                             client_name: clientName,
                             due_date: dueDate,
-                        });
-                        createdCount++;
+                            simulated_date: todayStr,
+                            is_simulation: isSimulated,
+                            simulation_key: currentSimKey,
+                        };
+
+                        if (await emitOperationalAlert(runKey, notifData, forceNotify, existingAlerts)) {
+                            createdCount++;
+                        }
                     }
                 }
             }
@@ -442,14 +630,11 @@ export async function syncOperationalAlertsController(currentNotifications = [])
 
                 // A) Expired Contract (7-year term ended or 0 days left)
                 if (expStr <= todayStr) {
-                    const alreadyNotified = existingAlerts.some(
-                        (n) => n.category === "renewals" &&
-                               (n.plot_id === plt.id || n.title?.includes(plotCode)) &&
-                               n.message?.includes("expired")
-                    );
+                    const runKey = `renewal_${plt.id}_expired_${todayStr}`;
+                    if (!createdInThisRun.has(runKey)) {
+                        createdInThisRun.add(runKey);
 
-                    if (!alreadyNotified) {
-                        await createNotification({
+                        const notifData = {
                             type: "urgent",
                             category: "renewals",
                             title: `Lease Expired: Lot ${plotCode}`,
@@ -459,21 +644,24 @@ export async function syncOperationalAlertsController(currentNotifications = [])
                             plot_id: plt?.id || "",
                             client_name: clientName,
                             expiration_date: expStr,
-                        });
-                        createdCount++;
+                            simulated_date: todayStr,
+                            is_simulation: isSimulated,
+                            simulation_key: currentSimKey,
+                        };
+
+                        if (await emitOperationalAlert(runKey, notifData, forceNotify, existingAlerts)) {
+                            createdCount++;
+                        }
                     }
                 }
                 // B) Expiring Soon (Within 60 days of 7-year term end)
                 else if (expStr <= sixtyDaysStr) {
-                    const diffDays = Math.ceil((new Date(expStr).getTime() - new Date(todayStr).getTime()) / (1000 * 60 * 60 * 24));
-                    const alreadyNotified = existingAlerts.some(
-                        (n) => n.category === "renewals" &&
-                               (n.plot_id === plt.id || n.title?.includes(plotCode)) &&
-                               n.message?.includes(expStr)
-                    );
+                    const runKey = `renewal_${plt.id}_expiring_${todayStr}`;
+                    if (!createdInThisRun.has(runKey)) {
+                        createdInThisRun.add(runKey);
+                        const diffDays = Math.ceil((new Date(expStr).getTime() - new Date(todayStr).getTime()) / (1000 * 60 * 60 * 24));
 
-                    if (!alreadyNotified) {
-                        await createNotification({
+                        const notifData = {
                             type: "high",
                             category: "renewals",
                             title: `Lease Expiring Soon: Lot ${plotCode}`,
@@ -483,8 +671,14 @@ export async function syncOperationalAlertsController(currentNotifications = [])
                             plot_id: plt?.id || "",
                             client_name: clientName,
                             expiration_date: expStr,
-                        });
-                        createdCount++;
+                            simulated_date: todayStr,
+                            is_simulation: isSimulated,
+                            simulation_key: currentSimKey,
+                        };
+
+                        if (await emitOperationalAlert(runKey, notifData, forceNotify, existingAlerts)) {
+                            createdCount++;
+                        }
                     }
                 }
             }
@@ -496,6 +690,15 @@ export async function syncOperationalAlertsController(currentNotifications = [])
     } catch (err) {
         console.warn("Could not sync operational alerts:", err);
         return 0;
+    } finally {
+        isSyncingOperationalAlerts = false;
+        lastSyncTimestamp = Date.now();
+        if (syncQueued) {
+            syncQueued = false;
+            setTimeout(() => {
+                syncOperationalAlertsController().catch(() => {});
+            }, 400);
+        }
     }
 }
 
@@ -507,15 +710,26 @@ export async function syncOperationalAlertsController(currentNotifications = [])
  * @returns {Function} unsubscribe cleanup function
  */
 export function initOperationalAlertsAutoSync() {
+    let debounceTimer = null;
+    let lastSimulatedStamp = null;
+
     // Run initial sync on application mount
     syncOperationalAlertsController().catch((err) => {
         console.warn("Initial operational alerts sync error:", err);
     });
 
-    // Re-run sync whenever System Date changes or is overridden
-    return subscribeSystemDate(() => {
-        syncOperationalAlertsController().catch((err) => {
-            console.warn("System date change alert sync error:", err);
-        });
+    // Re-run sync whenever System Date changes or is overridden (debounced 400ms)
+    return subscribeSystemDate((info) => {
+        const currentStamp = info?.activeTimestamp || (info?.isOverridden ? `${info?.overrideDate}_${info?.overrideTime}` : "normal");
+        const dateChanged = lastSimulatedStamp !== null && lastSimulatedStamp !== currentStamp;
+        lastSimulatedStamp = currentStamp;
+
+        if (debounceTimer) clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            syncOperationalAlertsController([], { forceNotify: dateChanged }).catch((err) => {
+                console.warn("System date change alert sync error:", err);
+            });
+        }, 400);
     });
 }
+

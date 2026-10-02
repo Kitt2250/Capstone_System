@@ -69,6 +69,7 @@ async function createUserDocument(uid, email, clientData = null) {
         email,
         role: "family",          // default for POS-created accounts
         status: "inactive",
+        isActivate: false,
         createdAt: serverTimestamp(),
         last_login: null,
     });
@@ -85,6 +86,7 @@ async function createClientDocument(uid, clientData) {
         contact: clientData.contactNumber ?? "",
         address: clientData.address ?? "",
         relationship: clientData.relationship ?? "",
+        isActivate: false,
         created_at: serverTimestamp(),
         updated_at: serverTimestamp(),
     });

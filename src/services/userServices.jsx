@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc, addDoc } from "firebase/firestore";
 import { initializeApp, deleteApp } from "firebase/app";
 import { db, firebaseConfig, auth } from "../firebase/config";
 import { createUserWithEmailAndPassword, getAuth, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
@@ -70,13 +70,27 @@ export async function createUser(userData) {
         const uid = userCredential.user.uid;
 
         // Create Firestore user document
+        const isFamily = role === "family";
         await setDoc(doc(db, "users", uid), {
             name: name,
             email: email,
             role: role,
-            status: "active",
+            status: isFamily ? "inactive" : "active",
+            isActivate: isFamily ? false : true,
             createdAt: new Date()
         });
+
+        if (isFamily) {
+            await addDoc(collection(db, "clients"), {
+                user_id: uid,
+                first_name: name.split(" ")[0] || name,
+                last_name: name.split(" ").slice(1).join(" ") || "",
+                email: email,
+                isActivate: false,
+                created_at: new Date(),
+                updated_at: new Date()
+            });
+        }
 
         return {
             success: true,

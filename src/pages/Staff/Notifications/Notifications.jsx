@@ -47,22 +47,9 @@ export default function Notifications() {
     useEffect(() => {
         const unsub = subscribeNotifications((data) => {
             setNotifications(data || []);
-        }, "staff");
+        }, null);
 
         return () => unsub();
-    }, []);
-
-    // Listen for system date changes and trigger operational alert sync
-    useEffect(() => {
-        const unsubDate = subscribeSystemDate(() => {
-            syncOperationalAlertsController(notifications);
-        });
-        return () => unsubDate();
-    }, [notifications]);
-
-    // Initial operational alert sync
-    useEffect(() => {
-        syncOperationalAlertsController();
     }, []);
 
     // Calculate live KPI stats

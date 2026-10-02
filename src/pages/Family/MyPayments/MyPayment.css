@@ -72,6 +72,15 @@
   background: #fdf2f2;
   border-color: #fadbd8;
 }
+.fmpay-stat-card--overdue {
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.08);
+}
+.fmpay-stat-card--active {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
 .fmpay-stat-label {
   font-size: 0.8rem;
   color: #6a8aaa;
@@ -84,6 +93,43 @@
   font-weight: 700;
   color: #1a3d5c;
 }
+
+/* ── Status & Type Pills (Matching POS / Staff Payments) ── */
+.pay-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.725rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 9999px;
+  text-transform: capitalize;
+}
+.pay-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.pay-status-pill.status-active {
+  background-color: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+.pay-status-pill.status-active .pay-dot { background-color: #10b981; }
+
+.pay-status-pill.status-fully_paid {
+  background-color: #eff6ff;
+  color: #004d8c;
+  border: 1px solid #bfdbfe;
+}
+.pay-status-pill.status-fully_paid .pay-dot { background-color: #3b82f6; }
+
+.pay-status-pill.status-overdue {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+.pay-status-pill.status-overdue .pay-dot { background-color: #ef4444; }
 
 /* ── Progress Section ────────────────────────────── */
 .fmpay-progress-section {
@@ -107,6 +153,7 @@
   font-size: 0.95rem;
   font-weight: 700;
   color: #27ae60;
+  transition: color 0.3s;
 }
 .fmpay-progress-track {
   width: 100%;
@@ -118,9 +165,18 @@
 }
 .fmpay-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #27ae60, #2ecc71);
+  background: linear-gradient(90deg, #10b981, #059669);
   border-radius: 10px;
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
+}
+.fmpay-progress-fill.fill-green {
+  background: linear-gradient(90deg, #10b981, #059669);
+}
+.fmpay-progress-fill.fill-amber {
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+.fmpay-progress-fill.fill-red {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
 }
 .fmpay-progress-footer {
   display: flex;
@@ -213,6 +269,23 @@
   padding: 1rem;
   background: #f8fafc;
   border-radius: 8px;
+}
+
+/* ── Pagination Styling (Family Portal Theme) ────── */
+.fmpay-history-col .pagination-btn.active {
+  background: #004d8c;
+  border-color: #004d8c;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 77, 140, 0.25);
+}
+.fmpay-history-col .pagination-btn:hover:not(:disabled) {
+  border-color: #3670AF;
+  color: #004d8c;
+}
+.fmpay-history-col .pagination-ellipsis-btn:hover:not(:disabled) {
+  background: #e6f0fa;
+  color: #004d8c;
+  border-color: #93c5fd;
 }
 /* -- Mobile additions --------------------------- */
 @media (max-width: 768px) {

@@ -66,6 +66,7 @@ export async function createIntermentBurialTransaction({
             name: `${clientData?.firstName ?? ""} ${clientData?.lastName ?? ""}`.trim() || "Owned Lot Informant",
             role: "family",
             status: "inactive",
+            isActivate: false,
             createdAt: serverTimestamp(),
         });
         uid = tempUserDoc.id;
@@ -77,6 +78,7 @@ export async function createIntermentBurialTransaction({
             contact: clientData?.contactNumber ?? "",
             address: clientData?.address ?? "",
             relationship: clientData?.relationship ?? "Informant",
+            isActivate: false,
             created_at: serverTimestamp(),
             updated_at: serverTimestamp(),
         });

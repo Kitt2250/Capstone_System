@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { updatePassword, reauthenticateWithCredential, EmailAuthProvider, onAuthStateChanged } from "firebase/auth";
+import { collection, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../../firebase/config";
+import { findClientForUser, activateClientAccount } from "../../../services/clientServices";
 import "./MyAccount.css";
 import FamilyTopbar from "./FamilyTopbar";
 
@@ -25,6 +26,8 @@ function MyAccount() {
   });
 
   const [loading, setLoading] = useState(true);
+  const [clientDocId, setClientDocId] = useState(null);
+
   const [passwords, setPasswords] = useState({
     current: "",
     newPass: "",
@@ -36,37 +39,60 @@ function MyAccount() {
   const [pwError, setPwError] = useState("");
   const [saveError, setSaveError] = useState("");
 
-  // Fetch the logged-in user's real Firestore data
+  // Load from clients collection matched to current auth user
   useEffect(() => {
+    let unsubClients = () => {};
+
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         setLoading(false);
         return;
       }
+
       try {
-        const userSnap = await getDoc(doc(db, "users", user.uid));
-        if (userSnap.exists()) {
-          const data = userSnap.data();
-          setForm({
-            fullName: data.name || "",
-            email: data.email || user.email || "",
-            phone: data.phone || "",
-            address: data.address || "",
-            relationship: data.relationship || "",
-          });
-        } else {
-          setForm((prev) => ({
-            ...prev,
-            email: user.email || "",
-          }));
-        }
+        // Fetch user doc for matching helpers
+        let userDoc = null;
+        try {
+          const uSnap = await getDoc(doc(db, "users", user.uid));
+          if (uSnap.exists()) userDoc = uSnap.data();
+        } catch (_) {}
+
+        // Subscribe to clients collection in real-time
+        unsubClients();
+        unsubClients = onSnapshot(collection(db, "clients"), (snap) => {
+          const allClients = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          const matched = findClientForUser(user, userDoc, allClients);
+
+          if (matched) {
+            setClientDocId(matched.id);
+            const firstName = matched.first_name || matched.firstName || "";
+            const lastName = matched.last_name || matched.lastName || "";
+            const fullName = matched.name || `${firstName} ${lastName}`.trim();
+
+            setForm({
+              fullName,
+              email: matched.email || user.email || "",
+              phone: matched.contact || matched.contactNumber || matched.phone || "",
+              address: matched.address || "",
+              relationship: matched.relationship || "",
+            });
+          } else {
+            // Fallback: show auth email at minimum
+            setForm((prev) => ({ ...prev, email: user.email || "" }));
+          }
+
+          setLoading(false);
+        });
       } catch (err) {
-        console.error("Failed to load account info:", err);
-      } finally {
+        console.error("Failed to load client info:", err);
         setLoading(false);
       }
     });
-    return () => unsub();
+
+    return () => {
+      unsub();
+      unsubClients();
+    };
   }, []);
 
   const handleFormChange = (e) => {
@@ -77,20 +103,22 @@ function MyAccount() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    const uid = auth.currentUser?.uid;
-    if (!uid) return;
+    if (!clientDocId) {
+      setSaveError("No linked client record found. Contact administration.");
+      return;
+    }
 
     try {
-      await updateDoc(doc(db, "users", uid), {
+      await updateDoc(doc(db, "clients", clientDocId), {
         name: form.fullName,
-        phone: form.phone,
+        contact: form.phone,
         address: form.address,
         relationship: form.relationship,
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
-      console.error("Failed to save account info:", err);
+      console.error("Failed to save client info:", err);
       setSaveError("Could not save changes. Please try again.");
     }
   };
@@ -117,21 +145,18 @@ function MyAccount() {
     }
 
     try {
-      const user = auth.currentUser;
-      const credential = EmailAuthProvider.credential(user.email, passwords.current);
-      await reauthenticateWithCredential(user, credential);
-      await updatePassword(user, passwords.newPass);
+      await activateClientAccount({
+        currentPassword: passwords.current,
+        newPassword: passwords.newPass,
+        confirmPassword: passwords.confirm,
+      });
 
       setPwSaved(true);
       setPasswords({ current: "", newPass: "", confirm: "" });
       setTimeout(() => setPwSaved(false), 3000);
     } catch (err) {
       console.error("Failed to update password:", err);
-      if (err.code === "auth/wrong-password" || err.code === "auth/invalid-credential") {
-        setPwError("Current password is incorrect.");
-      } else {
-        setPwError("Could not update password. Please try again.");
-      }
+      setPwError(err.message || "Could not update password. Please try again.");
     }
   };
 
@@ -222,13 +247,21 @@ function MyAccount() {
                 <label className="facct-label">Relationship to Deceased</label>
                 <div className="facct-input-wrap">
                   <i className="fas fa-users facct-input-icon"></i>
-                  <input
-                    type="text"
+                  <select
                     name="relationship"
                     className="facct-input"
                     value={form.relationship}
                     onChange={handleFormChange}
-                  />
+                    style={{ cursor: "pointer" }}
+                  >
+                    <option value="">Select relationship...</option>
+                    <option value="Spouse">Spouse</option>
+                    <option value="Child">Child</option>
+                    <option value="Parent">Parent</option>
+                    <option value="Sibling">Sibling</option>
+                    <option value="Relative">Relative</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -274,7 +307,7 @@ function MyAccount() {
           <div className="facct-header">
             <h2>
               <i className="fas fa-shield-alt" style={{ color: "#d4af37", marginRight: "8px" }}></i>{" "}
-              Security & Password
+              Security &amp; Password
             </h2>
           </div>
 
@@ -349,14 +382,6 @@ function MyAccount() {
         </div>
       </div>
 
-      {/* Footer Note */}
-      <div className="facct-footer-note">
-        <i className="fas fa-info-circle" style={{ color: "#3670AF" }}></i>
-        <span>
-          Your account has view-only access to burial plots. Only administrators and staff can
-          modify burial records and process transactions.
-        </span>
-      </div>
     </div>
   );
 }

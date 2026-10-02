@@ -1,0 +1,419 @@
+/* =====================================================
+   ACTIVATE ACCOUNT MODAL — ActivateAccountModal.css
+   Full-screen, non-dismissible security overlay
+   ===================================================== */
+
+.activate-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: rgba(10, 25, 47, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow-y: auto;
+  animation: actOverlayFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes actOverlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.activate-modal-card {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 25px 60px -15px rgba(0, 32, 64, 0.35),
+              0 0 0 1px rgba(212, 175, 55, 0.25);
+  padding: 2.2rem 2.4rem;
+  position: relative;
+  overflow: hidden;
+  animation: actCardPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes actCardPop {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Decorative top gradient accent */
+.activate-modal-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #d4af37 0%, #1565c0 50%, #004d8c 100%);
+}
+
+/* ── Header ────────────────────────────────────── */
+.activate-modal-header {
+  text-align: center;
+  margin-bottom: 1.6rem;
+}
+
+.activate-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.1rem;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(21, 101, 192, 0.1));
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b8860b;
+  box-shadow: 0 8px 20px -6px rgba(212, 175, 55, 0.25);
+  position: relative;
+}
+
+.activate-icon-wrapper.success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.1));
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #059669;
+  box-shadow: 0 8px 20px -6px rgba(16, 185, 129, 0.3);
+}
+
+.activate-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 0.75rem;
+}
+
+.activate-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d97706;
+  animation: actPulse 1.8s infinite;
+}
+
+@keyframes actPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+}
+
+.activate-modal-title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.45rem 0;
+  letter-spacing: -0.01em;
+}
+
+.activate-modal-desc {
+  font-size: 0.92rem;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* User identity banner */
+.activate-user-banner {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.4rem;
+  font-size: 0.85rem;
+}
+
+.activate-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.activate-user-name {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.activate-user-email {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.activate-status-tag {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #dbeafe;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* ── Error Box ──────────────────────────────────── */
+.activate-error-box {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.86rem;
+  margin-bottom: 1.2rem;
+  line-height: 1.4;
+  animation: actShake 0.3s ease;
+}
+
+@keyframes actShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.activate-error-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ── Success Box ────────────────────────────────── */
+.activate-success-box {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  padding: 1rem 1.2rem;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  margin-bottom: 1.4rem;
+}
+
+/* ── Form ───────────────────────────────────────── */
+.activate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.activate-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+}
+
+.activate-label {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #334155;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.activate-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.activate-input-icon {
+  position: absolute;
+  left: 14px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.activate-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 42px 0 40px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 0.92rem;
+  color: #0f172a;
+  transition: all 0.2s ease;
+}
+
+.activate-input:focus {
+  outline: none;
+  background: #ffffff;
+  border-color: #1565c0;
+  box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.14);
+}
+
+.activate-input::placeholder {
+  color: #94a3b8;
+  font-size: 0.88rem;
+}
+
+.activate-toggle-btn {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.activate-toggle-btn:hover {
+  color: #475569;
+  background: #e2e8f0;
+}
+
+/* ── Password Checklist ─────────────────────────── */
+.activate-checklist {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.activate-check-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: #64748b;
+  transition: color 0.2s ease;
+}
+
+.activate-check-item.valid {
+  color: #059669;
+  font-weight: 600;
+}
+
+.activate-check-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  transition: all 0.2s ease;
+}
+
+.activate-check-item.valid .activate-check-dot {
+  background: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+/* ── Submit Button ──────────────────────────────── */
+.activate-submit-btn {
+  margin-top: 0.4rem;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #004d8c 0%, #1565c0 100%);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 77, 140, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.activate-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #003a6b 0%, #0d47a1 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 77, 140, 0.32);
+}
+
+.activate-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.activate-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ── Footer / Sign Out ──────────────────────────── */
+.activate-modal-footer {
+  margin-top: 1.4rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.activate-signout-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.activate-signout-btn:hover {
+  color: #dc2626;
+  background: #fef2f2;
+}
+
+.activate-spin {
+  animation: actSpin 1s linear infinite;
+}
+
+@keyframes actSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

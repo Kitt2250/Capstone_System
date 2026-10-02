@@ -17,7 +17,7 @@ import {
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../../firebase/config";
 import Header from "../../../components/Header/Header";
-import { getSystemDateISO, subscribeSystemDate } from "../../../utils/systemDate";
+import { getSystemDate, getSystemDateISO, subscribeSystemDate } from "../../../utils/systemDate";
 import PaymentDetailModal from "./PaymentDetailModal";
 import PaymentHistoryModal from "./PaymentHistoryModal";
 import PayInstallmentModal from "./PayInstallmentModal";
@@ -88,8 +88,9 @@ export default function Payments() {
     const [burials, setBurials] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // ── Active System Date (reacts to Admin Abuse simulation) ──
+    // ── Active System Date & Time (reacts to Admin Abuse simulation) ──
     const [todayStr, setTodayStr] = useState(getSystemDateISO());
+    const [sysTimestamp, setSysTimestamp] = useState(() => getSystemDate().getTime());
 
     // ── Filters & Search ──
     const [searchQuery, setSearchQuery] = useState("");
@@ -108,10 +109,11 @@ export default function Payments() {
     // ── Feedback Banner ──
     const [feedback, setFeedback] = useState(null);
 
-    // ── Subscribe to active System Date ──
+    // ── Subscribe to active System Date & Time ──
     useEffect(() => {
         const unsub = subscribeSystemDate((info) => {
             setTodayStr(info.activeDate);
+            setSysTimestamp(info.activeTimestamp || getSystemDate().getTime());
         });
         return () => unsub();
     }, []);
@@ -245,9 +247,15 @@ export default function Payments() {
             const pStatus = (payment.payment_status || "").toLowerCase();
             let status = "active";
 
+            const sysDate = new Date(sysTimestamp);
+            const sysHour = sysDate.getHours();
+            const isPastCutoffToday = sysHour >= 18;
+
+            const isDueOver = (dueDateRaw && todayStr > dueDateRaw) || (dueDateRaw && todayStr === dueDateRaw && isPastCutoffToday);
+
             if (balance <= 0 || pStatus === "paid") {
                 status = "fully_paid";
-            } else if (pStatus === "overdue" || (dueDateRaw && todayStr > dueDateRaw)) {
+            } else if (pStatus === "overdue" || isDueOver) {
                 status = "overdue";
             } else {
                 status = "active";
@@ -258,6 +266,9 @@ export default function Payments() {
             if (dueDateRaw && status !== "fully_paid") {
                 const diffMs = new Date(dueDateRaw).getTime() - new Date(todayStr).getTime();
                 daysUntilDue = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+                if (daysUntilDue === 0 && isPastCutoffToday) {
+                    daysUntilDue = -1;
+                }
             }
 
             // Client name
@@ -279,18 +290,28 @@ export default function Payments() {
             const duration = Number(graveType?.installment_duration || graveType?.installmentDuration || payment?.installment_duration || 12);
             let monthlyInstallment = Number(payment.monthly_amount || payment.monthly_installment || graveType?.monthly_payment || 0);
             if (!monthlyInstallment || monthlyInstallment <= 0) {
-                if (duration > 0 && balance > 0) {
-                    const pastInstallmentPaymentsCount = Math.max(0, accountHistory.length - 1);
-                    const remainingMonths = Math.max(1, duration - pastInstallmentPaymentsCount);
-                    monthlyInstallment = Math.round(balance / remainingMonths);
+                // Calculate from initial financed principal so advance payments do not decrease installment
+                let initialPrincipal = Number(payment.initial_balance || 0);
+                if (!initialPrincipal && accountHistory.length > 1) {
+                    const installmentsPaid = accountHistory.slice(1).reduce((s, h) => s + Number(h.amount || 0), 0);
+                    initialPrincipal = balance + installmentsPaid;
+                } else if (!initialPrincipal && accountHistory.length === 1) {
+                    const dp = Number(accountHistory[0].amount || 0);
+                    initialPrincipal = total > dp ? total - dp : balance;
+                } else if (!initialPrincipal) {
+                    initialPrincipal = total > balance ? (total * 0.5) : balance;
+                }
+
+                if (duration > 0 && initialPrincipal > 0) {
+                    monthlyInstallment = Math.round(initialPrincipal / duration);
                 } else if (duration > 0 && total > 0) {
                     monthlyInstallment = Math.round(total / duration);
                 } else if (balance > 0) {
                     monthlyInstallment = Math.round(balance / 12);
                 }
             }
-            if (balance > 0 && monthlyInstallment > balance) {
-                monthlyInstallment = balance;
+            if (balance <= 0) {
+                monthlyInstallment = 0;
             }
 
             return {
@@ -325,7 +346,7 @@ export default function Payments() {
                 paymentsCount: accountHistory.length,
             };
         });
-    }, [payments, plots, clients, graveTypes, burials, paymentHistory, todayStr]);
+    }, [payments, plots, clients, graveTypes, burials, paymentHistory, todayStr, sysTimestamp]);
 
     // ── Calculate KPIs ──
     const totalOutstanding = useMemo(() => {

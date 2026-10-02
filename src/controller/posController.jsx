@@ -103,6 +103,10 @@ export async function processPOSController(transactionData) {
         paymentData: {
             total: Number(paymentData.total),
             balance: Number(paymentData.balance ?? paymentData.total),
+            initial_balance: paymentData.initial_balance != null ? Number(paymentData.initial_balance) : null,
+            monthly_installment: paymentData.monthly_installment != null ? Number(paymentData.monthly_installment) : null,
+            monthly_amount: paymentData.monthly_amount != null ? Number(paymentData.monthly_amount) : null,
+            installment_duration: paymentData.installment_duration != null ? Number(paymentData.installment_duration) : null,
             paymentStatus: paymentData.paymentStatus ?? "pending",
         },
         historyData: {

@@ -1,0 +1,211 @@
+/* ====================================================
+   GpsPermissionModal.css
+   ==================================================== */
+
+.gl-perm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 25, 47, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 9500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  animation: gl-perm-fade 0.2s ease;
+}
+
+@keyframes gl-perm-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.gl-perm-modal {
+  position: relative;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.28);
+  width: 100%;
+  max-width: 480px;
+  padding: 2rem 1.75rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: gl-perm-pop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes gl-perm-pop {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.gl-perm-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.35rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.gl-perm-close:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.gl-perm-icon-wrap {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.15rem;
+}
+
+.gl-perm-icon--prompt {
+  background: #e0f2fe;
+  color: #0284c7;
+  border: 4px solid #f0f9ff;
+}
+
+.gl-perm-icon--blocked {
+  background: #fef2f2;
+  color: #ef4444;
+  border: 4px solid #fff1f2;
+}
+
+.gl-perm-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.5rem;
+}
+
+.gl-perm-desc {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #64748b;
+  margin: 0 0 1.25rem;
+}
+
+.gl-perm-desc strong {
+  color: #1e293b;
+}
+
+/* Steps Box for Blocked State */
+.gl-perm-steps {
+  width: 100%;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.gl-perm-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.gl-perm-step-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0284c7;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.gl-perm-error-note {
+  font-size: 0.8rem;
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+
+/* Actions */
+.gl-perm-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.gl-perm-btn {
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.15s ease;
+  border: none;
+}
+
+.gl-perm-btn--primary {
+  background: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+.gl-perm-btn--primary:hover:not(:disabled) {
+  background: #0369a1;
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
+  transform: translateY(-1px);
+}
+
+.gl-perm-btn--primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.gl-perm-btn--secondary {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.gl-perm-btn--secondary:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.gl-spin {
+  animation: gl-spin-kf 1s linear infinite;
+}
+
+@keyframes gl-spin-kf {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}

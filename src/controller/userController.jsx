@@ -1,4 +1,5 @@
 import { archiveUser, createUser, updateUser, updateUserProfile, getUserData, changeUserPassword } from "../services/userServices";
+import { activateClientAccount } from "../services/clientServices";
 import { logAuditEvent } from "../utils/auditLogger";
 
 export const createUserController = async (userData) => {
@@ -245,4 +246,47 @@ export const changePasswordController = async ({ currentPassword, newPassword, c
         success: true,
         message: "Password updated successfully.",
     };
+};
+
+export const activateFamilyAccountController = async ({
+    currentPassword,
+    newPassword,
+    confirmPassword,
+    targetClientId = null,
+}) => {
+    if (!currentPassword) {
+        throw new Error("Please enter your current password.");
+    }
+
+    if (!newPassword) {
+        throw new Error("Please enter a new password.");
+    }
+
+    if (newPassword.length < 8) {
+        throw new Error("New password must be at least 8 characters long.");
+    }
+
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>_\-+~=[\]\\/`]/;
+    if (!specialCharRegex.test(newPassword)) {
+        throw new Error("New password must contain at least one special character / symbol (e.g. !@#$%^&*).");
+    }
+
+    if (!confirmPassword) {
+        throw new Error("Please confirm your new password.");
+    }
+
+    if (newPassword !== confirmPassword) {
+        throw new Error("New password and confirm password do not match.");
+    }
+
+    if (currentPassword === newPassword) {
+        throw new Error("New password cannot be the same as your current password.");
+    }
+
+    return await activateClientAccount({
+        currentPassword,
+        newPassword,
+        confirmPassword,
+        targetClientId,
+    });
 };

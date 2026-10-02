@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { X, CreditCard, CheckCircle, AlertCircle, RefreshCw, Calendar } from "lucide-react";
 import { generateReceiptNumber, recordInstallmentPayment } from "../../../services/paymentServices";
-import { getSystemDateISO } from "../../../utils/systemDate";
+import { getSystemDate, getSystemDateISO } from "../../../utils/systemDate";
 import "./Payments.css";
 
 export default function PayInstallmentModal({ isOpen, account, todayStr, onClose, onPaymentSuccess }) {
@@ -50,12 +50,17 @@ export default function PayInstallmentModal({ isOpen, account, todayStr, onClose
         const currTime = new Date(todayStr || getSystemDateISO()).getTime();
         if (!isNaN(dueTime) && !isNaN(currTime)) {
             const diffDays = Math.round((dueTime - currTime) / (1000 * 60 * 60 * 24));
+            const sysDate = getSystemDate();
+            const sysHour = sysDate.getHours();
+            const isPastCutoffToday = sysHour >= 18;
+            const isOverdue = diffDays < 0 || (diffDays === 0 && isPastCutoffToday);
+
             dueDaysInfo = {
-                diffDays,
-                isOverdue: diffDays < 0,
-                isDueToday: diffDays === 0,
-                text: diffDays < 0
-                    ? `${Math.abs(diffDays)} day${Math.abs(diffDays) === 1 ? "" : "s"} overdue`
+                diffDays: isOverdue && diffDays === 0 ? -1 : diffDays,
+                isOverdue,
+                isDueToday: diffDays === 0 && !isPastCutoffToday,
+                text: isOverdue
+                    ? `${diffDays < 0 ? Math.abs(diffDays) : 1} day${(diffDays < 0 ? Math.abs(diffDays) : 1) === 1 ? "" : "s"} overdue`
                     : diffDays === 0
                     ? "Due today"
                     : `${diffDays} day${diffDays === 1 ? "" : "s"} left`

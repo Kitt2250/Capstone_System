@@ -154,6 +154,7 @@ export function getSystemDateOverrideInfo() {
         realTime: getRealPhilippineTimeISO(),
         activeDate: cachedOverride.date,
         activeTime: cachedOverride.time || "00:00:00",
+        activeTimestamp: getSystemDate().getTime(),
     };
 }
 
@@ -177,6 +178,16 @@ export function getSystemDateISO() {
         return cachedOverride.date;
     }
     return getRealPhilippineISO();
+}
+
+/**
+ * Returns the current active system time as "HH:mm:ss"
+ */
+export function getSystemTimeISO() {
+    if (cachedOverride && cachedOverride.isOverridden && cachedOverride.time) {
+        return cachedOverride.time.slice(0, 8);
+    }
+    return getRealPhilippineTimeISO();
 }
 
 /**
