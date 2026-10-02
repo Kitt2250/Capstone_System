@@ -279,11 +279,41 @@
     display: block;
 }
 
-/* ----- REPORT TABLE ----- */
+/* ----- REPORT TABLE & CARD ----- */
+.report-table-card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e8edf4;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+.report-table-card .report-table-wrapper {
+    border: none;
+    border-radius: 0;
+}
 .report-table-wrapper {
     overflow-x: auto;
     border-radius: 12px;
     border: 1px solid #e8edf4;
+}
+.report-pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    background: #ffffff;
+    border-top: 1px solid #e8edf4;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.report-showing-text {
+    font-size: 0.82rem;
+    color: #64748b;
+    font-weight: 500;
+}
+.report-showing-text strong {
+    color: #1a3d5c;
+    font-weight: 600;
 }
 .report-table-wrapper table {
     width: 100%;

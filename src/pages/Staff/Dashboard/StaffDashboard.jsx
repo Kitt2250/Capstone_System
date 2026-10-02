@@ -319,7 +319,7 @@ function StaffDashboard() {
         </div>
 
         {/* 2. Available Slots (read plot available) */}
-        <div className="ds-stat-card" style={{ cursor: "pointer" }} onClick={() => navigate("/staff/plots")}>
+        <div className="ds-stat-card" style={{ cursor: "pointer" }} onClick={() => navigate("/staff/grave-management")}>
           <i className="fas fa-th-large ds-stat-icon"></i>
           <div className="ds-stat-label">Available Slots</div>
           <div className="ds-stat-value">{availableSlots.length}</div>
