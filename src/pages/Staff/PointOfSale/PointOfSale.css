@@ -791,3 +791,318 @@ select.pos-input-control {
     border-radius: 9999px;
     border: 1px solid #ddd6fe;
 }
+
+/* Existing Account Action */
+.pos-existing-account-bar {
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pos-btn-existing {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: inherit;
+    border-radius: 8px;
+    border: 1px solid #004d8c;
+    background-color: #ffffff;
+    color: #004d8c;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0, 77, 140, 0.05);
+}
+
+.pos-btn-existing:hover {
+    background-color: #f0f7ff;
+    border-color: #003866;
+    color: #003866;
+}
+
+.pos-btn-existing:active {
+    transform: translateY(1px);
+}
+
+.pos-btn-clear-client {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 13px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: inherit;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background-color: #f8fafc;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.pos-btn-clear-client:hover {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+.pos-btn-clear-client:active {
+    transform: translateY(1px);
+}
+
+/* Existing Client Details Card (Read-only when existing client is chosen) */
+.pos-existing-client-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.pos-client-info-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.pos-client-info-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 640px) {
+    .pos-client-info-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
+.pos-client-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pos-client-info-label {
+    font-size: 0.725rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #64748b;
+}
+
+.pos-client-info-val {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #1e293b;
+    word-break: break-word;
+}
+
+.pos-client-info-val.highlight {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #004d8c;
+}
+
+/* ===== Owned / Contracted Plots Section for Existing Client ===== */
+.pos-client-plots-box {
+    margin-top: 14px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pos-client-plots-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 8px;
+}
+
+.pos-client-plots-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1e293b;
+    letter-spacing: 0.01em;
+}
+
+.pos-client-plots-icon {
+    color: #004d8c;
+}
+
+.pos-client-plots-count {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #004d8c;
+    background: #e0f2fe;
+    padding: 2px 8px;
+    border-radius: 9999px;
+}
+
+.pos-client-plots-empty {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: #64748b;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 12px 14px;
+}
+
+.pos-client-plots-empty svg {
+    color: #94a3b8;
+    flex-shrink: 0;
+}
+
+.pos-client-plots-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pos-client-plot-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 11px 13px;
+    background: #f8fafc;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.pos-client-plot-card:hover {
+    border-color: #cbd5e1;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.pos-client-plot-card.is-selected-plot {
+    border-color: #004d8c;
+    background: #f0f7ff;
+    box-shadow: 0 0 0 1px #004d8c;
+}
+
+.pos-client-plot-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pos-client-plot-code {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.86rem;
+    color: #004d8c;
+}
+
+.pos-plot-code-icon {
+    color: #004d8c;
+}
+
+.pos-plot-type-pill {
+    font-size: 0.68rem;
+    font-weight: 600;
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 2px 7px;
+    border-radius: 4px;
+}
+
+.pos-plot-status-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    text-transform: capitalize;
+}
+
+.pos-plot-status-badge.status-occupied {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.pos-plot-status-badge.status-reserved {
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.pos-plot-status-badge.status-partial {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.pos-plot-status-badge.status-available {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.pos-client-plot-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+    gap: 8px;
+    padding: 7px 10px;
+    background: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #f1f5f9;
+}
+
+.pos-plot-meta-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pos-plot-meta-lbl {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #94a3b8;
+    letter-spacing: 0.03em;
+}
+
+.pos-plot-meta-val {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #334155;
+    word-break: break-word;
+}
+
+.pos-plot-meta-val.contract-highlight {
+    color: #0284c7;
+    font-weight: 700;
+}
+
+.pos-plot-meta-val.lease-highlight {
+    color: #b45309;
+    font-weight: 700;
+}
+
+.pos-plot-type-pill.apartment {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+
+
+

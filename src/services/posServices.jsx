@@ -139,17 +139,56 @@ async function updatePlotStatus(plotId, needType, uid) {
 export async function processPOSTransaction(transactionData) {
     const { clientData, burialData, plotId, needType, paymentData, historyData } = transactionData;
 
-    // 1. Create Auth account (email + contactNo as password)
-    const uid = await createAuthAccount(
-        clientData.email,
-        clientData.contactNumber
-    );
+    // 1. Resolve UID (reuse existing UID for existing client, or create new Auth account if new)
+    let uid = clientData?.existingUserId || clientData?.user_id || clientData?.userId || clientData?.uid;
+    let clientId = clientData?.existingClientId || clientData?.clientId;
 
-    // 2. Create Firestore user document
-    await createUserDocument(uid, clientData.email, clientData);
+    // If marked as existing client or clientId is present but uid is missing, retrieve from clients collection
+    if (!uid && clientId) {
+        try {
+            const clientDocRef = doc(db, "clients", clientId);
+            const clientSnap = await getDoc(clientDocRef);
+            if (clientSnap.exists()) {
+                const cData = clientSnap.data();
+                uid = cData.user_id || cData.userId || cData.uid;
+            }
+        } catch (err) {
+            console.warn("Could not look up client doc for user_id:", err);
+        }
+    }
 
-    // 3. Create client record
-    const clientId = await createClientDocument(uid, clientData);
+    if (!uid) {
+        try {
+            uid = await createAuthAccount(
+                clientData.email,
+                clientData.contactNumber
+            );
+            await createUserDocument(uid, clientData.email, clientData);
+        } catch (authErr) {
+            if (authErr.message && authErr.message.includes("already registered")) {
+                const usersRef = collection(db, "users");
+                const uSnap = await getDocs(query(usersRef, where("email", "==", clientData.email.trim())));
+                if (!uSnap.empty) {
+                    uid = uSnap.docs[0].id;
+                } else {
+                    throw authErr;
+                }
+            } else {
+                throw authErr;
+            }
+        }
+    }
+
+    // 2. Resolve or create client document
+    if (!clientId) {
+        const clientsRef = collection(db, "clients");
+        const cSnap = await getDocs(query(clientsRef, where("user_id", "==", uid)));
+        if (!cSnap.empty) {
+            clientId = cSnap.docs[0].id;
+        } else {
+            clientId = await createClientDocument(uid, clientData);
+        }
+    }
 
     // 4. Create burial record (only for actual burial; skipped for pre-need)
     let burialId = null;

@@ -16,11 +16,15 @@ import {
     Layers,
     Heart,
     UserX,
-    Clock
+    Clock,
+    Landmark
 } from "lucide-react";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../../../firebase/config";
 import "./PointOfSale.css";
 import WakeSpaceModal from "../../../components/WakeSpaceModal/WakeSpaceModal.jsx";
 import GraveLotsModal from "../../../components/GraveLotsModal/GraveLotsModal.jsx";
+import ExistingClientModal from "../../../components/ExistingClientModal/ExistingClientModal.jsx";
 import { isApartmentPlot } from "../../Admin/MapManagement/MapFolder/mapInit.js";
 import {
     createWakeSpaceBooking,
@@ -59,6 +63,10 @@ function PointOfSale() {
     const [showGraveLotsModal, setShowGraveLotsModal] = useState(false);
     const [selectedGraveType, setSelectedGraveType] = useState(null);
     const [selectedGravePlot, setSelectedGravePlot] = useState(null);
+
+    // Existing Client modal state
+    const [showExistingClientModal, setShowExistingClientModal] = useState(false);
+    const [selectedExistingClient, setSelectedExistingClient] = useState(null);
 
     // Transaction & client states
     const [firstName, setFirstName] = useState("");
@@ -271,6 +279,270 @@ function PointOfSale() {
         setShowGraveLotsModal(false);
     };
 
+    // Handler for selecting an existing client from ExistingClientModal
+    const handleSelectExistingClient = async (client) => {
+        setSelectedExistingClient(client);
+        setFirstName(client.first_name || client.firstName || "");
+        setLastName(client.last_name || client.lastName || "");
+        const rawContact = client.contact || client.contactNumber || client.phone || "";
+        setContactNumber(rawContact.replace(/\D/g, "").slice(0, 11));
+        setAddress(client.address || "");
+        setShowExistingClientModal(false);
+
+        // Catch email directly from "users" collection using client's user_id
+        let caughtEmail = client.email || "";
+        const targetUid = client.user_id || client.userId || client.uid || client.id;
+        if (targetUid) {
+            try {
+                const userDocRef = doc(db, "users", targetUid);
+                const userSnap = await getDoc(userDocRef);
+                if (userSnap.exists()) {
+                    const uData = userSnap.data();
+                    if (uData.email) {
+                        caughtEmail = uData.email;
+                    }
+                } else {
+                    // Fallback query by user_id or uid field
+                    const qSnap = await getDocs(query(collection(db, "users"), where("user_id", "==", targetUid)));
+                    if (!qSnap.empty) {
+                        const uData = qSnap.docs[0].data();
+                        if (uData.email) caughtEmail = uData.email;
+                    } else {
+                        const qSnapUid = await getDocs(query(collection(db, "users"), where("uid", "==", targetUid)));
+                        if (!qSnapUid.empty) {
+                            const uData = qSnapUid.docs[0].data();
+                            if (uData.email) caughtEmail = uData.email;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn("Could not catch email from users collection:", err);
+            }
+        }
+        setEmail(caughtEmail);
+        setSelectedExistingClient((prev) => (prev ? { ...prev, email: caughtEmail } : client));
+    };
+
+    // Keep email synchronized from "users" collection whenever selectedExistingClient changes
+    useEffect(() => {
+        if (!selectedExistingClient) return;
+        const targetUid =
+            selectedExistingClient.user_id ||
+            selectedExistingClient.userId ||
+            selectedExistingClient.uid ||
+            selectedExistingClient.id;
+        if (!targetUid) return;
+
+        let isMounted = true;
+        const syncUserEmail = async () => {
+            try {
+                const userSnap = await getDoc(doc(db, "users", targetUid));
+                if (userSnap.exists() && isMounted) {
+                    const uData = userSnap.data();
+                    if (uData.email) {
+                        setEmail(uData.email);
+                        setSelectedExistingClient((prev) =>
+                            prev && prev.email !== uData.email ? { ...prev, email: uData.email } : prev
+                        );
+                        return;
+                    }
+                }
+                const qSnap = await getDocs(query(collection(db, "users"), where("user_id", "==", targetUid)));
+                if (!qSnap.empty && isMounted) {
+                    const uData = qSnap.docs[0].data();
+                    if (uData.email) {
+                        setEmail(uData.email);
+                        setSelectedExistingClient((prev) =>
+                            prev && prev.email !== uData.email ? { ...prev, email: uData.email } : prev
+                        );
+                    }
+                }
+            } catch (err) {
+                console.warn("Could not sync email from users collection:", err);
+            }
+        };
+
+        syncUserEmail();
+        return () => {
+            isMounted = false;
+        };
+    }, [
+        selectedExistingClient?.user_id,
+        selectedExistingClient?.userId,
+        selectedExistingClient?.uid,
+        selectedExistingClient?.id,
+    ]);
+
+    // Handler to clear selected existing client and revert to new client mode
+    const handleClearExistingClient = () => {
+        setSelectedExistingClient(null);
+        setFirstName("");
+        setLastName("");
+        setContactNumber("");
+        setEmail("");
+        setAddress("");
+    };
+
+    // Filter owned or contracted plots in "plots" collection using user_id of selected client
+    const clientPlots = useMemo(() => {
+        if (!selectedExistingClient) return [];
+        const targetUid =
+            selectedExistingClient.user_id ||
+            selectedExistingClient.userId ||
+            selectedExistingClient.uid;
+        const clientId = selectedExistingClient.id;
+
+        if (!targetUid && !clientId) return [];
+
+        return (plots || []).filter((p) => {
+            const plotUid = p.user_id || p.userId || p.client_id || p.clientId;
+            if (!plotUid) return false;
+            const cleanPlotUid = String(plotUid).trim();
+            if (targetUid && cleanPlotUid === String(targetUid).trim()) return true;
+            if (clientId && cleanPlotUid === String(clientId).trim()) return true;
+            return false;
+        });
+    }, [selectedExistingClient, plots]);
+
+    // Helper to find the connected grave type from rawGraveTypes for a plot
+    const getConnectedGraveType = (plot) => {
+        if (!plot) return null;
+        const typeId = String(plot.grave_type_id || plot.graveLotTypeID || "").trim().toLowerCase();
+        const typeName = String(plot.grave_type || plot.graveType || plot.type || "").trim().toLowerCase();
+
+        return rawGraveTypes.find((gt) => {
+            const gtId = String(gt.id || gt.grave_type_id || "").trim().toLowerCase();
+            const gtName = String(gt.name || gt.grave_type || gt.graveType || "").trim().toLowerCase();
+
+            if (typeId && (gtId === typeId || gtName === typeId)) return true;
+            if (typeName && (gtName === typeName || gtId === typeName)) return true;
+            if (typeName && gtName && (typeName.includes(gtName) || gtName.includes(typeName))) return true;
+            return false;
+        });
+    };
+
+    // Helper to verify if a plot is an Apartment (renewable lease, NOT perpetual)
+    const checkIsPlotApartment = (plot) => {
+        if (!plot) return false;
+
+        // 1. Check via connected graveType document
+        const connectedGt = getConnectedGraveType(plot);
+        if (connectedGt) {
+            const gtName = String(connectedGt.name || connectedGt.grave_type || connectedGt.graveType || "").toLowerCase();
+            const gtContract = String(connectedGt.contract || connectedGt.contract_type || "").toLowerCase();
+            if (gtName.includes("apartment")) return true;
+            if (connectedGt.renewable === true || connectedGt.isRenewable === true) return true;
+            if (gtContract.includes("lease") || gtContract.includes("renewable")) return true;
+        }
+
+        // 2. Check using mapInit isApartmentPlot helper
+        if (isApartmentPlot(plot)) return true;
+
+        // 3. Check direct plot type strings
+        const directType = String(
+            plot.grave_type ||
+            plot.graveType ||
+            plot.lotType ||
+            plot.type ||
+            plot.graveTypeName ||
+            plot.grave_type_id ||
+            plot.graveLotTypeID ||
+            ""
+        ).toLowerCase();
+        if (directType.includes("apartment")) return true;
+
+        // 4. Check plot code prefix (AP-)
+        const code = String(
+            plot.plotCode ||
+            plot.plotcode ||
+            plot.plot_code ||
+            plot.name ||
+            plot.lotNumber ||
+            plot.plotNumber ||
+            plot.id ||
+            ""
+        ).trim().toUpperCase();
+        if (/^AP/i.test(code)) return true;
+
+        return false;
+    };
+
+    // Helper to resolve human-readable grave type for a plot
+    const resolvePlotGraveType = (plot) => {
+        const connectedGt = getConnectedGraveType(plot);
+        if (connectedGt) {
+            return connectedGt.name || connectedGt.grave_type || connectedGt.graveType || "Grave Plot";
+        }
+        if (checkIsPlotApartment(plot)) return "Apartment";
+        const raw = plot.grave_type || plot.graveType || plot.grave_type_id || "";
+        return raw || "Standard Plot";
+    };
+
+    // Helper to determine contract type and validity / expiry
+    // APARTMENT IS NOT PERPETUAL - verified by checking the graveType connected to the plot
+    const getPlotContractInfo = (plot) => {
+        const connectedGt = getConnectedGraveType(plot);
+        const isApartment = checkIsPlotApartment(plot);
+        const status = String(plot.status || "occupied").toLowerCase();
+
+        // 1. Explicit expiration date recorded in Firestore
+        const explicitExp = plot.contract_expiration_date || plot.lease_end || plot.lease_expiry;
+
+        // 2. Contract years from plot or connected graveType
+        const contractYears = Number(
+            plot.contract_years ||
+            connectedGt?.contract_years ||
+            (isApartment ? 5 : null)
+        );
+
+        if (isApartment) {
+            // APARTMENT IS NEVER PERPETUAL
+            let contractType = plot.contract || plot.contract_type;
+            if (!contractType || String(contractType).toLowerCase().includes("perpetual")) {
+                contractType = status === "reserved" ? "Pre-Need Lease" : "Renewable Lease";
+            }
+
+            let validity = explicitExp;
+            if (!validity) {
+                if (contractYears) {
+                    validity = `${contractYears} Yrs (Renewable)`;
+                } else {
+                    validity = "Renewable Lease (5 Yrs)";
+                }
+            }
+
+            return {
+                isApartment: true,
+                contractType,
+                validity,
+                isPerpetual: false
+            };
+        }
+
+        // NON-APARTMENT PLOTS (Lawn Lot, Mausoleum, etc. - default to Perpetual Ownership)
+        let contractType = plot.contract || plot.contract_type;
+        if (!contractType) {
+            contractType = status === "reserved" ? "Pre-Need Reservation" : "Perpetual Contract";
+        }
+
+        let validity = explicitExp;
+        if (!validity) {
+            if (contractYears && !String(contractType).toLowerCase().includes("perpetual")) {
+                validity = `${contractYears} Yrs`;
+            } else {
+                validity = "Perpetual";
+            }
+        }
+
+        return {
+            isApartment: false,
+            contractType,
+            validity,
+            isPerpetual: String(contractType).toLowerCase().includes("perpetual") || validity === "Perpetual"
+        };
+    };
+
+
     // Combine grave types with real-time available plot counts
     const displayedGraveLots = rawGraveTypes.map((gt) => {
         const typeId = String(gt.grave_type_id || gt.id || "").trim().toLowerCase();
@@ -386,6 +658,7 @@ function PointOfSale() {
         setSelectedGraveType(null);
         setSelectedInterment(null);
         setWakeSpaceItem(null);
+        setSelectedExistingClient(null);
         setFirstName("");
         setLastName("");
         setAddress("");
@@ -1132,89 +1405,229 @@ function PointOfSale() {
                                     <User className="pos-card-icon" size={17} />
                                     Client Information
                                 </h3>
-                                <span className="um-kpi-pill blue">New</span>
-                            </div>
-
-                            <div className="pos-form-grid-2">
-                                <div className="pos-form-group">
-                                    <label className="pos-form-label">First Name</label>
-                                    <input
-                                        type="text"
-                                        className="pos-input-control"
-                                        placeholder="Enter first name"
-                                        value={firstName}
-                                        onChange={(e) => setFirstName(e.target.value)}
-                                    />
-                                </div>
-
-                                <div className="pos-form-group">
-                                    <label className="pos-form-label">Last Name</label>
-                                    <input
-                                        type="text"
-                                        className="pos-input-control"
-                                        placeholder="Enter last name"
-                                        value={lastName}
-                                        onChange={(e) => setLastName(e.target.value)}
-                                    />
-                                </div>
-
-                                <div className="pos-form-group">
-                                    <label className="pos-form-label">Contact Number</label>
-                                    <input
-                                        type="tel"
-                                        className="pos-input-control"
-                                        placeholder="09123456789"
-                                        value={contactNumber}
-                                        maxLength={11}
-                                        onChange={(e) => {
-                                            const val = e.target.value.replace(/\D/g, "");
-                                            if (val.length <= 11) setContactNumber(val);
-                                        }}
-                                    />
-                                </div>
-
-                                <div className="pos-form-group">
-                                    <label className="pos-form-label">Email Address</label>
-                                    <input
-                                        type="email"
-                                        className="pos-input-control"
-                                        placeholder="client@email.com"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
-                                </div>
-
-                                <div className="pos-form-group pos-form-group-full">
-                                    <label className="pos-form-label">Address</label>
-                                    <input
-                                        type="text"
-                                        className="pos-input-control"
-                                        placeholder="House / Unit No., Street, Barangay, City, Province"
-                                        value={address}
-                                        onChange={(e) => setAddress(e.target.value)}
-                                    />
-                                </div>
-
-                                {needType === "actual" && (
-                                    <div className="pos-form-group pos-form-group-full">
-                                        <label className="pos-form-label">Relationship to Deceased</label>
-                                        <select
-                                            className="pos-input-control"
-                                            value={relationship}
-                                            onChange={(e) => setRelationship(e.target.value)}
-                                        >
-                                            <option value="" disabled>Select relationship...</option>
-                                            <option value="Spouse">Spouse</option>
-                                            <option value="Child">Child</option>
-                                            <option value="Parent">Parent</option>
-                                            <option value="Sibling">Sibling</option>
-                                            <option value="Relative">Relative</option>
-                                            <option value="Other">Other</option>
-                                        </select>
-                                    </div>
+                                {selectedExistingClient ? (
+                                    <span className="um-kpi-pill green">Existing Client</span>
+                                ) : (
+                                    <span className="um-kpi-pill blue">New</span>
                                 )}
-
                             </div>
+
+                            {/* Existing Client Button */}
+                            <div className="pos-existing-account-bar">
+                                <button
+                                    type="button"
+                                    className="pos-btn-existing"
+                                    onClick={() => setShowExistingClientModal(true)}
+                                >
+                                    {selectedExistingClient ? "Change Client" : "Existing Client"}
+                                </button>
+                                {selectedExistingClient && (
+                                    <button
+                                        type="button"
+                                        className="pos-btn-clear-client"
+                                        onClick={handleClearExistingClient}
+                                        title="Clear selection and create new client"
+                                    >
+                                        Clear / New Client
+                                    </button>
+                                )}
+                            </div>
+
+                            {selectedExistingClient ? (
+                                <div className="pos-existing-client-details">
+                                    <div className="pos-client-info-card">
+                                        <div className="pos-client-info-row">
+                                            <div className="pos-client-info-item">
+                                                <span className="pos-client-info-label">Client Name</span>
+                                                <span className="pos-client-info-val highlight">
+                                                    {`${firstName} ${lastName}`.trim() || selectedExistingClient.name || "Existing Client"}
+                                                </span>
+                                            </div>
+                                            <div className="pos-client-info-item">
+                                                <span className="pos-client-info-label">Contact Number</span>
+                                                <span className="pos-client-info-val">
+                                                    {contactNumber || "—"}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="pos-client-info-row">
+                                            <div className="pos-client-info-item">
+                                                <span className="pos-client-info-label">Email Address</span>
+                                                <span className="pos-client-info-val">
+                                                    {email || "—"}
+                                                </span>
+                                            </div>
+                                            <div className="pos-client-info-item">
+                                                <span className="pos-client-info-label">Address</span>
+                                                <span className="pos-client-info-val">
+                                                    {address || "—"}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Owned / Contract Plots from Firestore 'plots' collection using user_id */}
+                                    <div className="pos-client-plots-box">
+                                        <div className="pos-client-plots-header">
+                                            <div className="pos-client-plots-title">
+                                                <Landmark size={15} className="pos-client-plots-icon" />
+                                                <span>Owned / Contract Plots</span>
+                                            </div>
+                                            <span className="pos-client-plots-count">
+                                                {clientPlots.length} {clientPlots.length === 1 ? "Plot" : "Plots"}
+                                            </span>
+                                        </div>
+
+                                        {clientPlots.length === 0 ? (
+                                            <div className="pos-client-plots-empty">
+                                                <Info size={14} />
+                                                <span>No owned or contracted plots found in plot records for this client.</span>
+                                            </div>
+                                        ) : (
+                                            <div className="pos-client-plots-list">
+                                                {clientPlots.map((plot) => {
+                                                    const code = plot.plotCode || plot.name || `Plot ${plot.id}`;
+                                                    const gType = resolvePlotGraveType(plot);
+                                                    const section = plot.section || "—";
+                                                    const status = String(plot.status || "occupied").toLowerCase();
+                                                    const { isApartment, contractType, validity } = getPlotContractInfo(plot);
+                                                    const isChosen = selectedGravePlot?.id === plot.id;
+
+                                                    return (
+                                                        <div
+                                                            key={plot.id}
+                                                            className={`pos-client-plot-card ${isChosen ? "is-selected-plot" : ""}`}
+                                                        >
+                                                            <div className="pos-client-plot-top">
+                                                                <div className="pos-client-plot-code">
+                                                                    <Landmark size={13} className="pos-plot-code-icon" />
+                                                                    <strong>{code}</strong>
+                                                                    <span className={`pos-plot-type-pill ${isApartment ? "apartment" : ""}`}>
+                                                                        {gType}
+                                                                    </span>
+                                                                </div>
+                                                                <span className={`pos-plot-status-badge status-${status}`}>
+                                                                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                                                                </span>
+                                                            </div>
+
+                                                            <div className="pos-client-plot-meta-grid">
+                                                                <div className="pos-plot-meta-cell">
+                                                                    <span className="pos-plot-meta-lbl">Section</span>
+                                                                    <span className="pos-plot-meta-val">{section}</span>
+                                                                </div>
+                                                                <div className="pos-plot-meta-cell">
+                                                                    <span className="pos-plot-meta-lbl">Contract</span>
+                                                                    <span className={`pos-plot-meta-val ${isApartment ? "lease-highlight" : "contract-highlight"}`}>
+                                                                        {contractType}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="pos-plot-meta-cell">
+                                                                    <span className="pos-plot-meta-lbl">
+                                                                        {isApartment ? "Lease Expiry / Term" : "Validity / Expiry"}
+                                                                    </span>
+                                                                    <span className="pos-plot-meta-val">
+                                                                        {validity}
+                                                                    </span>
+                                                                </div>
+                                                                {plot.maxCapacity > 0 && (
+                                                                    <div className="pos-plot-meta-cell">
+                                                                        <span className="pos-plot-meta-lbl">Occupancy</span>
+                                                                        <span className="pos-plot-meta-val">
+                                                                            {plot.occupiedCount || 0} / {plot.maxCapacity} Burials
+                                                                        </span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="pos-form-grid-2">
+                                    <div className="pos-form-group">
+                                        <label className="pos-form-label">First Name</label>
+                                        <input
+                                            type="text"
+                                            className="pos-input-control"
+                                            placeholder="Enter first name"
+                                            value={firstName}
+                                            onChange={(e) => setFirstName(e.target.value)}
+                                        />
+                                    </div>
+
+                                    <div className="pos-form-group">
+                                        <label className="pos-form-label">Last Name</label>
+                                        <input
+                                            type="text"
+                                            className="pos-input-control"
+                                            placeholder="Enter last name"
+                                            value={lastName}
+                                            onChange={(e) => setLastName(e.target.value)}
+                                        />
+                                    </div>
+
+                                    <div className="pos-form-group">
+                                        <label className="pos-form-label">Contact Number</label>
+                                        <input
+                                            type="tel"
+                                            className="pos-input-control"
+                                            placeholder="09123456789"
+                                            value={contactNumber}
+                                            maxLength={11}
+                                            onChange={(e) => {
+                                                const val = e.target.value.replace(/\D/g, "");
+                                                if (val.length <= 11) setContactNumber(val);
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div className="pos-form-group">
+                                        <label className="pos-form-label">Email Address</label>
+                                        <input
+                                            type="email"
+                                            className="pos-input-control"
+                                            placeholder="client@email.com"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                        />
+                                    </div>
+
+                                    <div className="pos-form-group pos-form-group-full">
+                                        <label className="pos-form-label">Address</label>
+                                        <input
+                                            type="text"
+                                            className="pos-input-control"
+                                            placeholder="House / Unit No., Street, Barangay, City, Province"
+                                            value={address}
+                                            onChange={(e) => setAddress(e.target.value)}
+                                        />
+                                    </div>
+
+                                    {needType === "actual" && (
+                                        <div className="pos-form-group pos-form-group-full">
+                                            <label className="pos-form-label">Relationship to Deceased</label>
+                                            <select
+                                                className="pos-input-control"
+                                                value={relationship}
+                                                onChange={(e) => setRelationship(e.target.value)}
+                                            >
+                                                <option value="" disabled>Select relationship...</option>
+                                                <option value="Spouse">Spouse</option>
+                                                <option value="Child">Child</option>
+                                                <option value="Parent">Parent</option>
+                                                <option value="Sibling">Sibling</option>
+                                                <option value="Relative">Relative</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         {/* Deceased Information */}
@@ -1594,6 +2007,9 @@ function PointOfSale() {
                                                 contactNumber,
                                                 address,
                                                 relationship: needType === "actual" ? relationship : "",
+                                                isExistingClient: Boolean(selectedExistingClient),
+                                                existingClientId: selectedExistingClient?.id || null,
+                                                existingUserId: selectedExistingClient?.user_id || selectedExistingClient?.userId || selectedExistingClient?.uid || null,
                                             },
                                             burialData: {
                                                 deceasedFirstName,
@@ -1710,6 +2126,14 @@ function PointOfSale() {
                 graveTypes={displayedGraveLots}
                 selectedPlotId={selectedGravePlot?.id}
                 onSelectPlot={handlePlotSelected}
+            />
+
+            {/* Existing Client Search & Select Modal */}
+            <ExistingClientModal
+                isOpen={showExistingClientModal}
+                onClose={() => setShowExistingClientModal(false)}
+                onSelectClient={handleSelectExistingClient}
+                selectedClientId={selectedExistingClient?.id || null}
             />
         </div>
     );
